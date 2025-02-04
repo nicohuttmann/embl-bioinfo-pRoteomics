@@ -113,7 +113,7 @@ Google 'import R tsv', or 'import R parquet'.
 \
 ![](https://raw.githubusercontent.com/tidyverse/vroom/main/img/taylor.gif)
 
-This wasn't me, I swear. It was [them](https://vroom.r-lib.org/). In all seriousness, there are many ways to import your data from [base R](https://r4ds.had.co.nz/data-import.html#compared-to-base-r) solutions, to [canonical tidyverse functions](https://r4ds.hadley.nz/data-import.html), that cover different data types to this one, `vroom`. It made my life much, much easier as it automatically understand the file format. 
+This wasn't me, I swear. It was [them](https://vroom.r-lib.org/). In all seriousness, there are many ways to import your data from [base R](https://r4ds.had.co.nz/data-import.html#compared-to-base-r) solutions, to [canonical tidyverse functions](https://r4ds.hadley.nz/data-import.html), that cover different data types to this one, `vroom`. It made my life much, much easier as it automatically understands the file format. 
 
 
 ```r
@@ -123,7 +123,7 @@ data_raw <- vroom::vroom("Data/report.tsv")
 
 All other functions to read files begin with `read.` or `read_`. Type them in and press Tab.
 
-Another file format I would like to introduce you to is .parquet, from [Apache Arrow](https://arrow.apache.org/) with the accompanying [Arrow R Package](https://arrow.apache.org/docs/r/). 
+Another file format I would like to introduce you to is .parquet, from [Apache Arrow](https://arrow.apache.org/) with the accompanying [Arrow R Package](https://arrow.apache.org/docs/r/). This one is not compatible with `vroom` and needs its own function. 
 
 
 ```r
@@ -145,6 +145,7 @@ data_raw <- vroom::vroom("https://www.owncloud.de/bioinfo/R/dataset.tsv")
 
 </div>
 
+\
 We will continue with the data from the .parquet file, so you can delete the other object. 
 
 
@@ -212,14 +213,155 @@ summary(data_raw)
 \
 Not all of these are necessary, I simply `View()` the data before I start to look at it with more specific questions. 
 
-### Specific questions 
+### Data format 
+
+Having a broad idea of our data, we can start and look for the things we are interested in. Most scientific data follows the structure below.
+
+![](https://r4ds.hadley.nz/images/tidy-1.png){width=100%}
+
+There are variables, in our case precursors (measured peptide ions). Each variable was measured in an observations, our samples. And for each pair, there are values for the different data types. This is called the wide data format. You can read more about this in the [Tidy data](https://r4ds.hadley.nz/data-tidy.html#sec-tidy-data) section. Check if this applies to our data! 
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button12" aria-expanded="false" aria-controls="button12"> base R solution </button> <div id="button12" class="collapse">  
+\
+The column `Runs` contains sample names which are the observations of the example above. In addition, we have a column `Precursor.Id`, which are our variables. This means we are not working with data in the wide format, but in the long format. 
+
+The `tidyr` functions `tidyr::pivot_wider()` and `tidyr::pivot_longer()` were mentioned before and will allow as to reshape our data from long to wide and back.
+</div>
+
+### Data types
+
+But before we start to do reshape our data, we need to identify and extract the relevant data columns. 
+
+::: {.rmdnote}
+
+Output the data types per each column by combining the two functions `lapply` and `typeof`.
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button13" aria-expanded="false" aria-controls="button13"> Hint </button> <div id="button13" class="collapse">  
+\
+`?lapply` and `?typeof` will help you understand the individual functions. `lapply` is a useful function when applying the same operation to all elements of a list or vector. In our case, the `data_raw` is a tibble/data frame that can be seen as a list of columns. Therefore, the specified function will be applied to each column. 
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button14" aria-expanded="false" aria-controls="button14"> Code </button> <div id="button14" class="collapse">  
+\
+
+```r
+# The function FUN will be applied to each column of X
+# Notice that we did not add `()` brackets after `typeof`
+lapply(X = data_raw, FUN = typeof)
+```
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button15" aria-expanded="false" aria-controls="button15"> Tidyverse code </button> <div id="button15" class="collapse">  
+\
+The `purrr::map` function family replaces base R's `apply` functions and are recommended. 
+
+```r
+# map works the same as lapply
+map(data_raw, typeof)
+# Or 
+data_raw %>% 
+  map(typeof)
+```
+
+[These functions](https://purrr.tidyverse.org/reference/map.html) are very useful once you start working with more than one dataset of data frame at once. 
+</div>
+
+\
+We can use this opportunity to include some discussions about how to [Control flow](https://adv-r.hadley.nz/control-flow.html) of your code. 
+
+::: {.rmdnote}
+
+Reframe the problem above in a [Loop](https://adv-r.hadley.nz/control-flow.html#loops). 
+
+:::
 
 
+Now we have an idea which columns in our data contain `character` data, mainly IDs, and `numeric` data, which are our quantitative values and some q-values. 
+
+::: {.rmdnote}
+
+We can combine identifying data types and extracting these columns with a combination of `dplyr::select()` and `dplyr::where()`. 1. Select all `character` columns. 2. Select all `numeric` columns. 3. Combine useful ID columns with all `numeric` columns. This will be helpful for an overview of the data as well.
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button16" aria-expanded="false" aria-controls="button16"> Hint </button> <div id="button16" class="collapse">  
+\
+You can find explanations for both functions online:
+[select](https://dplyr.tidyverse.org/reference/select.html) and [where](https://tidyselect.r-lib.org/reference/where.html)
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button17" aria-expanded="false" aria-controls="button17"> Code 1 </button> <div id="button17" class="collapse">  
+\
+The `where()` function accepts any kind of function which can be used to test whether a column should be selected or not. 
+
+```r
+data_raw %>% 
+  select(where(is.character))
+```
+
+We could also use the output of the previous `map` function to indicate the columns.
 
 
+```r
+# Create vector of character column names 
+names_character <- map_lgl(data_raw, is.character) %>% 
+  which() %>% 
+  names() 
+# Use vector as input for select 
+data_raw %>% 
+  select(names_character)
+```
+
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button18" aria-expanded="false" aria-controls="button18"> Code 2 </button> <div id="button18" class="collapse">  
+\
+All numeric data can be found with `is.numeric()`. Again, since we provide a function as an object, and do not want it to do something immediately, we leave out the `()` brackets. 
+
+```r
+data_raw %>% 
+  select(where(is.numeric))
+```
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button19" aria-expanded="false" aria-controls="button19"> Code 3 </button> <div id="button19" class="collapse">  
+\
+
+```r
+data_raw %>% 
+  # Combine the different ways of choosing columns in a vector c()
+  select(c("Precursor.Id", where(is.numeric)))
+# We could also retain some more information
+data_raw %>% 
+  select(c("Precursor.Id", "Run", "Protein.Group", "Protein.Names", "Genes"  , where(is.numeric)))
+```
+But to also provide the most basic use case of `select`, we can simply use the column names as they are or as "strings". Pressing Tab with the cursor in the `select` function can be helpful as well.
+
+```r
+data_raw %>% 
+  select(c(Precursor.Id, Modified.Sequence, "Run", "Precursor.Charge"))
+```
+</div>
+
+\
+Let's keep the remaining time open to explore other `dplyr` functions. They are listed in the [Function reference](https://dplyr.tidyverse.org/reference/index.html) but the most useful ones are:
+* `dplyr::select()`
+* `dplyr::filter()`
+* `dplyr::arrange()`
+* `dplyr::pull()`
+* `dplyr::bind_rows()`
+
+* `dplyr::mutate()`
+* `dplyr::summarise()`
+* `dplyr::rename()`
 
 
-
+* `dplyr::full_join()`
+* `dplyr::inner_join()`
+* `dplyr::left_join()`
+* `dplyr::right_join()`
 
 
 

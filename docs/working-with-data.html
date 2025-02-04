@@ -126,12 +126,12 @@ Code
 </button>
 <div id="button7" class="collapse">
 <p><br><img src="https://raw.githubusercontent.com/tidyverse/vroom/main/img/taylor.gif"></p>
-<p>This wasn’t me, I swear. It was <a href="https://vroom.r-lib.org/">them</a>. In all seriousness, there are many ways to import your data from <a href="https://r4ds.had.co.nz/data-import.html#compared-to-base-r">base R</a> solutions, to <a href="https://r4ds.hadley.nz/data-import.html">canonical tidyverse functions</a>, that cover different data types to this one, <code>vroom</code>. It made my life much, much easier as it automatically understand the file format.</p>
+<p>This wasn’t me, I swear. It was <a href="https://vroom.r-lib.org/">them</a>. In all seriousness, there are many ways to import your data from <a href="https://r4ds.had.co.nz/data-import.html#compared-to-base-r">base R</a> solutions, to <a href="https://r4ds.hadley.nz/data-import.html">canonical tidyverse functions</a>, that cover different data types to this one, <code>vroom</code>. It made my life much, much easier as it automatically understands the file format.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Simply this</span></span>
 <span><span class="va">data_raw</span> <span class="op">&lt;-</span> <span class="fu">vroom</span><span class="fu">::</span><span class="fu"><a href="https://vroom.r-lib.org/reference/vroom.html">vroom</a></span><span class="op">(</span><span class="st">"Data/report.tsv"</span><span class="op">)</span></span></code></pre></div>
 <p>All other functions to read files begin with <code>read.</code> or <code>read_</code>. Type them in and press Tab.</p>
-<p>Another file format I would like to introduce you to is .parquet, from <a href="https://arrow.apache.org/">Apache Arrow</a> with the accompanying <a href="https://arrow.apache.org/docs/r/">Arrow R Package</a>.</p>
+<p>Another file format I would like to introduce you to is .parquet, from <a href="https://arrow.apache.org/">Apache Arrow</a> with the accompanying <a href="https://arrow.apache.org/docs/r/">Arrow R Package</a>. This one is not compatible with <code>vroom</code> and needs its own function.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_raw</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html">read_parquet</a></span><span class="op">(</span><span class="st">"Data/report.parquet"</span><span class="op">)</span></span></code></pre></div>
 <p>The same data is a tenth of the size and therefore reads and writes much faster. It is also more convenient as .csv files due to the clear format of the columns. I’m only afraid it doesn’t work with Excel.</p>
@@ -145,7 +145,8 @@ Both functions also work with URLs. Try it out:<a class="footnote-ref" tabindex=
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_raw</span> <span class="op">&lt;-</span> <span class="fu">vroom</span><span class="fu">::</span><span class="fu"><a href="https://vroom.r-lib.org/reference/vroom.html">vroom</a></span><span class="op">(</span><span class="st">"https://www.owncloud.de/bioinfo/R/dataset.tsv"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>We will continue with the data from the .parquet file, so you can delete the other object.</p>
+<p><br>
+We will continue with the data from the .parquet file, so you can delete the other object.</p>
 </div>
 <div id="understand-your-data" class="section level2" number="7.3">
 <h2>
@@ -198,10 +199,139 @@ Here are a couple of examples to get an overview of the structure of an R data o
 </div>
 <p><br>
 Not all of these are necessary, I simply <code><a href="https://rdrr.io/r/utils/View.html">View()</a></code> the data before I start to look at it with more specific questions.</p>
-<div id="specific-questions" class="section level3" number="7.3.1">
+<div id="data-format" class="section level3" number="7.3.1">
 <h3>
-<span class="header-section-number">7.3.1</span> Specific questions<a class="anchor" aria-label="anchor" href="#specific-questions"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.3.1</span> Data format<a class="anchor" aria-label="anchor" href="#data-format"><i class="fas fa-link"></i></a>
 </h3>
+<p>Having a broad idea of our data, we can start and look for the things we are interested in. Most scientific data follows the structure below.</p>
+<div class="inline-figure"><img src="https://r4ds.hadley.nz/images/tidy-1.png" style="width:100.0%"></div>
+<p>There are variables, in our case precursors (measured peptide ions). Each variable was measured in an observations, our samples. And for each pair, there are values for the different data types. This is called the wide data format. You can read more about this in the <a href="https://r4ds.hadley.nz/data-tidy.html#sec-tidy-data">Tidy data</a> section. Check if this applies to our data!</p>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button12" aria-expanded="false" aria-controls="button12">
+base R solution
+</button>
+<div id="button12" class="collapse">
+<p><br>
+The column <code>Runs</code> contains sample names which are the observations of the example above. In addition, we have a column <code>Precursor.Id</code>, which are our variables. This means we are not working with data in the wide format, but in the long format.</p>
+<p>The <code>tidyr</code> functions <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">tidyr::pivot_wider()</a></code> and <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">tidyr::pivot_longer()</a></code> were mentioned before and will allow as to reshape our data from long to wide and back.</p>
+</div>
+</div>
+<div id="data-types" class="section level3" number="7.3.2">
+<h3>
+<span class="header-section-number">7.3.2</span> Data types<a class="anchor" aria-label="anchor" href="#data-types"><i class="fas fa-link"></i></a>
+</h3>
+<p>But before we start to do reshape our data, we need to identify and extract the relevant data columns.</p>
+<div class="rmdnote">
+<p>Output the data types per each column by combining the two functions <code>lapply</code> and <code>typeof</code>.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button13" aria-expanded="false" aria-controls="button13">
+Hint
+</button>
+<div id="button13" class="collapse">
+<p><br><code><a href="https://rdrr.io/r/base/lapply.html">?lapply</a></code> and <code><a href="https://rdrr.io/r/base/typeof.html">?typeof</a></code> will help you understand the individual functions. <code>lapply</code> is a useful function when applying the same operation to all elements of a list or vector. In our case, the <code>data_raw</code> is a tibble/data frame that can be seen as a list of columns. Therefore, the specified function will be applied to each column.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button14" aria-expanded="false" aria-controls="button14">
+Code
+</button>
+<div id="button14" class="collapse">
+<p><br></p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># The function FUN will be applied to each column of X</span></span>
+<span><span class="co"># Notice that we did not add `()` brackets after `typeof`</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">data_raw</span>, FUN <span class="op">=</span> <span class="va">typeof</span><span class="op">)</span></span></code></pre></div>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button15" aria-expanded="false" aria-controls="button15">
+Tidyverse code
+</button>
+<div id="button15" class="collapse">
+<p><br>
+The <code><a href="https://purrr.tidyverse.org/reference/map.html">purrr::map</a></code> function family replaces base R’s <code>apply</code> functions and are recommended.</p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># map works the same as lapply</span></span>
+<span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">data_raw</span>, <span class="va">typeof</span><span class="op">)</span></span>
+<span><span class="co"># Or </span></span>
+<span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">typeof</span><span class="op">)</span></span></code></pre></div>
+<p><a href="https://purrr.tidyverse.org/reference/map.html">These functions</a> are very useful once you start working with more than one dataset of data frame at once.</p>
+</div>
+<p><br>
+We can use this opportunity to include some discussions about how to <a href="https://adv-r.hadley.nz/control-flow.html">Control flow</a> of your code.</p>
+<div class="rmdnote">
+<p>Reframe the problem above in a <a href="https://adv-r.hadley.nz/control-flow.html#loops">Loop</a>.</p>
+</div>
+<p>Now we have an idea which columns in our data contain <code>character</code> data, mainly IDs, and <code>numeric</code> data, which are our quantitative values and some q-values.</p>
+<div class="rmdnote">
+<p>We can combine identifying data types and extracting these columns with a combination of <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code> and <code><a href="https://tidyselect.r-lib.org/reference/where.html">dplyr::where()</a></code>. 1. Select all <code>character</code> columns. 2. Select all <code>numeric</code> columns. 3. Combine useful ID columns with all <code>numeric</code> columns. This will be helpful for an overview of the data as well.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button16" aria-expanded="false" aria-controls="button16">
+Hint
+</button>
+<div id="button16" class="collapse">
+<p><br>
+You can find explanations for both functions online:
+<a href="https://dplyr.tidyverse.org/reference/select.html">select</a> and <a href="https://tidyselect.r-lib.org/reference/where.html">where</a></p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button17" aria-expanded="false" aria-controls="button17">
+Code 1
+</button>
+<div id="button17" class="collapse">
+<p><br>
+The <code><a href="https://tidyselect.r-lib.org/reference/where.html">where()</a></code> function accepts any kind of function which can be used to test whether a column should be selected or not.</p>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.character</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>We could also use the output of the previous <code>map</code> function to indicate the columns.</p>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create vector of character column names </span></span>
+<span><span class="va">names_character</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_lgl</a></span><span class="op">(</span><span class="va">data_raw</span>, <span class="va">is.character</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="op">)</span> </span>
+<span><span class="co"># Use vector as input for select </span></span>
+<span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">names_character</span><span class="op">)</span></span></code></pre></div>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button18" aria-expanded="false" aria-controls="button18">
+Code 2
+</button>
+<div id="button18" class="collapse">
+<p><br>
+All numeric data can be found with <code><a href="https://rdrr.io/r/base/numeric.html">is.numeric()</a></code>. Again, since we provide a function as an object, and do not want it to do something immediately, we leave out the <code>()</code> brackets.</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button19" aria-expanded="false" aria-controls="button19">
+Code 3
+</button>
+<div id="button19" class="collapse">
+<p><br></p>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># Combine the different ways of choosing columns in a vector c()</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Precursor.Id"</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># We could also retain some more information</span></span>
+<span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Precursor.Id"</span>, <span class="st">"Run"</span>, <span class="st">"Protein.Group"</span>, <span class="st">"Protein.Names"</span>, <span class="st">"Genes"</span>  , <span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>But to also provide the most basic use case of <code>select</code>, we can simply use the column names as they are or as “strings”. Pressing Tab with the cursor in the <code>select</code> function can be helpful as well.</p>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Precursor.Id</span>, <span class="va">Modified.Sequence</span>, <span class="st">"Run"</span>, <span class="st">"Precursor.Charge"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p><br>
+Let’s keep the remaining time open to explore other <code>dplyr</code> functions. They are listed in the <a href="https://dplyr.tidyverse.org/reference/index.html">Function reference</a> but the most useful ones are:
+* <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code>
+* <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter()</a></code>
+* <code><a href="https://dplyr.tidyverse.org/reference/arrange.html">dplyr::arrange()</a></code>
+* <code><a href="https://dplyr.tidyverse.org/reference/pull.html">dplyr::pull()</a></code>
+* <code><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">dplyr::bind_rows()</a></code></p>
+<ul>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate()</a></code></p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise()</a></code></p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/rename.html">dplyr::rename()</a></code></p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">dplyr::full_join()</a></code></p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">dplyr::inner_join()</a></code></p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">dplyr::left_join()</a></code></p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">dplyr::right_join()</a></code></p></li>
+</ul>
 </div>
 </div>
 <div id="tidy-up-your-data" class="section level2" number="7.4">
@@ -265,7 +395,10 @@ Not all of these are necessary, I simply <code><a href="https://rdrr.io/r/utils/
 <li><a class="nav-link" href="#prepare-your-project"><span class="header-section-number">7.1</span> Prepare your project</a></li>
 <li><a class="nav-link" href="#import-your-data"><span class="header-section-number">7.2</span> Import your data</a></li>
 <li>
-<a class="nav-link" href="#understand-your-data"><span class="header-section-number">7.3</span> Understand your data</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#specific-questions"><span class="header-section-number">7.3.1</span> Specific questions</a></li></ul>
+<a class="nav-link" href="#understand-your-data"><span class="header-section-number">7.3</span> Understand your data</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#data-format"><span class="header-section-number">7.3.1</span> Data format</a></li>
+<li><a class="nav-link" href="#data-types"><span class="header-section-number">7.3.2</span> Data types</a></li>
+</ul>
 </li>
 <li><a class="nav-link" href="#tidy-up-your-data"><span class="header-section-number">7.4</span> Tidy up your data</a></li>
 </ul>

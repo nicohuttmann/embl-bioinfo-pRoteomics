@@ -20,7 +20,8 @@ working-with-data
 prepare-your-project
 import-your-data
 understand-your-data
-specific-questions
+data-format
+data-types
 tidy-up-your-data
 limma-analysis
 reporting-results

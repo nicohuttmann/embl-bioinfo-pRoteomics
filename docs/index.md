@@ -109,3 +109,90 @@ For the one's who do not need R in their projects yet, you could see it as a ver
 
 <!-- The R Markdown Cookbook provides more help on how to use custom blocks to design your own callouts: https://bookdown.org/yihui/rmarkdown-cookbook/custom-blocks.html -->
 
+
+
+
+
+
+<!-- This is an introduction to R -->
+
+<!-- ```{r } -->
+<!-- 1 + 4 -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- b <- 5 -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- sqrt(4) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- ?round -->
+
+<!-- round(2.576, digits = 2) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- library(tidyverse) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- mice_pheno <- read_csv(file= url("https://raw.githubusercontent.com/genomicsclass/dagdata/master/inst/extdata/mice_pheno.csv")) -->
+
+<!-- mice_pheno$Bodyweight <- as.numeric(mice_pheno$Bodyweight) -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- head(mice_pheno) -->
+
+<!-- dim(mice_pheno) -->
+
+<!-- str(mice_pheno) -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- mice_pheno[1:2, 3] -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- print(names(PlantGrowth)) -->
+<!-- PlantGrowth$weight -->
+
+<!-- PlantGrowth[, "weight"] -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- table(mice_pheno$Sex) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- mice_female <- mice_pheno %>%  -->
+<!--   filter() -->
+<!-- ``` -->
+
+
+
+<!-- ```{r} -->
+<!-- mice_pheno %>%  -->
+<!--   ggplot(aes(x = Diet, y = Bodyweight, fill = Sex)) +  -->
+<!--   geom_boxplot() -->
+<!--   ggforce::geom_sina() -->
+<!-- ``` -->
+
+
+<!-- kjdslkfjdsj -->
+<!-- ```{r} -->
+<!-- mice_pheno %>%  -->
+<!--   mutate(rep = row_number(), .by = c("Sex", "Diet")) %>%  -->
+<!--   pivot_wider(id_cols = c("Sex", "rep"),  -->
+<!--               names_from = "Diet",  -->
+<!--               values_from = "Bodyweight") -->
+<!-- ``` -->
+
+
