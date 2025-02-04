@@ -32,17 +32,15 @@ Please have a look at the [workflow basics](https://r4ds.hadley.nz/workflow-basi
 
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button1" aria-expanded="false" aria-controls="button1"> Done? </button> <div id="button1" class="collapse">  
 \
-The most important takeaway from this is that you can assign (create) an object in R with the assignment operator `<-`. And while we are at it, the __c__ombine function `c()`^[which I always called vector, and wondered where the c is coming from...] will be one of the most frequently used functions in R. 
+The most important takeaway from this is that you can assign (create) an object in R with the assignment operator `<-`. And while we are at it, the __c__ ombine function `c()`^[which I always called vector, and wondered where the c is coming from...] will be one of the most frequently used functions in R. 
 
 ```r
 # Assign the vector to an object called numbers
 numbers <- c(1, 2, 3)
 # Execute the following line to print it to the console
 numbers
-#> [1] 1 2 3
 # Some objects (not this one) need to be forced to show in the console 
 print(numbers)
-#> [1] 1 2 3
 ```
 This ` c(1, 2, 3) -> numbers` works as well, but please do not ever do this.^[[here](https://stat.ethz.ch/R-manual/R-devel/library/base/html/assignOps.html)'s a list of other assignment operators]
 </div>
@@ -81,7 +79,6 @@ The number of functions exceeds the number of object types by far, therefore we 
 
 ```r
 sum(1, 2, 3)
-#> [1] 6
 ```
 Nice! But bad example. Write the function name `sum` again and wait for a list of options to appear. If this does not happen, you can press Tab. Once you see a list, scroll through it with your arrow buttons and choose a function with Tab or Enter. Once your cursor is in between the brackets of the function, press Tab again. Now, you see the arguments of a function. Arguments are the different inputs for a function and declare precisely which input goes where within the function. Our bad example has a special type of argument `...`, the [(dot-dot-dot)](https://adv-r.hadley.nz/functions.html?q=...#fun-dot-dot-dot), that accepts an undefined number of arguments, in this case multiple numbers.
 
@@ -90,7 +87,6 @@ A better example is the `intersect()` function, which takes two sets in form of 
 ```r
 intersect(x = c(1, 2, 3), 
           y = c(2, 3, 4))
-#> [1] 2 3
 ```
 
 The other [Set Operation](https://stat.ethz.ch/R-manual/R-devel/library/base/html/sets.html) functions will be useful at one point for sure. Another resource worth mentioning is the [R-bloggers website](https://www.r-bloggers.com/2024/11/the-complete-guide-to-using-setdiff-in-r-examples-and-best-practices/).
@@ -160,11 +156,10 @@ You may have already installed the [`tidyverse`](https://www.tidyverse.org/) in 
 
 The tidyverse is extensively described in the [R for Data Science (2e)](https://r4ds.hadley.nz) book^[I'm a fan, if you haven't noticed] as recommended in [Learn the tidyverse](https://www.tidyverse.org/learn/) and individual packages are summarized in some [Posit cheatsheets](https://posit.co/resources/cheatsheets/).
 
+
 # Coding style 
 
-Okay, we nearly made it to our project. Only took us 5+ introductory chapters. Only this one more. I promise.
-
-First of all, I am sorry that I will use the word 'I' in this chapter. I do not like that. However, I believe it is important to understand where certain ideas or nuances come from. Especially if different approaches lead to the same result and especially at the early stages of learning something like programming. 
+Okay, we nearly made it to our project. One last chapter. I promise. 
 
 One decision which you may have already guessed, is that I am a follower of the tidyverse and try to use it instead of the base R solutions wherever possible.^[base R refers to the functions which are available to you in R without installing any additional package. And little surprisingly, it is a package as well. You could check it's functions by writing `base::`and pressing Tab. _I just found all the basic mathematical operators by doing this and scrolling up. I'm learning so much by doing this!_] Still, it is not almighty and sometimes you will need other solutions. For example dividing two data frames through each other would require the tidyverse functions `pivot_longer`, `inner_join`, `mutate` and `pivot_wider`. The elegant base R solution is having the data as matrices and simply using the mathematical operator `/`. 
 
@@ -232,16 +227,16 @@ The real tidyverse solution would work the following.
 t1_r <- t1 %>% 
   mutate(row = c("1", "2", "3"), 
          .before = 1)
-
+# Do it again 
 t2_r <- t2 %>% 
-    mutate(row = c("1", "2", "3"), 
+  mutate(row = c("1", "2", "3"), 
          .before = 1)
-
+# Now we bring our data from a wide format into a long format 
 t1_long <- pivot_longer(t1_r, 
                         cols = c("a", "b", "c"), 
                         names_to = "column", 
                         values_to = "number")
-
+# And again 
 t2_long <- pivot_longer(t2_r, 
                         cols = -1, 
                         names_to = "column", 
@@ -272,12 +267,12 @@ list("t1" = t1, "t2" = t2) %>%
         mutate(row = c("1", "2", "3"), 
                .before = 1) %>% 
         pivot_longer(cols = -1, 
-                        names_to = "column", 
-                        values_to = "number")) %>% 
+                     names_to = "column", 
+                     values_to = "number")) %>% 
   # Once both tibbles are ready to be combined, we can access them via the with function (we may talk about this again, I find it very helpful sometimes)
   with(full_join(t1, t2, by = c("row", 
-                                   "column"), 
-          suffix = c("_1", "_2"))) %>% 
+                                "column"), 
+                 suffix = c("_1", "_2"))) %>% 
   # Now we continue as above
   mutate(number = number_2 / number_1) %>% 
   # And back to a wide format tibble 
@@ -286,9 +281,7 @@ list("t1" = t1, "t2" = t2) %>%
               values_from = "number")
 ```
 
-You do not need to understand all of this immediately, but these are some of the most common operations in omics data science. If you understand the `pivot` functions within this week, you're years ahead compared to my journey in data science :)
-
-
+You do not need to understand all of this immediately, but these are some of the most common operations in omics data science. If you understand the `tidyr::pivot` functions within this week, you're years ahead compared to my journey in data science :)
 
 </div>
 
@@ -318,29 +311,31 @@ random_letters <- rep(names(letters_freq), letters_freq)
 
 This is the first exercise in this book^[I call it an exercise, because I am not sure if it is well explained and therefore the 'exercise' is to understand what I intend to show you here :)]. You can simply copy the code by marking it or pressing this helpful button in the top right corner of the code chunk and paste it into your R script. Then just run the lines of code and have a look at what they produce. 
 
-
+Once you are done with the above code, observe what happened and then continue with the code below. 
 
 
 ```r
+# Count each element of random_letters 
 random_letters_table <- table(random_letters)
-
+# Sort table in decending order 
 random_letters_table_sorted <- sort(random_letters_table, decreasing = T)
-
+# Plot the frequency of each letter 
 barplot(random_letters_table_sorted)
-
 ```
 
+The code above yields a barplot that represents the frequency of each letter. To get to our result, we created two intermediate objects `random_letters_table` and `random_letters_table_sorted`. We can do the same all with the `random_letters` object, simply overwriting it in each line. 
 
 
 ```r
+# Count each element of random_letters 
 random_letters <- table(random_letters)
-
+# Sort table in descending order 
 random_letters <- sort(random_letters, decreasing = T)
-
+# Plot the frequency of each letter 
 barplot(random_letters)
 ```
 
-You saw in the examples above that there are different ways to chain the outputs of the different computations into each other to arrive at the barplot. Let's try and use the ` %>%` operator to simplify this process. within each line
+You saw in the examples above that there are different ways to chain the outputs of the different computations into each other to arrive at the barplot. Let's try and use the `%>%` operator to simplify this process. 
 
 
 ```r
@@ -350,27 +345,24 @@ random_letters %>%
   barplot()
 ```
 
-The chain begins with an object `random_letters` and is then followed by functions in each subsequent line. The output of the preceeding line is always used as the first argument of the following function.
+The chain begins with an object `random_letters` and is then followed by functions in each subsequent line. The output of the preceding line is always used as the first argument of the following function.
 
-The above is equivalent to: 
+The above is equivalent to this nested construct:^[multiple functions within each other get evaluated from the inside to the outside.]
 
 ```r
 barplot(sort(table(random_letters), decreasing = T))
 ```
 
-The chain begins with 
-
-But I hope it is obvious why the `%>%` is a useful tool, not just for writing less code but also making the code more legible. Btw, did you find the hidden message in the barplot? If not, try and stretch the 'Plots' window or press 'Zoom' in the 'Plots' panel.
+I hope it is obvious why the `%>%` is a useful tool, not just for writing less code but also making the code more legible. Btw, did you find the hidden message in the barplot? If not, try and stretch the 'Plots' window or press 'Zoom' in the 'Plots' panel.
 
 The making of this exercise is an even better example of the utility of the `%>%` :)
 
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button5" aria-expanded="false" aria-controls="button5"> Making of </button> <div id="button5" class="collapse">  
 \
-And maybe a nice 
 
 ```r
 sentence_full <- "The quick brown fox jumps over the lazy dog"
-#  Wow I just discovered there's a `sentences` object in R
+## Unrelated but, wow I just discovered there's a `sentences` object in R
 
 # Generate the frequency of each individual letter
 letters_freq <- sentence_full %>% 
@@ -446,11 +438,137 @@ Using the `%>%` pipe operator is only one part of the [Style guide](https://r4ds
 
 ## Data organization wihtin R
 
-And for the last part
+As we are moving from the basics to the actual project, let's see how we work *with* R. Working *in* R means which packages or code do we use, working *with* R means where do we put our code and our data. Let's start at the top level. Where do our scripts and data live?
+
+### R projects
+
+We will not just work on an R project, we will also work in one. Please have a look at the description of [R projects](https://r4ds.hadley.nz/workflow-scripts.html#projects) in this by now well known book. As we get closer to the group work project let's start with creating a place for our data and code.
+
+::: {.rmdnote}
+
+Create your own R project for this course. I suggest to make a folder called R within your Documents folder or wherever you store your research. In here, you could start to collect different R projects. 
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button6" aria-expanded="false" aria-controls="button6"> Hint </button> <div id="button6" class="collapse">  
+\
+You can create a new R project by clicking File -> New Project... -> New Directory -> New Project. Now enter the name^[please no spaces], browse to the top folder you would like and press Create Project. If you want to keep your current R session open, tick Open in new session.
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button7" aria-expanded="false" aria-controls="button7"> Additional info </button> <div id="button7" class="collapse">  
+\
+It may seem convenient to have this folder on the server of your lab, so it gets archived automatically, however, it sometimes gives you trouble and slows down your analysis. Copying the R folder from time to time seems like the practical solution for me.
+
+</div>
+
+\
+Great, you created your first R project. You can identify in which project you are by the name of the window or in the top right corner. 
+
+Before creating our first R script, we can set a folder structure within our R project. This can be done from the operating system's file explorer or with the function `dir.create`. I usually begin setting up my work directory like this:
+
+
+```r
+# All R and Rmd scripts will be in here 
+dir.create("Scripts")
+# All raw data can be stored here 
+dir.create("Data")
+# A separate folder for RData objects 
+dir.create("Data/RData")
+# All output like figures, tables etc. 
+dir.create("Output")
+```
+
+Do this as you like :)
+
+### Lists and .lists
+
+Now our data has a tidy place to live in our operating system. Nice. But what about our data *in R*?
+
+Everything in R lives in the __Global Environment__. You can read more about this [here](https://adv-r.hadley.nz/environments.html), but do this when there is some free time or you have specific questions. 
+
+We previously touched on vectors and lists, with the main difference that vectors only take one kind of element and lists can store whatever you fancy. And that's what we want. 
+
+Imagine you need to compute the following incredibly complicated numbers and want to store them for the meeting with your PI later:
+
+
+```r
+a <- 1 + 1
+b <- 2 - 3
+c <- 2 * Inf
+d <- 1 / 0
+e <- 2^2
+f <- sqrt(2)
+g <- exp(1)
+h <- log10(3)
+i <- log2(42)
+j <- log(pi, base = pi)
+k <- a > b
+l <- a < b
+m <- a == b
+n <- a >= b
+o <- a <= b
+```
+
+Omg, do you see how your Global Environment on the top right gets cluttered. Your PI won't like that. Let's tidy this up by using a list.
+
+
+```r
+# Directly store the first numbers in the list
+important_numbers <- list(
+  a = 1 + 1, 
+  b = 2 - 3, 
+  c = 2 * Inf, 
+  # You can also use a string "d" to define the name, it's the same
+  "d" = 1 / 0)
+
+# Add the remaining numbers
+important_numbers[["e"]] <- 2^2
+important_numbers[["f"]] <- sqrt(2)
+important_numbers[["g"]] <- exp(1)
+important_numbers[["h"]] <- log10(3)
+important_numbers[["i"]] <- log2(42)
+important_numbers[["j"]] <- log(pi, base = pi)
+important_numbers[["k"]] <- a > b
+important_numbers[["l"]] <- a < b
+important_numbers[["m"]] <- a == b
+important_numbers[["n"]] <- a >= b
+important_numbers[["o"]] <- a <= b
+```
+
+Click on `important_numbers` on the top right^[not the blue arrow, but try this out as well] and you can view the content of the list. This is equivalent to writing `View(important_numbers)` in your console or from your R script. 
+
+Finally, let's clean up the mess by deleting all the previously created R objects named a, b, c and so on. This we can do with the `rm()` function. There are different ways to use it. 
+
+
+```r
+# Remove one object
+rm(a)
+# Remove multiple object 
+rm(b, c)
+# Or 
+rm(list = c("d", "e"))
+# To remove everything use the object() function
+objects()
+# and combine the two
+rm(list = objects())
+# Uups, everthing is gone. If you want to keep something add setdiff
+a <- 1
+b <- 2
+.c <- 3
+# Remove all but a
+rm(list = setdiff(objects(), "a"))
+```
+
+One last trick. Did you notice how you never saw `.c` in your Global Environment. It was created as a hidden object with the `.` as a prefix. We can find it with `objects(all.names = T)` and remove it just the same. 
+
+It is good practice to clean your environment at the end of an analysis chunk or at the end of each script to remove things you don't need anymore. If we are talking about gigabytes of data instead of those lousy numbers, try `gc()` after deleting the objects.^[If it does not help once, do this https://stackoverflow.com/a/1467334]
 
 
 ## Summary
 
+Thanks for making it this far. This intro to __R Basics__ ended up quite extensive, but getting through it should give you all the tools to figure out most problems in R on your own. Not all examples are useful yet, but may come in handy later. Basically every piece of code has been used in my work at one point. 
 
-
-
+There are a lot more functions to get to know, especially from the tidyverse, but we will cover them on the way. Please remember:
+* Ask everything you do not understand or that seems unclear.
+* There is always more than one way to get to your goal, redundancy helps us understand things better.
+* Let us know, if you have a different or better way to do something, we're here to discuss!

@@ -12,11 +12,15 @@ the-tidyverse
 coding-style
 coding-style-1
 data-organization-wihtin-r
+r-projects
+lists-and-.lists
 summary
-getting-started
-whats-our-project
+our-project
+working-with-data
+prepare-your-project
 import-your-data
 understand-your-data
+specific-questions
 tidy-up-your-data
 limma-analysis
 reporting-results

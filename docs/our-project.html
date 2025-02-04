@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 6 Our project | Data Analysis in R</title>
+<meta name="author" content="Nico Hüttmann">
+<meta name="description" content="We will work with mass spectrometry (MS) data obtained from a new proteomics method called PELSA (A peptide-centric local stability assay enables proteome-scale identification of the protein...">
+<meta name="generator" content="bookdown 0.38 with bs4_book()">
+<meta property="og:title" content="Chapter 6 Our project | Data Analysis in R">
+<meta property="og:type" content="book">
+<meta property="og:description" content="We will work with mass spectrometry (MS) data obtained from a new proteomics method called PELSA (A peptide-centric local stability assay enables proteome-scale identification of the protein...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 6 Our project | Data Analysis in R">
+<meta name="twitter:description" content="We will work with mass spectrometry (MS) data obtained from a new proteomics method called PELSA (A peptide-centric local stability assay enables proteome-scale identification of the protein...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.7.0/transition.js"></script><script src="libs/bs3compat-0.7.0/tabs.js"></script><script src="libs/bs3compat-0.7.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Data Analysis in R</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Preface</a></li>
+<li class="book-part">R Basics</li>
+<li><a class="" href="r-and-rstudio.html"><span class="header-section-number">1</span> R and RStudio</a></li>
+<li><a class="" href="how-does-r-work.html"><span class="header-section-number">2</span> How does R work?</a></li>
+<li><a class="" href="r-packages.html"><span class="header-section-number">3</span> R packages</a></li>
+<li><a class="" href="the-tidyverse.html"><span class="header-section-number">4</span> The tidyverse</a></li>
+<li><a class="" href="coding-style.html"><span class="header-section-number">5</span> Coding style</a></li>
+<li class="book-part">Group Work Project</li>
+<li><a class="active" href="our-project.html"><span class="header-section-number">6</span> Our project</a></li>
+<li><a class="" href="working-with-data.html"><span class="header-section-number">7</span> Working with data</a></li>
+<li><a class="" href="limma-analysis.html"><span class="header-section-number">8</span> Limma analysis</a></li>
+<li><a class="" href="reporting-results.html"><span class="header-section-number">9</span> Reporting results</a></li>
+<li><a class="" href="more-data-exploration.html"><span class="header-section-number">10</span> More data exploration</a></li>
+<li class="book-part">Appendix</li>
+<li><a class="" href="version-control-with-github.html"><span class="header-section-number">A</span> Version control with GitHub</a></li>
+<li><a class="" href="references.html">References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/nicohuttmann/embl-bioinfo-pRoteomics">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="our-project" class="section level1" number="6">
+<h1>
+<span class="header-section-number">6</span> Our project<a class="anchor" aria-label="anchor" href="#our-project"><i class="fas fa-link"></i></a>
+</h1>
+<p>We will work with mass spectrometry (MS) data obtained from a new proteomics method called PELSA (<a href="https://www.nature.com/articles/s41592-024-02553-7">A peptide-centric local stability assay enables proteome-scale identification of the protein targets and binding regions of diverse ligands</a>). The PELSA method combines a short tryptic digestion of the proteins of interest with liquid chromatography-tandem MS (LC-MS/MS) analysis. Doing this under differential conditions like a drug treatment of the cells or a specific ligand like metabolites or nucleic acids is called limited proteolysis and identifies which sides of the proteins are shielded from digestion by Trypsin through stabilization of the protein-ligand complex (see <strong>Fig.1a</strong>).</p>
+<div class="inline-figure"><img src="https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41592-024-02553-7/MediaObjects/41592_2024_2553_Fig1_HTML.png?as=webp" style="width:100.0%"></div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button1" aria-expanded="false" aria-controls="button1">
+Fig. 1 caption
+</button>
+<div id="button1" class="collapse">
+<p><br>
+a, Workflow of PELSA. E/S ratio (wt/wt). b, Volcano plot visualization of all peptides from a PELSA analysis of BT474 lysates exposed to 100 nM lapatinib. c, Volcano plot as in b but on the protein level. d, Local stability profiles to reveal ligand-binding regions. The upper and lower boundaries of the gray-shaded area represent log2FCs of 0.3 and −0.3, respectively. The x axis represents the protein sequence from the N-terminal to the C-terminal. e, Local affinity profiles to reveal the local binding affinity of a ligand. Heatmap representation of log2 peptide fold changes of ERBB2 with increasing lapatinib concentrations (0, 0.1, 1, 10 and 100 μM). f, Complex structure of mTOR, rapamycin and FKBP1A (PDB 1FAP). g, Volcano plot visualizations of all proteins from a PELSA analysis or a published LiP–MS analysis9 of HeLa lysates exposed to 2 μM rapamycin. h, Local stability profiles of mTOR for 2 μM rapamycin treatment. b, c and g, P values, a two-sided empirical Bayes t-test (four lysate replicates), no adjustment. In all local stability plots, for peptides with |log2FC| &gt; 0.3, only those that passed the significance cutoff (−log10P &gt; 2, two-sided empirical Bayes t-test) were retained to ensure the reliable differences in peptide abundance. Schematics in a created using BioRender.com.</p>
+</div>
+<p><br>
+LC-MS/MS then measures the abundance of individual peptides which we can use to quantitatively compare different conditions represented by a volcano plot as in <strong>Fig. 2a</strong>.</p>
+<img src="https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41592-024-02553-7/MediaObjects/41592_2024_2553_Fig2_HTML.png?as=webp" style="width:100.0%"><button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button2" aria-expanded="false" aria-controls="button2"> Fig. 2 caption </button>
+<div id="button2" class="collapse">
+<p><br>
+a, Volcano plot visualization of all proteins from PELSA analyses of K562 (left) and HeLa (right) lysates exposed to 20 μM staurosporine (four lysate replicates); P values, two-sided empirical Bayes t-test without adjustment. The lower boundary of the red shadow denotes the threshold of −log10P, above which over 80% of the stabilized proteins (log2FC &lt; 0) are protein kinases; this threshold corresponds to −log10P &gt; 3.09 in the PELSA K562 dataset and −log10P &gt; 3.77 in the PELSA HeLa dataset. b, TPR evaluation for the selected assays in staurosporine target identification. The labeled points represent the numbers of identified candidate targets and kinase targets in each assay (TPR up to 80%). LiP-Quant is also labeled at the kinase target number of 20 (TPR = 40%). The gray line (slope 1) and black dashed line (slope 0.8) represent 100 and 80% of the candidate targets are kinase targets, respectively. c, Comparison of protein sequence coverage between LiP-Quant HeLa and PELSA HeLa analyses for the whole quantified proteome (n = 5,601 versus n = 6,840 proteins) and identified kinase targets (n = 24 versus n = 108 kinase targets). d, Fold changes of kinase targets (n = 17) identified by both LiP-Quant (TPR cutoff of 40%) and PELSA (HeLa). c,d, P values, two-sided Wilcoxon rank sum test, no adjustment; box plots show the median (line, value labeled), upper and lower quartiles (box) ±1.5× interquartile range (whiskers); outliers are not shown. e, Fold changes of the kinases quantified in PELSA (K562), iTSA and mTSA datasets. f, Melting temperatures of identified kinase targets and all quantified kinases in two PELSA datasets and the TPP dataset. Some PELSA kinase targets lack TPP-reported melting temperature values. g, Density plots showing −log10P distributions of peptides with tryptic cleavage sites located within or outside the kinase domains (KD) in HeLa and K562 PELSA analyses. The dashed lines indicate −log10P cutoffs defined in a. The doughnut charts show the locations of the kinase peptides that passed −log10P cutoffs. P values are determined as in a. b–f, Kinase targets refer to protein kinases that are identified as staurosporine-binding proteins; quantified kinases refer to all protein kinases in the dataset including protein kinases that are not identified as staurosporine-binding proteins. LiP-Quant, TPP, iTSA and mTSA datasets were retrieved from the literature4,9,17,19; LiP-Quant dataset was acquired from HeLa cell lysates, while TPP, iTSA and mTSA datasets were obtained from K562 cell lysates.</p>
+</div>
+<p><br></p>
+<div class="rmdnote">
+<p>Nowadays, all proteomics publications are accompanied by their raw MS data. Try and find the data in this publication for <strong>Fig. 2a</strong>.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button3" aria-expanded="false" aria-controls="button3">
+Solution
+</button>
+<div id="button3" class="collapse">
+<p><br>
+The data can be found following the path below:</p>
+<p><a href="https://www.nature.com/articles/s41592-024-02553-7#data-availability">Data availability</a></p>
+<p><a href="https://proteomecentral.proteomexchange.org/cgi/GetDataset?ID=PXD034606">PXD034606</a></p>
+<p><a href="https://ftp.pride.ebi.ac.uk/pride/data/archive/2024/11/PXD034606/">PRIDE project URI</a></p>
+<p><a href="https://ftp.pride.ebi.ac.uk/pride/data/archive/2024/11/PXD034606/PELSA_staurosporine_K562_peptides.csv">PELSA_staurosporine_K562_peptides.csv</a></p>
+</div>
+<p><br>
+Great, this data already looks quite clean. That’s why we will work with ‘rawer’ data in this course.</p>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="coding-style.html"><span class="header-section-number">5</span> Coding style</a></div>
+<div class="next"><a href="working-with-data.html"><span class="header-section-number">7</span> Working with data</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav"><li><a class="nav-link" href="#our-project"><span class="header-section-number">6</span> Our project</a></li></ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/nicohuttmann/embl-bioinfo-pRoteomics/blob/master/02-group_project.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/nicohuttmann/embl-bioinfo-pRoteomics/edit/master/02-group_project.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Data Analysis in R</strong>" was written by Nico Hüttmann. It was last built on 2025-02-04.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer>
+</body>
+</html>

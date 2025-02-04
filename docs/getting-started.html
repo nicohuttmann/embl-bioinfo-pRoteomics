@@ -52,16 +52,17 @@
 <li><a class="" href="coding-style.html"><span class="header-section-number">5</span> Coding style</a></li>
 <li class="book-part">Group Work Project</li>
 <li><a class="active" href="getting-started.html"><span class="header-section-number">6</span> Getting started</a></li>
-<li><a class="" href="limma-analysis.html"><span class="header-section-number">7</span> Limma analysis</a></li>
-<li><a class="" href="reporting-results.html"><span class="header-section-number">8</span> Reporting results</a></li>
-<li><a class="" href="more-data-exploration.html"><span class="header-section-number">9</span> More data exploration</a></li>
+<li><a class="" href="our-first-data.html"><span class="header-section-number">7</span> Our first data</a></li>
+<li><a class="" href="limma-analysis.html"><span class="header-section-number">8</span> Limma analysis</a></li>
+<li><a class="" href="reporting-results.html"><span class="header-section-number">9</span> Reporting results</a></li>
+<li><a class="" href="more-data-exploration.html"><span class="header-section-number">10</span> More data exploration</a></li>
 <li class="book-part">Appendix</li>
 <li><a class="" href="version-control-with-github.html"><span class="header-section-number">A</span> Version control with GitHub</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
         <div class="book-extra">
-          <p><a id="book-repo" href="https://github.com/nicohuettmann/repo">View book source <i class="fab fa-github"></i></a></p>
+          <p><a id="book-repo" href="https://github.com/nicohuttmann/embl-bioinfo-pRoteomics">View book source <i class="fab fa-github"></i></a></p>
         </div>
       </nav>
 </div>
@@ -81,116 +82,21 @@
 <p><a href="https://ftp.pride.ebi.ac.uk/pride/data/archive/2024/11/PXD034606/">PRIDE project URI</a></p>
 <p><a href="https://ftp.pride.ebi.ac.uk/pride/data/archive/2024/11/PXD034606/PELSA_staurosporine_K562_peptides.csv">PELSA_staurosporine_K562_peptides.csv</a></p>
 </div>
-<div id="import-your-data" class="section level2" number="6.2">
-<h2>
-<span class="header-section-number">6.2</span> Import your data<a class="anchor" aria-label="anchor" href="#import-your-data"><i class="fas fa-link"></i></a>
-</h2>
-<p><a href="https://r4ds.had.co.nz/data-import.html#compared-to-base-r" class="uri">https://r4ds.had.co.nz/data-import.html#compared-to-base-r</a></p>
-<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button1" aria-expanded="false" aria-controls="button1">
-Hint
-</button>
-<div id="button1" class="collapse">
-
-</div>
-<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button2" aria-expanded="false" aria-controls="button2">
-Code
-</button>
-<div id="button2" class="collapse">
-<p><br></p>
-<div class="inline-figure"><img src="https://raw.githubusercontent.com/tidyverse/vroom/main/img/taylor.gif"></div>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Comment 1</span></span>
-<span><span class="va">data_raw</span> <span class="op">&lt;-</span> <span class="fu">vroom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vroom/man/vroom.html">vroom</a></span><span class="op">(</span><span class="st">"Data/report.tsv"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Comment 2</span></span>
-<span><span class="va">data_raw</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html">read_parquet</a></span><span class="op">(</span><span class="st">"Data/report.parquet"</span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div id="understand-your-data" class="section level2" number="6.3">
-<h2>
-<span class="header-section-number">6.3</span> Understand your data<a class="anchor" aria-label="anchor" href="#understand-your-data"><i class="fas fa-link"></i></a>
-</h2>
-<p>Okay, we got our data</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">t1</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div id="tidy-up-your-data" class="section level2" number="6.4">
-<h2>
-<span class="header-section-number">6.4</span> Tidy up your data<a class="anchor" aria-label="anchor" href="#tidy-up-your-data"><i class="fas fa-link"></i></a>
-</h2>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="getting-started.html#cb26-1" tabindex="-1"></a><span class="co"># Check input</span></span>
-<span id="cb26-2"><a href="getting-started.html#cb26-2" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">all</span>(<span class="fu">c</span>(Q.Value, </span>
-<span id="cb26-3"><a href="getting-started.html#cb26-3" tabindex="-1"></a>            PG.Q.Value, </span>
-<span id="cb26-4"><a href="getting-started.html#cb26-4" tabindex="-1"></a>            Lib.Q.Value, </span>
-<span id="cb26-5"><a href="getting-started.html#cb26-5" tabindex="-1"></a>            Lib.PG.Q.Value, </span>
-<span id="cb26-6"><a href="getting-started.html#cb26-6" tabindex="-1"></a>            protein.q, </span>
-<span id="cb26-7"><a href="getting-started.html#cb26-7" tabindex="-1"></a>            gg.q) <span class="sc">==</span> <span class="dv">0</span>)) </span>
-<span id="cb26-8"><a href="getting-started.html#cb26-8" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"All your q-value cutoffs are 1, please change them according to your study."</span>)</span>
-<span id="cb26-9"><a href="getting-started.html#cb26-9" tabindex="-1"></a>  </span>
-<span id="cb26-10"><a href="getting-started.html#cb26-10" tabindex="-1"></a>  </span>
-<span id="cb26-11"><a href="getting-started.html#cb26-11" tabindex="-1"></a>  <span class="co"># Filter precursors by proteotypicity</span></span>
-<span id="cb26-12"><a href="getting-started.html#cb26-12" tabindex="-1"></a>  <span class="cf">if</span> (proteotypic.only) </span>
-<span id="cb26-13"><a href="getting-started.html#cb26-13" tabindex="-1"></a>    data_raw_filtered <span class="ot">&lt;-</span> data_raw <span class="sc">%&gt;%</span> </span>
-<span id="cb26-14"><a href="getting-started.html#cb26-14" tabindex="-1"></a>      <span class="fu">filter</span>(Proteotypic <span class="sc">!=</span> <span class="dv">0</span>)</span>
-<span id="cb26-15"><a href="getting-started.html#cb26-15" tabindex="-1"></a>  <span class="cf">else</span> </span>
-<span id="cb26-16"><a href="getting-started.html#cb26-16" tabindex="-1"></a>    data_raw_filtered <span class="ot">&lt;-</span> data_raw</span>
-<span id="cb26-17"><a href="getting-started.html#cb26-17" tabindex="-1"></a>  </span>
-<span id="cb26-18"><a href="getting-started.html#cb26-18" tabindex="-1"></a>  <span class="co"># Filter precursors by Q-values</span></span>
-<span id="cb26-19"><a href="getting-started.html#cb26-19" tabindex="-1"></a>  data_raw_filtered <span class="ot">&lt;-</span> data_raw_filtered <span class="sc">%&gt;%</span> </span>
-<span id="cb26-20"><a href="getting-started.html#cb26-20" tabindex="-1"></a>    <span class="fu">filter</span>(Q.Value <span class="sc">&lt;=</span> Q.Value, </span>
-<span id="cb26-21"><a href="getting-started.html#cb26-21" tabindex="-1"></a>           PG.Q.Value <span class="sc">&lt;=</span> PG.Q.Value, </span>
-<span id="cb26-22"><a href="getting-started.html#cb26-22" tabindex="-1"></a>           Lib.Q.Value <span class="sc">&lt;=</span> Lib.Q.Value, </span>
-<span id="cb26-23"><a href="getting-started.html#cb26-23" tabindex="-1"></a>           Lib.PG.Q.Value <span class="sc">&lt;=</span> Lib.PG.Q.Value)</span>
-<span id="cb26-24"><a href="getting-started.html#cb26-24" tabindex="-1"></a>  </span>
-<span id="cb26-25"><a href="getting-started.html#cb26-25" tabindex="-1"></a>  <span class="co"># Extract quantitative data</span></span>
-<span id="cb26-26"><a href="getting-started.html#cb26-26" tabindex="-1"></a>  </span>
-<span id="cb26-27"><a href="getting-started.html#cb26-27" tabindex="-1"></a>  <span class="co"># Rename runs </span></span>
-<span id="cb26-28"><a href="getting-started.html#cb26-28" tabindex="-1"></a>  data_raw_filtered <span class="ot">&lt;-</span> data_raw_filtered <span class="sc">%&gt;%</span> </span>
-<span id="cb26-29"><a href="getting-started.html#cb26-29" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Run =</span> <span class="fu">setNames</span>(<span class="fu">names</span>(sample_names), <span class="fu">unname</span>(sample_names))[Run]) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-30"><a href="getting-started.html#cb26-30" tabindex="-1"></a>    <span class="fu">arrange</span>(Run)</span>
-<span id="cb26-31"><a href="getting-started.html#cb26-31" tabindex="-1"></a>  </span>
-<span id="cb26-32"><a href="getting-started.html#cb26-32" tabindex="-1"></a>  <span class="co"># Summarise precursors to modified peptides </span></span>
-<span id="cb26-33"><a href="getting-started.html#cb26-33" tabindex="-1"></a>  data_quant <span class="ot">&lt;-</span> data_raw_filtered <span class="sc">%&gt;%</span>  </span>
-<span id="cb26-34"><a href="getting-started.html#cb26-34" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="sc">!!</span><span class="at">quant_column :=</span> <span class="fu">sum</span>(<span class="sc">!!</span>rlang<span class="sc">::</span><span class="fu">sym</span>(quant_column)), </span>
-<span id="cb26-35"><a href="getting-started.html#cb26-35" tabindex="-1"></a>              <span class="at">.by =</span> <span class="fu">c</span>(<span class="st">"Run"</span>, peptide.id)) </span>
-<span id="cb26-36"><a href="getting-started.html#cb26-36" tabindex="-1"></a>  </span>
-<span id="cb26-37"><a href="getting-started.html#cb26-37" tabindex="-1"></a>  <span class="co"># Add group information </span></span>
-<span id="cb26-38"><a href="getting-started.html#cb26-38" tabindex="-1"></a>  data_quant <span class="ot">&lt;-</span> data_quant <span class="sc">%&gt;%</span> </span>
-<span id="cb26-39"><a href="getting-started.html#cb26-39" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Group =</span> <span class="fu">setNames</span>(sample_groups, <span class="fu">names</span>(sample_names))[Run], </span>
-<span id="cb26-40"><a href="getting-started.html#cb26-40" tabindex="-1"></a>           <span class="at">.after =</span> <span class="st">"Run"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-41"><a href="getting-started.html#cb26-41" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">sum</span>(<span class="sc">!!</span>rlang<span class="sc">::</span><span class="fu">sym</span>(quant_column) <span class="sc">&gt;</span> <span class="dv">0</span>), <span class="at">.by =</span> <span class="fu">c</span>(peptide.id, <span class="st">"Group"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-42"><a href="getting-started.html#cb26-42" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">p =</span> n <span class="sc">/</span> <span class="fu">max</span>(n), <span class="at">.by =</span> <span class="st">"Group"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-43"><a href="getting-started.html#cb26-43" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="fu">all</span>(p <span class="sc">&gt;=</span> min_val_per_group), <span class="at">.by =</span> peptide.id) <span class="sc">%&gt;%</span> <span class="do">##### Check this </span></span>
-<span id="cb26-44"><a href="getting-started.html#cb26-44" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">n_peptide =</span> <span class="fu">length</span>(Run), <span class="at">.by =</span> peptide.id) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-45"><a href="getting-started.html#cb26-45" tabindex="-1"></a>    <span class="fu">filter</span>(n_peptide <span class="sc">==</span> <span class="fu">max</span>(n_peptide)) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-46"><a href="getting-started.html#cb26-46" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> <span class="st">"Run"</span>, </span>
-<span id="cb26-47"><a href="getting-started.html#cb26-47" tabindex="-1"></a>                <span class="at">names_from =</span> peptide.id, </span>
-<span id="cb26-48"><a href="getting-started.html#cb26-48" tabindex="-1"></a>                <span class="at">values_from =</span> quant_column)</span>
-<span id="cb26-49"><a href="getting-started.html#cb26-49" tabindex="-1"></a>  </span>
-<span id="cb26-50"><a href="getting-started.html#cb26-50" tabindex="-1"></a>  </span>
-<span id="cb26-51"><a href="getting-started.html#cb26-51" tabindex="-1"></a>  </span>
-<span id="cb26-52"><a href="getting-started.html#cb26-52" tabindex="-1"></a>  </span></code></pre></div>
-</div>
 </div>
   <div class="chapter-nav">
 <div class="prev"><a href="coding-style.html"><span class="header-section-number">5</span> Coding style</a></div>
-<div class="next"><a href="limma-analysis.html"><span class="header-section-number">7</span> Limma analysis</a></div>
+<div class="next"><a href="our-first-data.html"><span class="header-section-number">7</span> Our first data</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#getting-started"><span class="header-section-number">6</span> Getting started</a></li>
 <li><a class="nav-link" href="#whats-our-project"><span class="header-section-number">6.1</span> What’s our project?</a></li>
-<li><a class="nav-link" href="#import-your-data"><span class="header-section-number">6.2</span> Import your data</a></li>
-<li><a class="nav-link" href="#understand-your-data"><span class="header-section-number">6.3</span> Understand your data</a></li>
-<li><a class="nav-link" href="#tidy-up-your-data"><span class="header-section-number">6.4</span> Tidy up your data</a></li>
 </ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/nicohuettmann/repo/blob/master/02-group_project.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/nicohuettmann/repo/edit/master/02-group_project.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+<li><a id="book-source" href="https://github.com/nicohuttmann/embl-bioinfo-pRoteomics/blob/master/02-group_project.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/nicohuttmann/embl-bioinfo-pRoteomics/edit/master/02-group_project.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -202,7 +108,7 @@ Code
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Data Analysis in R</strong>" was written by Nico Hüttmann. It was last built on 2025-02-02.</p>
+    <p>"<strong>Data Analysis in R</strong>" was written by Nico Hüttmann. It was last built on 2025-02-04.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
