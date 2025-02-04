@@ -317,13 +317,13 @@ Code 3
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Precursor.Id</span>, <span class="va">Modified.Sequence</span>, <span class="st">"Run"</span>, <span class="st">"Precursor.Charge"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p><br>
-Let’s keep the remaining time open to explore other <code>dplyr</code> functions. They are listed in the <a href="https://dplyr.tidyverse.org/reference/index.html">Function reference</a> but the most useful ones are:
-* <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code>
-* <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter()</a></code>
-* <code><a href="https://dplyr.tidyverse.org/reference/arrange.html">dplyr::arrange()</a></code>
-* <code><a href="https://dplyr.tidyverse.org/reference/pull.html">dplyr::pull()</a></code>
-* <code><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">dplyr::bind_rows()</a></code></p>
+Let’s keep the remaining time open to explore other <code>dplyr</code> functions. They are described in the <a href="https://r4ds.hadley.nz/data-transform">Data transformation</a> section and listed in the <a href="https://dplyr.tidyverse.org/reference/index.html">Function reference</a> but the most useful ones are:</p>
 <ul>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code></p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter()</a></code></p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/arrange.html">dplyr::arrange()</a></code></p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/pull.html">dplyr::pull()</a></code></p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">dplyr::bind_rows()</a></code></p></li>
 <li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate()</a></code></p></li>
 <li><p><code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise()</a></code></p></li>
 <li><p><code><a href="https://dplyr.tidyverse.org/reference/rename.html">dplyr::rename()</a></code></p></li>
@@ -332,6 +332,7 @@ Let’s keep the remaining time open to explore other <code>dplyr</code> functio
 <li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">dplyr::left_join()</a></code></p></li>
 <li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">dplyr::right_join()</a></code></p></li>
 </ul>
+<p>In many cases</p>
 </div>
 </div>
 <div id="tidy-up-your-data" class="section level2" number="7.4">
@@ -339,6 +340,20 @@ Let’s keep the remaining time open to explore other <code>dplyr</code> functio
 <span class="header-section-number">7.4</span> Tidy up your data<a class="anchor" aria-label="anchor" href="#tidy-up-your-data"><i class="fas fa-link"></i></a>
 </h2>
 <p><strong>Coming on Wednesday</strong></p>
+</div>
+<div id="save-your-data" class="section level2" number="7.5">
+<h2>
+<span class="header-section-number">7.5</span> Save your data<a class="anchor" aria-label="anchor" href="#save-your-data"><i class="fas fa-link"></i></a>
+</h2>
+<p>Once your raw data is imported and you have some first data transformation done, we can break up our code into a separate script.</p>
+<p>For this we need to save our <code>R Environment</code> to keep all data objects together. Before that, it can be useful to delete intermediate objects and evertyhing you do not need anymore.</p>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Clean environment</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span>list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Save RData</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/save.html">save.image</a></span><span class="op">(</span><span class="st">"Data/RData/00_Import_data.RData"</span><span class="op">)</span></span></code></pre></div>
+<p>Now, everything is saved and can be conveniently accessed later again. This is also a nice way to share your data with others.</p>
 <!-- ```{r} -->
 <!-- # Check input -->
 <!--   if (all(c(Q.Value,  -->
@@ -401,6 +416,7 @@ Let’s keep the remaining time open to explore other <code>dplyr</code> functio
 </ul>
 </li>
 <li><a class="nav-link" href="#tidy-up-your-data"><span class="header-section-number">7.4</span> Tidy up your data</a></li>
+<li><a class="nav-link" href="#save-your-data"><span class="header-section-number">7.5</span> Save your data</a></li>
 </ul>
 
       <div class="book-extra">

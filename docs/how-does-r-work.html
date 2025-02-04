@@ -80,13 +80,14 @@ Everything that happens is a function call.” — John Chambers<a class="footno
 <h2>
 <span class="header-section-number">2.1</span> Objects<a class="anchor" aria-label="anchor" href="#objects"><i class="fas fa-link"></i></a>
 </h2>
-<p>Please have a look at the <a href="https://r4ds.hadley.nz/workflow-basics#coding-basics">workflow basics</a> as a first introduction or recapitulation<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;If you are already familiar with all of this, it may help you formalize your problems better by getting familiar with the vocabulary the authors of R use.&lt;/p&gt;"><sup>6</sup></a> into coding in R.</p>
+<p>Please have a look at the <a href="https://r4ds.hadley.nz/workflow-basics">Workflow: basics</a> as a first introduction or recapitulation<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;If you are already familiar with all of this, it may help you formalize your problems better by getting familiar with the vocabulary the authors of R use.&lt;/p&gt;"><sup>6</sup></a> into coding in R.</p>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button1" aria-expanded="false" aria-controls="button1">
 Done?
 </button>
 <div id="button1" class="collapse">
 <p><br>
-The most important takeaway from this is that you can assign (create) an object in R with the assignment operator <code>&lt;-</code>. And while we are at it, the <strong>c</strong> ombine function <code><a href="https://rdrr.io/r/base/c.html">c()</a></code><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;which I always called vector, and wondered where the c is coming from…&lt;/p&gt;"><sup>7</sup></a> will be one of the most frequently used functions in R.</p>
+The most important takeaway from this is that you can assign/create an object in R with the assignment operator <code>&lt;-</code>. And while we are at it, the <strong>c</strong> ombine function <code><a href="https://rdrr.io/r/base/c.html">c()</a></code><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;which I always called vector, and wondered where the c is coming from…&lt;/p&gt;"><sup>7</sup></a> will be one of the most frequently used functions in R.</p>
+<p>You can simply copy the code below by marking it or pressing this helpful button in the top right corner of the code chunk and paste it into your R script. Then just run the lines of code and have a look at what they produce.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assign the vector to an object called numbers</span></span>
 <span><span class="va">numbers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span></span>
@@ -97,7 +98,7 @@ The most important takeaway from this is that you can assign (create) an object 
 <p>This <code>c(1, 2, 3) -&gt; numbers</code> works as well, but please do not ever do this.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;&lt;a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/assignOps.html"&gt;here&lt;/a&gt;’s a list of other assignment operators&lt;/p&gt;'><sup>8</sup></a></p>
 </div>
 <p><br>
-What we have created here is called a vector, and more precisely an atomic vector. This means it its elements are all of the same type. You can read more on this in the <a href="https://adv-r.hadley.nz/vectors-chap.html">Vectors</a> chapter of <a href="https://adv-r.hadley.nz/">Advanced R</a> if you have some waiting time or if you are unsure about the behavior of your vectors. Examples would be:</p>
+What we have created here is called a vector, and more precisely an atomic vector. This means its elements are all of the same type. You can read more on this in the <a href="https://adv-r.hadley.nz/vectors-chap.html">Vectors</a> chapter of <a href="https://adv-r.hadley.nz/">Advanced R</a> if you have some waiting time or if you are unsure about the behavior of your vectors. Examples would be:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mixed_numbers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="st">"three"</span><span class="op">)</span></span>
 <span><span class="va">mixed_numbers_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">F</span>, <span class="cn">TRUE</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span></span>
@@ -113,10 +114,13 @@ I am lazy.
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="st">"three"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="cn">F</span>, <span class="cn">TRUE</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"these"</span> <span class="op">=</span> <span class="cn">F</span>, <span class="st">"are"</span> <span class="op">=</span> <span class="cn">TRUE</span>, <span class="st">"names"</span> <span class="op">=</span> <span class="fl">2</span>, <span class="st">"three"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"and"</span> <span class="op">=</span> <span class="cn">F</span>, <span class="st">"they"</span> <span class="op">=</span> <span class="cn">TRUE</span>, <span class="st">"work"</span> <span class="op">=</span> <span class="fl">2</span>, <span class="st">"notemptyanymore"</span> <span class="op">=</span> <span class="st">"for both lists and vectors :)"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"and"</span> <span class="op">=</span> <span class="cn">F</span>, </span>
+<span>     <span class="st">"they"</span> <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>     <span class="st">"work"</span> <span class="op">=</span> <span class="fl">2</span>, </span>
+<span>     <span class="st">"notemptyanymore"</span> <span class="op">=</span> <span class="st">"for both lists and vectors :)"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p><br>
-The other data types can be found in the <a href="https://adv-r.hadley.nz/vectors-chap.html">Vectors</a> chapter as mentioned previously or will be covered in the project eventually.</p>
+The other data types can be found in the <a href="https://adv-r.hadley.nz/vectors-chap.html">Vectors</a> chapter as mentioned previously or will be covered throughout the project.</p>
 </div>
 <div id="functions" class="section level2" number="2.2">
 <h2>
@@ -131,8 +135,8 @@ The other data types can be found in the <a href="https://adv-r.hadley.nz/vector
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://generics.r-lib.org/reference/setops.html">intersect</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>, </span>
 <span>          y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>The other <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/sets.html">Set Operation</a> functions will be useful at one point for sure. Another resource worth mentioning is the <a href="https://www.r-bloggers.com/2024/11/the-complete-guide-to-using-setdiff-in-r-examples-and-best-practices/">R-bloggers website</a>.</p>
-<p>For a formal description of functions, you can read <a href="https://adv-r.hadley.nz/functions.html?q=...#function-fundamentals">function fundamentals</a>. And now let’s see where all these functions come from.</p>
+<p>The other <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/sets.html">Set Operation</a> functions will be useful at one point for sure. Another resource worth mentioning for this example and in generalis the <a href="https://www.r-bloggers.com/2024/11/the-complete-guide-to-using-setdiff-in-r-examples-and-best-practices/">R-bloggers website</a>.</p>
+<p>For a formal description of functions, you can read <a href="https://adv-r.hadley.nz/functions.html?q=...#function-fundamentals">Function fundamentals</a>. And now let’s see where all these functions come from.</p>
 </div>
 </div>
 

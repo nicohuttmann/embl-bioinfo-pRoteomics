@@ -346,7 +346,8 @@ data_raw %>%
 </div>
 
 \
-Let's keep the remaining time open to explore other `dplyr` functions. They are listed in the [Function reference](https://dplyr.tidyverse.org/reference/index.html) but the most useful ones are:
+Let's keep the remaining time open to explore other `dplyr` functions. They are described in the [Data transformation](https://r4ds.hadley.nz/data-transform) section and listed in the [Function reference](https://dplyr.tidyverse.org/reference/index.html) but the most useful ones are:
+
 * `dplyr::select()`
 * `dplyr::filter()`
 * `dplyr::arrange()`
@@ -365,9 +366,31 @@ Let's keep the remaining time open to explore other `dplyr` functions. They are 
 
 
 
+In many cases
+
+
 ## Tidy up your data 
 
 __Coming on Wednesday__
+
+
+
+## Save your data 
+
+Once your raw data is imported and you have some first data transformation done, we can break up our code into a separate script. 
+
+For this we need to save our `R Environment` to keep all data objects together. Before that, it can be useful to delete intermediate objects and evertyhing you do not need anymore.
+
+```r
+# Clean environment
+rm(list = c())
+
+# Save RData
+save.image("Data/RData/00_Import_data.RData")
+```
+
+Now, everything is saved and can be conveniently accessed later again. This is also a nice way to share your data with others. 
+
 
 <!-- ```{r} -->
 <!-- # Check input -->

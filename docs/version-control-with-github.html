@@ -88,11 +88,11 @@
 </h2>
 <p>Open your Git terminal in R and start with these lines of code.</p>
 <p>Add files:</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb43-1"><a href="version-control-with-github.html#cb43-1" tabindex="-1"></a><span class="fu">git</span> add .</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb44-1"><a href="version-control-with-github.html#cb44-1" tabindex="-1"></a><span class="fu">git</span> add .</span></code></pre></div>
 <p>Commit changes:</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb44-1"><a href="version-control-with-github.html#cb44-1" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Add important changes"</span></span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="version-control-with-github.html#cb45-1" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Add important changes"</span></span></code></pre></div>
 <p>Push your commits:</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="version-control-with-github.html#cb45-1" tabindex="-1"></a><span class="fu">git</span> push</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb46-1"><a href="version-control-with-github.html#cb46-1" tabindex="-1"></a><span class="fu">git</span> push</span></code></pre></div>
 <p>…</p>
 </div>
 <div id="common-problems" class="section level2" number="12.3">
@@ -111,12 +111,12 @@
 <li><p>Open the terminal in this folder (e.g. via RStudio &gt; Git &gt; Shell…)</p></li>
 <li><p>Type in the terminal:</p></li>
 </ol>
-<div class="sourceCode" id="cb46"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb46-1"><a href="version-control-with-github.html#cb46-1" tabindex="-1"></a><span class="ex">java</span> <span class="at">-jar</span> bfg.jar <span class="at">--strip-blobs-bigger-than</span> 100M</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb47-1"><a href="version-control-with-github.html#cb47-1" tabindex="-1"></a><span class="ex">java</span> <span class="at">-jar</span> bfg.jar <span class="at">--strip-blobs-bigger-than</span> 100M</span></code></pre></div>
 <p>The file name “bfg.jar” must match the name of your jar file and the file size limit can be changed (e.g. 50M for 50 )</p>
 <ol start="5" style="list-style-type: decimal">
 <li>If you do not encouter an error, type:</li>
 </ol>
-<div class="sourceCode" id="cb47"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb47-1"><a href="version-control-with-github.html#cb47-1" tabindex="-1"></a><span class="fu">git</span> gc <span class="at">--prune</span><span class="op">=</span>now <span class="at">--aggressive</span></span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb48-1"><a href="version-control-with-github.html#cb48-1" tabindex="-1"></a><span class="fu">git</span> gc <span class="at">--prune</span><span class="op">=</span>now <span class="at">--aggressive</span></span></code></pre></div>
 <p>to clean the dead data.</p>
 <p>If you encounter the following error <code>Warning : no large blobs matching criteria found in packfiles - does the repo need to be packed?</code>, refer to this post <a href="https://stackoverflow.com/q/61769785" class="uri">https://stackoverflow.com/q/61769785</a> and type <code>git gc</code> prior to step 4.</p>
 </div>
@@ -125,9 +125,9 @@
 <span class="header-section-number">12.3.2</span> .gitignore does not instantly work<a class="anchor" aria-label="anchor" href="#gitignore-does-not-instantly-work"><i class="fas fa-link"></i></a>
 </h3>
 <p>Just do:</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb48-1"><a href="version-control-with-github.html#cb48-1" tabindex="-1"></a><span class="fu">git</span> rm <span class="at">-r</span> <span class="at">--cached</span> .</span>
-<span id="cb48-2"><a href="version-control-with-github.html#cb48-2" tabindex="-1"></a><span class="fu">git</span> add .</span>
-<span id="cb48-3"><a href="version-control-with-github.html#cb48-3" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Drop files from .gitignore"</span></span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb49-1"><a href="version-control-with-github.html#cb49-1" tabindex="-1"></a><span class="fu">git</span> rm <span class="at">-r</span> <span class="at">--cached</span> .</span>
+<span id="cb49-2"><a href="version-control-with-github.html#cb49-2" tabindex="-1"></a><span class="fu">git</span> add .</span>
+<span id="cb49-3"><a href="version-control-with-github.html#cb49-3" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Drop files from .gitignore"</span></span></code></pre></div>
 
 </div>
 </div>

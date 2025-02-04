@@ -28,11 +28,13 @@ Ok, cool. So what now? Well, this statement tells us that everything in our R co
 
 ## Objects 
 
-Please have a look at the [workflow basics](https://r4ds.hadley.nz/workflow-basics#coding-basics) as a first introduction or recapitulation^[If you are already familiar with all of this, it may help you formalize your problems better by getting familiar with the vocabulary the authors of R use.] into coding in R.
+Please have a look at the [Workflow: basics](https://r4ds.hadley.nz/workflow-basics) as a first introduction or recapitulation^[If you are already familiar with all of this, it may help you formalize your problems better by getting familiar with the vocabulary the authors of R use.] into coding in R.
 
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button1" aria-expanded="false" aria-controls="button1"> Done? </button> <div id="button1" class="collapse">  
 \
-The most important takeaway from this is that you can assign (create) an object in R with the assignment operator `<-`. And while we are at it, the __c__ ombine function `c()`^[which I always called vector, and wondered where the c is coming from...] will be one of the most frequently used functions in R. 
+The most important takeaway from this is that you can assign/create an object in R with the assignment operator `<-`. And while we are at it, the __c__ ombine function `c()`^[which I always called vector, and wondered where the c is coming from...] will be one of the most frequently used functions in R. 
+
+You can simply copy the code below by marking it or pressing this helpful button in the top right corner of the code chunk and paste it into your R script. Then just run the lines of code and have a look at what they produce.
 
 ```r
 # Assign the vector to an object called numbers
@@ -46,7 +48,7 @@ This ` c(1, 2, 3) -> numbers` works as well, but please do not ever do this.^[[h
 </div>
 
 \
-What we have created here is called a vector, and more precisely an atomic vector. This means it its elements are all of the same type. You can read more on this in the [Vectors](https://adv-r.hadley.nz/vectors-chap.html) chapter of [Advanced R](https://adv-r.hadley.nz/) if you have some waiting time or if you are unsure about the behavior of your vectors. Examples would be:
+What we have created here is called a vector, and more precisely an atomic vector. This means its elements are all of the same type. You can read more on this in the [Vectors](https://adv-r.hadley.nz/vectors-chap.html) chapter of [Advanced R](https://adv-r.hadley.nz/) if you have some waiting time or if you are unsure about the behavior of your vectors. Examples would be:
 
 ```r
 mixed_numbers <- c(0, 1, 2, "three")
@@ -64,12 +66,15 @@ If you are unhappy that the type of your data has changed in the previous exampl
 list(0, 1, 2, "three")
 list(F, TRUE, 2, 3)
 list("these" = F, "are" = TRUE, "names" = 2, "three")
-list("and" = F, "they" = TRUE, "work" = 2, "notemptyanymore" = "for both lists and vectors :)")
+list("and" = F, 
+     "they" = TRUE, 
+     "work" = 2, 
+     "notemptyanymore" = "for both lists and vectors :)")
 ```
 </div>
 
 \
-The other data types can be found in the [Vectors](https://adv-r.hadley.nz/vectors-chap.html) chapter as mentioned previously or will be covered in the project eventually. 
+The other data types can be found in the [Vectors](https://adv-r.hadley.nz/vectors-chap.html) chapter as mentioned previously or will be covered throughout the project.  
 
 ## Functions 
 
@@ -89,9 +94,9 @@ intersect(x = c(1, 2, 3),
           y = c(2, 3, 4))
 ```
 
-The other [Set Operation](https://stat.ethz.ch/R-manual/R-devel/library/base/html/sets.html) functions will be useful at one point for sure. Another resource worth mentioning is the [R-bloggers website](https://www.r-bloggers.com/2024/11/the-complete-guide-to-using-setdiff-in-r-examples-and-best-practices/).
+The other [Set Operation](https://stat.ethz.ch/R-manual/R-devel/library/base/html/sets.html) functions will be useful at one point for sure. Another resource worth mentioning for this example and in generalis the [R-bloggers website](https://www.r-bloggers.com/2024/11/the-complete-guide-to-using-setdiff-in-r-examples-and-best-practices/).
 
-For a formal description of functions, you can read [function fundamentals](https://adv-r.hadley.nz/functions.html?q=...#function-fundamentals). And now let's see where all these functions come from.
+For a formal description of functions, you can read [Function fundamentals](https://adv-r.hadley.nz/functions.html?q=...#function-fundamentals). And now let's see where all these functions come from.
 
 
 # R packages
@@ -179,9 +184,12 @@ m2 / m1
 \
 
 ```r
+# Making the tibble works slightly different in our exampe 
 t1 <- tibble(a = 1:3, b = 4:6, c = 7:9)
-
+# and multiplying each element by 2 gets done with mutate and across. 
+# We will get back to this later
 t2 <- tibble(a = 1:3, b = 4:6, c = 7:9) %>% 
+  # \(x) x * 2 is equivalent to function(x) x * 2
   mutate(across(everything(), \(x) x * 2))
 
 t2 / t1
@@ -211,15 +219,15 @@ class(t2)
 class(t2 / t1)
 ```
 
-The output of the divide operation is not a `tibble` ("tbl_df") object anymore, it is a `data.frame`. This is not a big problem for now, and can be solved quite easily with the `tibble::as_tibble()` function:
+The output of the divide operation is not a `tibble`/"tbl_df" object anymore, it is a `data.frame`. This is not a big problem for now, and can be solved quite easily with the `tibble::as_tibble()` function:
 
 ```r
 tibble::as_tibble(t2 / t1)
 ```
 
-__But is better avoided.__
+However, it is recommended to not change the `class` of your data in such a way during your analysis.
 
-The real tidyverse solution would work the following. 
+The real tidyverse solution would work the following. The key is that we combine both tibbles into one which allows us to divide the columns through each other in a simple `dplyr::mutate()` operation.
 
 
 ```r
@@ -242,7 +250,8 @@ t2_long <- pivot_longer(t2_r,
                         names_to = "column", 
                         values_to = "number")
 
-# We start with combining the data frames by matching both tibbles by the columns "row" and "column" and choosing a suffing for overlapping column names
+# We start with combining the data frames by matching both tibbles by the 
+# columns "row" and "column" and choosing a suffing for overlapping column names
 full_join(t1_long, t2_long, by = c("row", 
                                    "column"), 
           suffix = c("_1", "_2")) %>% 
@@ -254,7 +263,7 @@ full_join(t1_long, t2_long, by = c("row",
               values_from = "number")
 ```
 
-This seems like a very tideous example in comparison, but also bears it's advantages as we will see later. 
+This seems like a very tedious example in comparison, but also bears it's advantages as we will see later. 
 
 Btw, this is how I would've done the above in a code-condensed form. 
 
@@ -262,14 +271,16 @@ Btw, this is how I would've done the above in a code-condensed form.
 ```r
 # First we put the tibbles in a list 
 list("t1" = t1, "t2" = t2) %>% 
-  # map allows us to do the same computation for all objects of the list as defined by the function \(x) x...
+  # map allows us to do the same computation for all objects of the list as 
+  # defined by the function \(x) x...
   map(\(x) x %>% 
         mutate(row = c("1", "2", "3"), 
                .before = 1) %>% 
         pivot_longer(cols = -1, 
                      names_to = "column", 
                      values_to = "number")) %>% 
-  # Once both tibbles are ready to be combined, we can access them via the with function (we may talk about this again, I find it very helpful sometimes)
+  # Once both tibbles are ready to be combined, we can access them via the with 
+  # function (we may talk about this again, I find it very helpful sometimes)
   with(full_join(t1, t2, by = c("row", 
                                 "column"), 
                  suffix = c("_1", "_2"))) %>% 
@@ -281,7 +292,7 @@ list("t1" = t1, "t2" = t2) %>%
               values_from = "number")
 ```
 
-You do not need to understand all of this immediately, but these are some of the most common operations in omics data science. If you understand the `tidyr::pivot` functions within this week, you're years ahead compared to my journey in data science :)
+You do not need to understand all of this immediately, but these are some of the most common operations in omics data science. If you understand the `tidyr::pivot_longer/wider` functions within this week, you're years ahead compared to my journey in data science :)
 
 </div>
 
@@ -309,9 +320,7 @@ random_letters <- rep(names(letters_freq), letters_freq)
 
 ```
 
-This is the first exercise in this book^[I call it an exercise, because I am not sure if it is well explained and therefore the 'exercise' is to understand what I intend to show you here :)]. You can simply copy the code by marking it or pressing this helpful button in the top right corner of the code chunk and paste it into your R script. Then just run the lines of code and have a look at what they produce. 
-
-Once you are done with the above code, observe what happened and then continue with the code below. 
+This is the first exercise in this book^[I call it an exercise, because I am not sure if it is well explained and therefore the 'exercise' is to understand what I intend to show you here :)]. Once you are done with the above code, observe what happened and then continue with the code below. 
 
 
 ```r
@@ -339,6 +348,9 @@ You saw in the examples above that there are different ways to chain the outputs
 
 
 ```r
+# We reassign random_letters since we overwrote it in the previous example
+random_letters <- rep(names(letters_freq), letters_freq)
+
 random_letters %>%  
   table() %>% 
   sort(decreasing = T) %>% 
@@ -347,7 +359,7 @@ random_letters %>%
 
 The chain begins with an object `random_letters` and is then followed by functions in each subsequent line. The output of the preceding line is always used as the first argument of the following function.
 
-The above is equivalent to this nested construct:^[multiple functions within each other get evaluated from the inside to the outside.]
+The above is equivalent to this nested construct:^[Multiple functions within each other get evaluated from the inside to the outside.]
 
 ```r
 barplot(sort(table(random_letters), decreasing = T))
@@ -376,7 +388,7 @@ letters_freq <- sentence_full %>%
   toupper() %>% 
   # Remove dublicated letters 
   unique() %>% 
-  # Make new vector with letter as name and decreasing numbers from 26 to 1 as content
+  # Make vector with letters as names and numbers from 26 to 1 as content
   # Do you see how the . marks the position of the argument coming from the previous line?
   setNames(26:1, .) %>% 
   # Reorder the vector so that the solution is not immediately obvious to you guys 
@@ -442,7 +454,7 @@ As we are moving from the basics to the actual project, let's see how we work *w
 
 ### R projects
 
-We will not just work on an R project, we will also work in one. Please have a look at the description of [R projects](https://r4ds.hadley.nz/workflow-scripts.html#projects) in this by now well known book. As we get closer to the group work project let's start with creating a place for our data and code.
+We will not just work on an R project, we will also work in one. Please have a look at the description of [R projects](https://r4ds.hadley.nz/workflow-scripts.html#projects) in this by now well known book. As we get closer to the __Group Work Project__ let's start with creating a place for our data and code.
 
 ::: {.rmdnote}
 
@@ -462,7 +474,7 @@ It may seem convenient to have this folder on the server of your lab, so it gets
 </div>
 
 \
-Great, you created your first R project. You can identify in which project you are by the name of the window or in the top right corner. 
+Great, you created your first R project. You can identify in which project you are by the name of the window or as written in the top right corner. 
 
 Before creating our first R script, we can set a folder structure within our R project. This can be done from the operating system's file explorer or with the function `dir.create`. I usually begin setting up my work directory like this:
 
@@ -484,7 +496,7 @@ Do this as you like :)
 
 Now our data has a tidy place to live in our operating system. Nice. But what about our data *in R*?
 
-Everything in R lives in the __Global Environment__. You can read more about this [here](https://adv-r.hadley.nz/environments.html), but do this when there is some free time or you have specific questions. 
+Everything in R lives in the `Global Environment`. You can read more about this [here](https://adv-r.hadley.nz/environments.html), but do this when there is some free time or you have specific questions. 
 
 We previously touched on vectors and lists, with the main difference that vectors only take one kind of element and lists can store whatever you fancy. And that's what we want. 
 
@@ -569,6 +581,7 @@ It is good practice to clean your environment at the end of an analysis chunk or
 Thanks for making it this far. This intro to __R Basics__ ended up quite extensive, but getting through it should give you all the tools to figure out most problems in R on your own. Not all examples are useful yet, but may come in handy later. Basically every piece of code has been used in my work at one point. 
 
 There are a lot more functions to get to know, especially from the tidyverse, but we will cover them on the way. Please remember:
-* Ask everything you do not understand or that seems unclear.
+
+* Question everything you do not understand or that seems unclear.
 * There is always more than one way to get to your goal, redundancy helps us understand things better.
 * Let us know, if you have a different or better way to do something, we're here to discuss!
