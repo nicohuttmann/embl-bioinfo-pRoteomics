@@ -103,7 +103,7 @@ Having our first script ready to code, let’s make it nicer. I would suggest to
 <h2>
 <span class="header-section-number">7.2</span> Import your data<a class="anchor" aria-label="anchor" href="#import-your-data"><i class="fas fa-link"></i></a>
 </h2>
-<p>By now, you should have a link to the datasets in Slack. If not, please complain. There should be two files called report.tsv and report.parquet. Both are output files from the <a href="https://github.com/vdemichev/DiaNN">DIA-NN</a> software, a tool that analyzes mass spectrometry data and outputs a table of all identified ions.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Each ion, also called precursor, represents a peptide and its charge states. Each peptide can have multiple cahrge states and was originally derived from a protein by proteolytic cleavage. All this data stems from multiple samples and replicates which are combined in one table.&lt;/p&gt;"><sup>22</sup></a></p>
+<p>By now, you should have a link to the datasets in Slack. If not, please complain. There should be two files called report.tsv and report.parquet. Both are output files from the <a href="https://github.com/vdemichev/DiaNN">DIA-NN</a> software, a tool that analyzes mass spectrometry data and outputs a table of all identified ions.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Each ion, also called precursor, represents a peptide and its charge state. Each peptide can have multiple cahrge states and was originally derived from a protein by proteolytic cleavage. All this data stems from multiple samples and replicates which are combined in one table.&lt;/p&gt;"><sup>22</sup></a></p>
 <div class="rmdnote">
 <p>Download both files and place them in your R project. Then, try and figure out which functions you need to read both files and store them as objects <code>data_raw</code>.</p>
 </div>
@@ -332,14 +332,297 @@ Let’s keep the remaining time open to explore other <code>dplyr</code> functio
 <li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">dplyr::left_join()</a></code></p></li>
 <li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">dplyr::right_join()</a></code></p></li>
 </ul>
-<p>In many cases</p>
 </div>
 </div>
 <div id="tidy-up-your-data" class="section level2" number="7.4">
 <h2>
 <span class="header-section-number">7.4</span> Tidy up your data<a class="anchor" aria-label="anchor" href="#tidy-up-your-data"><i class="fas fa-link"></i></a>
 </h2>
-<p><strong>Coming on Wednesday</strong></p>
+<p>With the list of <code>dplyr</code> functions above, you have a pretty powerful tool set to manipulate data in which ever way you like. But we also need to know, what we need to do, to get our data analysis-ready.</p>
+<p>Following this, we can start to make our data more legible by removing unnecessary information and making names more meaningful. We will follow a scheme like this:</p>
+<ol style="list-style-type: decimal">
+<li>Filtering identified precursors</li>
+<li>Shorten and clean up sample names</li>
+<li>Remove unnecessary information (select column you need)</li>
+<li>Sum precursors to modified peptides</li>
+<li>Pivot data to a samples x peptides matrix (still a tibble tho)</li>
+<li>Count missing values and further filter data</li>
+<li>(Optional) Normalize the data</li>
+</ol>
+<div id="filtering-identified-precursors" class="section level3" number="7.4.1">
+<h3>
+<span class="header-section-number">7.4.1</span> Filtering identified precursors<a class="anchor" aria-label="anchor" href="#filtering-identified-precursors"><i class="fas fa-link"></i></a>
+</h3>
+<p>The <a href="https://github.com/vdemichev/DiaNN?tab=readme-ov-file#main-output-reference">Main output reference</a> was mentioned before, and at the end it contains a section about <strong>Filtering the main report</strong>. Choose a filtering scheme that you think makes sense (match-between runs (MBR) was used).</p>
+<div class="rmdnote">
+<p>Choose parameters and threshold to filter the precursors in your data and assign a new object <code>data_filtered</code>.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button20" aria-expanded="false" aria-controls="button20">
+Hint
+</button>
+<div id="button20" class="collapse">
+<p><br>
+As the DIA-NN documentation suggest, we could use a threshold of 0.01 for <code>Lib.Q.Value</code> and <code>PG.Q.Value</code>.</p>
+<p><code>Lib.Peptidoform.Q.Value</code> could also be applied retroactively if we find some outliers or weirdly behaving data points.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button21" aria-expanded="false" aria-controls="button21">
+Code
+</button>
+<div id="button21" class="collapse">
+<p><br>
+The <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter()</a></code> function allows us to remove rows based on a logical operation that results in one TRUE/FALSE value per row.</p>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Lib.Q.Value</span> <span class="op">&lt;</span> <span class="fl">0.01</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">PG.Q.Value</span> <span class="op">&lt;</span> <span class="fl">0.01</span><span class="op">)</span></span></code></pre></div>
+<p>We can do the same in a condensed way.</p>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Lib.Q.Value</span> <span class="op">&lt;</span> <span class="fl">0.01</span>, <span class="va">PG.Q.Value</span> <span class="op">&lt;</span> <span class="fl">0.01</span><span class="op">)</span> </span></code></pre></div>
+</div>
+<p><br>
+This is a relatively simple way to filter your data. In many cases, there will be further parameters or data-driven schemes (variance, etc.) to fiter your data.</p>
+</div>
+<div id="shorten-and-clean-up-sample-names" class="section level3" number="7.4.2">
+<h3>
+<span class="header-section-number">7.4.2</span> Shorten and clean up sample names<a class="anchor" aria-label="anchor" href="#shorten-and-clean-up-sample-names"><i class="fas fa-link"></i></a>
+</h3>
+<p>The easier your data can be read and understood, the more useful it will be to you and others. You will sometimes spend days, weeks or months with the same dataset. Therefore, you will be very familiar all the sample names, groups, etc. For others to understand it in a meeting or a presentation, it will be very helpful to have all names you use as concise and meaningful as possible. Let’s look at the sample names in column <code>Run</code>. Currently, they contain the full names of the raw data files that we processed by DIA-NN. Depending on the needed information, we can remove redundant details between the sample names.</p>
+<p>Let’s check them first:</p>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># The Run column can also be accessed with the dplyr::pull() function</span></span>
+<span><span class="va">data_filtered</span><span class="op">$</span><span class="va">Run</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># we only need each name once</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>We can see that there is a lot of redundancy in the sample names, as each one describes the whole experimental and MS scheme. Shortening them will make the data more legible.</p>
+<div class="rmdnote">
+<p>Modify the <code>Run</code> column of the <code>data_filtered</code> data frame by shortening the sample names to only the useful parts.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button22" aria-expanded="false" aria-controls="button22">
+Hint - modify names
+</button>
+<div id="button22" class="collapse">
+<p><br>
+To figure out how to modify the names, it makes it easier to extract the names and work on this test vector until we can implement the code into our script.</p>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sample_names</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Useful functions for text manipulation can be found in the <code>stringr</code> <a href="https://stringr.tidyverse.org/">package</a>. To get a good overview of the functions in a package, the <a href="https://stringr.tidyverse.org/reference/index.html">Reference</a> nicely lists everything we need to know. For most, if not all functions, there are [base R equivalents](<a href="https://stringr.tidyverse.org/articles/from-base.html" class="uri">https://stringr.tidyverse.org/articles/from-base.html</a>. For our problem we can start with a simple base R function <code>substring</code>.</p>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sample_names</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substring</a></span><span class="op">(</span>first <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
+<p>You can go from here.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button23" aria-expanded="false" aria-controls="button23">
+Hint - modify the data frame
+</button>
+<div id="button23" class="collapse">
+<p><br>
+When modifying our data, we either focus on one column or all columns of a certain type. Both can be accomplished with <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate()</a></code>. This function assigns the new values to a column with a provided name, if the name is the same as an existing column, it overwrites it.</p>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Run <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substring</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">Run</span>, first <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>You can see that the mutate function overwrites the Run column as defined by the left side of the <code>=</code> sign and uses <code>Run</code> in the expression on the right side of the <code>=</code> sign. To finish this problem, we still need to adjust the beginning of the desired substring.</p>
+<p>If you do not want to count by yourself, could do some copying and use the <code><a href="https://rdrr.io/r/base/nchar.html">nchar()</a></code> function.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button24" aria-expanded="false" aria-controls="button24">
+Code
+</button>
+<div id="button24" class="collapse">
+<p><br>
+Combining both hints, we can reassign the <code>data_filtered</code> object and overwrite the <code>Run</code> column.</p>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Run <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substring</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">Run</span>, first <span class="op">=</span> <span class="fl">41</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Make sure you are comfortable with how the mutate function works!</p>
+<p>A different way would be to remove the redundant part of the string with the <code><a href="https://stringr.tidyverse.org/reference/str_remove.html">stringr::str_remove()</a></code> function.</p>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Run <span class="op">=</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html">str_remove</a></span><span class="op">(</span></span>
+<span>    string <span class="op">=</span> <span class="va">Run</span>, </span>
+<span>    pattern <span class="op">=</span> <span class="st">"EVE_250123_S4504_LKJ_CP_PELSA_K562_Stau_"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>The intendation of the code above was changed slightly, otherwise the pattern argument would have reached outside the 80 characters limit and would not look as nice. Synthax-wise, this does not make any difference and the code work just the same.</p>
+</div>
+<p><br><code>View</code> your data frame and see how it looks much nicer now.</p>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/View.html">View</a></span><span class="op">(</span><span class="va">data_filtered</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div id="remove-unnecessary-information" class="section level3" number="7.4.3">
+<h3>
+<span class="header-section-number">7.4.3</span> Remove unnecessary information<a class="anchor" aria-label="anchor" href="#remove-unnecessary-information"><i class="fas fa-link"></i></a>
+</h3>
+<p>After removing all the redundant stuff in our sample names, the next step in our <em>Tidy Data Campaign</em> involves removing all information we do not need later. This will help us a lot with getting a better overview of our data and will allow others to look at our dataset without immediately being overwhelmed.
+Again, the <a href="https://github.com/vdemichev/DiaNN?tab=readme-ov-file#main-output-reference">Main output reference</a> is helpful here and the <em>Main report</em> section of the <a href="https://github.com/vdemichev/DiaNN?tab=readme-ov-file#output">Output</a> chapter gives a short summary. We are primarily interested in information regarding our samples, our features which are the precursors and there further information like the peptide sequence further annotation as well as the normalized quantity.</p>
+<div class="rmdnote">
+<p>Remove all columns from <code>data_filtered</code> that we do not need.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button25" aria-expanded="false" aria-controls="button25">
+Hint
+</button>
+<div id="button25" class="collapse">
+<p><br>
+The <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code> function will allow us to only retain the column we need. Regarding which columns we need, just take a guess and you’ll find out in the solution.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button26" aria-expanded="false" aria-controls="button26">
+Solution
+</button>
+<div id="button26" class="collapse">
+<p><br></p>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Run"</span>,</span>
+<span>           <span class="st">"Precursor.Id"</span>,</span>
+<span>           <span class="st">"Modified.Sequence"</span>,</span>
+<span>           <span class="st">"Stripped.Sequence"</span>,</span>
+<span>           <span class="st">"Protein.Group"</span>,</span>
+<span>           <span class="st">"Protein.Names"</span>,</span>
+<span>           <span class="st">"Genes"</span>,</span>
+<span>           <span class="st">"Precursor.Normalised"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>This also allowed us to change the order of the columns. There are two more ways to do this.</p>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html">all_of</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Run"</span>,</span>
+<span>                  <span class="st">"Precursor.Id"</span>,</span>
+<span>                  <span class="st">"Modified.Sequence"</span>,</span>
+<span>                  <span class="st">"Stripped.Sequence"</span>,</span>
+<span>                  <span class="st">"Protein.Group"</span>,</span>
+<span>                  <span class="st">"Protein.Names"</span>,</span>
+<span>                  <span class="st">"Genes"</span>,</span>
+<span>                  <span class="st">"Precursor.Normalised"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>The <code><a href="https://tidyselect.r-lib.org/reference/all_of.html">dplyr::all_of()</a></code> function will check, if all specified column names can be found in the data. The <code><a href="https://tidyselect.r-lib.org/reference/all_of.html">dplyr::any_of()</a></code> function does the same, but does not fail if a column name cannot be found. This makes it a bit more flexible, but the real advantage is that you can use a predifened vector to list the column names.</p>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">column_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Run"</span>,</span>
+<span>                  <span class="st">"Precursor.Id"</span>,</span>
+<span>                  <span class="st">"Modified.Sequence"</span>,</span>
+<span>                  <span class="st">"Stripped.Sequence"</span>,</span>
+<span>                  <span class="st">"Protein.Group"</span>,</span>
+<span>                  <span class="st">"Protein.Names"</span>,</span>
+<span>                  <span class="st">"Genes"</span>,</span>
+<span>                  <span class="st">"Precursor.Normalised"</span><span class="op">)</span></span>
+<span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html">any_of</a></span><span class="op">(</span><span class="va">column_names</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Simply using a vector works as well, but R will complain and we don’t want that. And it could lead to confusions in the code, which is the real problem.</p>
+</div>
+<p><br>
+Great, our data should look much better already.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;em&gt;whispering&lt;/em&gt; &lt;code&gt;View()&lt;/code&gt; it.&lt;/p&gt;"><sup>24</sup></a></p>
+</div>
+<div id="sum-precursors-to-modified-peptides" class="section level3" number="7.4.4">
+<h3>
+<span class="header-section-number">7.4.4</span> Sum precursors to modified peptides<a class="anchor" aria-label="anchor" href="#sum-precursors-to-modified-peptides"><i class="fas fa-link"></i></a>
+</h3>
+<p>The next step is very data-specific, but will allow us to explore the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise()</a></code> function. Our data currently exists on the precursor level.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Precursor or precursor ion is the mass spec term for an peak in the MS1, which represents the mass-over-charge (m/z) of a particular ion.&lt;/p&gt;"><sup>25</sup></a> As a peptide can have multiple charge states based on its amino acid sequence and the pH of the buffer (e.g. 2+ and 3+), we can combine the quantity of both to represent a truer peptide quantity. Simply summing both values up is the way to go here.</p>
+<div class="rmdnote">
+<p>Read into the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise()</a></code> function and sum up the <code>Precursor.Normalised</code> column from the precursors to peptides to create <code>data_peptides</code>. You will need to identify which column in our data identifies the peptides. In addition, check if <code>Precursor.Normalised</code> contains <code>NA</code>s, as the <code><a href="https://rdrr.io/r/base/sum.html">sum()</a></code> function is sensitive to them.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button27" aria-expanded="false" aria-controls="button27">
+Hint - peptide info
+</button>
+<div id="button27" class="collapse">
+<p><br>
+You will need to summarise precursors to the peptides identified by <code>Modified.Sequence</code> and individually for each sample/<code>Run</code>.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button28" aria-expanded="false" aria-controls="button28">
+Hint - summarise
+</button>
+<div id="button28" class="collapse">
+<p><br>
+The <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise()</a></code> function works the same as <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate()</a></code>, the only difference is that the computation in mutate yields an output of the same length as the input and summarise reduces the number of elements of the output by combining them. If used plain, the output will have one row which is the summary of each column. You can specify sub groups to be combined with the <code>.by</code> argument.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button29" aria-expanded="false" aria-controls="button29">
+Solution
+</button>
+<div id="button29" class="collapse">
+<p><br>
+We first check if the <code>Precursor.Normalised</code> data contains <code>NA</code>s.</p>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">Precursor.Normalised</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># sum will give you the total number of NAs, table or mean work as well </span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Looks good, now we can combine our precursors.</p>
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># It can be useful to indicate the operations we do along the way as names </span></span>
+<span>  <span class="co"># Precursor.Normalised -&gt; Precursor.Normalised.sum </span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>Precursor.Normalised.sum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">Precursor.Normalised</span><span class="op">)</span>, </span>
+<span>            .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Run"</span>, <span class="st">"Modified.Sequence"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>The new data frame contains <code>Run</code> and <code>Modified.Sequence</code> as row IDs and the new <code>Precursor.Normalised.sum</code> column. If we want to retain the other annotations of our peptides, we can use a function to keep them as well. Since the protein and gene information will be the same for each peptide, we can simply use unique to reduce the multiple entries into one.
+We can do the same in a condensed way.</p>
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>Precursor.Normalised.sum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">Precursor.Normalised</span><span class="op">)</span>, </span>
+<span>            Stripped.Sequence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">Stripped.Sequence</span><span class="op">)</span>, </span>
+<span>            Protein.Group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">Protein.Group</span><span class="op">)</span>, </span>
+<span>            Protein.Names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">Protein.Names</span><span class="op">)</span>, </span>
+<span>            Genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">Genes</span><span class="op">)</span>, </span>
+<span>            .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Run"</span>, <span class="st">"Modified.Sequence"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>If there were different informations for each precursor, we could use the <code>paste(..., collapse = ";")</code> or <code><a href="https://rdrr.io/r/base/c.html">c()</a></code> to keep the information</p>
+</div>
+<p><br>
+Now our data operates on the ‘modified peptides’ level<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;peptide sequence + specific PTMs&lt;/p&gt;"><sup>26</sup></a>, which is what we want to do the differential abundance analysis on.</p>
+</div>
+<div id="pivot-data-to-a-samples-x-peptides-matrix" class="section level3" number="7.4.5">
+<h3>
+<span class="header-section-number">7.4.5</span> Pivot data to a samples x peptides matrix<a class="anchor" aria-label="anchor" href="#pivot-data-to-a-samples-x-peptides-matrix"><i class="fas fa-link"></i></a>
+</h3>
+<p>Our data is on a good way to be finally used for the Limma analysis. We can check in on the way by pivoting it into the wide format. This will allow us to inspect the data visually easier.</p>
+<div class="rmdnote">
+<p>We came across the <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">tidyr::pivot_wider()</a></code> function before. Use it to spread your data in two ways: 1. <code>data_peptides_o</code><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;o for observations as rows&lt;/p&gt;"><sup>27</sup></a> so that peptides become become column names and 2. <code>data_peptides_v</code><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;v for variables as rows&lt;/p&gt;"><sup>28</sup></a> so that the sample names become column names.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button30" aria-expanded="false" aria-controls="button30">
+Hint
+</button>
+<div id="button30" class="collapse">
+<p><br>
+The <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">tidyr::pivot_wider()</a></code> wider function has three primary arguments which dictate the shape of the resulting data frame.</p>
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"column that stays as row IDs"</span><span class="op">)</span>, </span>
+<span>            names_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"column whose values will be used as column names"</span><span class="op">)</span>, </span>
+<span>            values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"column from which values are used for each cell"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button31" aria-expanded="false" aria-controls="button31">
+Code
+</button>
+<div id="button31" class="collapse">
+<p><br>
+In the first part of the exercise, we want the samples to stay as rows.</p>
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides_o</span> <span class="op">&lt;-</span> <span class="va">data_peptides</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="st">"Run"</span>, </span>
+<span>              names_from <span class="op">=</span> <span class="st">"Modified.Sequence"</span>, </span>
+<span>              values_from <span class="op">=</span> <span class="st">"Precursor.Normalised.sum"</span><span class="op">)</span></span></code></pre></div>
+<p>Great, this is what we want! Now let’s do the opposite.</p>
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op">&lt;-</span> <span class="va">data_peptides</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="st">"Modified.Sequence"</span>, </span>
+<span>              names_from <span class="op">=</span> <span class="st">"Run"</span>, </span>
+<span>              values_from <span class="op">=</span> <span class="st">"Precursor.Normalised.sum"</span><span class="op">)</span></span></code></pre></div>
+<p>Works as well, but we lost some data. We can fix this by including the column names as <code>id_cols</code>.</p>
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op">&lt;-</span> <span class="va">data_peptides</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Modified.Sequence"</span>, </span>
+<span>                          <span class="st">"Stripped.Sequence"</span>,</span>
+<span>                          <span class="st">"Protein.Group"</span>,</span>
+<span>                          <span class="st">"Protein.Names"</span>,</span>
+<span>                          <span class="st">"Genes"</span><span class="op">)</span>, </span>
+<span>              names_from <span class="op">=</span> <span class="st">"Run"</span>, </span>
+<span>              values_from <span class="op">=</span> <span class="st">"Precursor.Normalised.sum"</span><span class="op">)</span></span></code></pre></div>
+<p>This does not work when retaining the samples as rows.</p>
+</div>
+</div>
+<div id="count-missing-values-and-further-filter-data" class="section level3" number="7.4.6">
+<h3>
+<span class="header-section-number">7.4.6</span> Count missing values and further filter data<a class="anchor" aria-label="anchor" href="#count-missing-values-and-further-filter-data"><i class="fas fa-link"></i></a>
+</h3>
+<p>We have some pretty nice data frames by now. Let’s check them and start to attack our biggest enemy in data science, missing values. There are many approaches to</p>
+</div>
+<div id="optional-normalize-the-data" class="section level3" number="7.4.7">
+<h3>
+<span class="header-section-number">7.4.7</span> (Optional) Normalize the data<a class="anchor" aria-label="anchor" href="#optional-normalize-the-data"><i class="fas fa-link"></i></a>
+</h3>
+</div>
 </div>
 <div id="save-your-data" class="section level2" number="7.5">
 <h2>
@@ -347,7 +630,7 @@ Let’s keep the remaining time open to explore other <code>dplyr</code> functio
 </h2>
 <p>Once your raw data is imported and you have some first data transformation done, we can break up our code into a separate script.</p>
 <p>For this we need to save our <code>R Environment</code> to keep all data objects together. Before that, it can be useful to delete intermediate objects and evertyhing you do not need anymore.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Clean environment</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span>list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -415,7 +698,17 @@ Let’s keep the remaining time open to explore other <code>dplyr</code> functio
 <li><a class="nav-link" href="#data-types"><span class="header-section-number">7.3.2</span> Data types</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#tidy-up-your-data"><span class="header-section-number">7.4</span> Tidy up your data</a></li>
+<li>
+<a class="nav-link" href="#tidy-up-your-data"><span class="header-section-number">7.4</span> Tidy up your data</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#filtering-identified-precursors"><span class="header-section-number">7.4.1</span> Filtering identified precursors</a></li>
+<li><a class="nav-link" href="#shorten-and-clean-up-sample-names"><span class="header-section-number">7.4.2</span> Shorten and clean up sample names</a></li>
+<li><a class="nav-link" href="#remove-unnecessary-information"><span class="header-section-number">7.4.3</span> Remove unnecessary information</a></li>
+<li><a class="nav-link" href="#sum-precursors-to-modified-peptides"><span class="header-section-number">7.4.4</span> Sum precursors to modified peptides</a></li>
+<li><a class="nav-link" href="#pivot-data-to-a-samples-x-peptides-matrix"><span class="header-section-number">7.4.5</span> Pivot data to a samples x peptides matrix</a></li>
+<li><a class="nav-link" href="#count-missing-values-and-further-filter-data"><span class="header-section-number">7.4.6</span> Count missing values and further filter data</a></li>
+<li><a class="nav-link" href="#optional-normalize-the-data"><span class="header-section-number">7.4.7</span> (Optional) Normalize the data</a></li>
+</ul>
+</li>
 <li><a class="nav-link" href="#save-your-data"><span class="header-section-number">7.5</span> Save your data</a></li>
 </ul>
 
@@ -434,7 +727,7 @@ Let’s keep the remaining time open to explore other <code>dplyr</code> functio
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Data Analysis in R</strong>" was written by Nico Hüttmann. It was last built on 2025-02-04.</p>
+    <p>"<strong>Data Analysis in R</strong>" was written by Nico Hüttmann. It was last built on 2025-02-05.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

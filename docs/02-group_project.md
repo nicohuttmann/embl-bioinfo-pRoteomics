@@ -89,7 +89,7 @@ Leave an empty lines on top, it will look more professional. You can then also u
 
 ## Import your data
 
-By now, you should have a link to the datasets in Slack. If not, please complain. There should be two files called report.tsv and report.parquet. Both are output files from the [DIA-NN](https://github.com/vdemichev/DiaNN) software, a tool that analyzes mass spectrometry data and outputs a table of all identified ions.^[Each ion, also called precursor, represents a peptide and its charge states. Each peptide can have multiple cahrge states and was originally derived from a protein by proteolytic cleavage. All this data stems from multiple samples and replicates which are combined in one table.]
+By now, you should have a link to the datasets in Slack. If not, please complain. There should be two files called report.tsv and report.parquet. Both are output files from the [DIA-NN](https://github.com/vdemichev/DiaNN) software, a tool that analyzes mass spectrometry data and outputs a table of all identified ions.^[Each ion, also called precursor, represents a peptide and its charge state. Each peptide can have multiple cahrge states and was originally derived from a protein by proteolytic cleavage. All this data stems from multiple samples and replicates which are combined in one table.]
 
 ::: {.rmdnote}
 
@@ -365,13 +365,327 @@ Let's keep the remaining time open to explore other `dplyr` functions. They are 
 * `dplyr::right_join()`
 
 
-
-In many cases
-
-
 ## Tidy up your data 
 
-__Coming on Wednesday__
+With the list of `dplyr` functions above, you have a pretty powerful tool set to manipulate data in which ever way you like. But we also need to know, what we need to do, to get our data analysis-ready. 
+
+Following this, we can start to make our data more legible by removing unnecessary information and making names more meaningful. We will follow a scheme like this: 
+
+1. Filtering identified precursors 
+2. Shorten and clean up sample names
+3. Remove unnecessary information (select column you need)
+4. Sum precursors to modified peptides 
+5. Pivot data to a samples x peptides matrix (still a tibble tho) 
+6. Count missing values and further filter data 
+7. (Optional) Normalize the data 
+
+
+
+
+### Filtering identified precursors 
+
+The [Main output reference](https://github.com/vdemichev/DiaNN?tab=readme-ov-file#main-output-reference) was mentioned before, and at the end it contains a section about __Filtering the main report__. Choose a filtering scheme that you think makes sense (match-between runs (MBR) was used).
+
+::: {.rmdnote}
+
+Choose parameters and threshold to filter the precursors in your data and assign a new object `data_filtered`.
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button20" aria-expanded="false" aria-controls="button20"> Hint </button> <div id="button20" class="collapse">  
+\
+As the DIA-NN documentation suggest, we could use a threshold of 0.01 for `Lib.Q.Value` and `PG.Q.Value`.
+
+`Lib.Peptidoform.Q.Value` could also be applied retroactively if we find some outliers or weirdly behaving data points. 
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button21" aria-expanded="false" aria-controls="button21"> Code </button> <div id="button21" class="collapse">  
+\
+The `dplyr::filter()` function allows us to remove rows based on a logical operation that results in one TRUE/FALSE value per row.
+
+```r
+data_filtered <- data_raw %>% 
+  filter(Lib.Q.Value < 0.01) %>% 
+  filter(PG.Q.Value < 0.01)
+```
+
+We can do the same in a condensed way.
+
+```r
+data_filtered <- data_raw %>% 
+  filter(Lib.Q.Value < 0.01, PG.Q.Value < 0.01) 
+```
+</div>
+
+\
+This is a relatively simple way to filter your data. In many cases, there will be further parameters or data-driven schemes (variance, etc.) to fiter your data. 
+
+### Shorten and clean up sample names
+
+The easier your data can be read and understood, the more useful it will be to you and others. You will sometimes spend days, weeks or months with the same dataset. Therefore, you will be very familiar all the sample names, groups, etc. For others to understand it in a meeting or a presentation, it will be very helpful to have all names you use as concise and meaningful as possible. Let's look at the sample names in column `Run`. Currently, they contain the full names of the raw data files that we processed by DIA-NN. Depending on the needed information, we can remove redundant details between the sample names. 
+
+Let's check them first:
+
+```r
+# The Run column can also be accessed with the dplyr::pull() function
+data_filtered$Run %>% 
+  # we only need each name once
+  unique()
+```
+
+We can see that there is a lot of redundancy in the sample names, as each one describes the whole experimental and MS scheme. Shortening them will make the data more legible. 
+
+::: {.rmdnote}
+
+Modify the `Run` column of the `data_filtered` data frame by shortening the sample names to only the useful parts. 
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button22" aria-expanded="false" aria-controls="button22"> Hint - modify names </button> <div id="button22" class="collapse">  
+\
+To figure out how to modify the names, it makes it easier to extract the names and work on this test vector until we can implement the code into our script. 
+
+```r
+sample_names <- data_filtered %>% 
+  pull(Run) %>% 
+  unique()
+```
+Useful functions for text manipulation can be found in the `stringr` [package](https://stringr.tidyverse.org/). To get a good overview of the functions in a package, the [Reference](https://stringr.tidyverse.org/reference/index.html) nicely lists everything we need to know. For most, if not all functions, there are [base R equivalents](https://stringr.tidyverse.org/articles/from-base.html. For our problem we can start with a simple base R function `substring`. 
+
+```r
+sample_names %>% 
+  substring(first = 20)
+```
+You can go from here. 
+
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button23" aria-expanded="false" aria-controls="button23"> Hint - modify the data frame </button> <div id="button23" class="collapse">  
+\
+When modifying our data, we either focus on one column or all columns of a certain type. Both can be accomplished with `dplyr::mutate()`. This function assigns the new values to a column with a provided name, if the name is the same as an existing column, it overwrites it.
+
+```r
+data_filtered <- data_filtered %>% 
+  mutate(Run = substring(text = Run, first = 20))
+```
+You can see that the mutate function overwrites the Run column as defined by the left side of the `=` sign and uses `Run` in the expression on the right side of the `=` sign. To finish this problem, we still need to adjust the beginning of the desired substring. 
+
+If you do not want to count by yourself, could do some copying and use the `nchar()` function. 
+
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button24" aria-expanded="false" aria-controls="button24"> Code </button> <div id="button24" class="collapse">  
+\
+Combining both hints, we can reassign the `data_filtered` object and overwrite the `Run` column.
+
+```r
+data_filtered <- data_filtered %>% 
+  mutate(Run = substring(text = Run, first = 41))
+```
+Make sure you are comfortable with how the mutate function works!
+
+A different way would be to remove the redundant part of the string with the `stringr::str_remove()` function.
+
+```r
+data_filtered <- data_filtered %>% 
+  mutate(Run = stringr::str_remove(
+    string = Run, 
+    pattern = "EVE_250123_S4504_LKJ_CP_PELSA_K562_Stau_"))
+```
+The intendation of the code above was changed slightly, otherwise the pattern argument would have reached outside the 80 characters limit and would not look as nice. Synthax-wise, this does not make any difference and the code work just the same.
+</div>
+
+\
+`View` your data frame and see how it looks much nicer now.
+
+```r
+View(data_filtered)
+```
+
+### Remove unnecessary information 
+
+After removing all the redundant stuff in our sample names, the next step in our *Tidy Data Campaign* involves removing all information we do not need later. This will help us a lot with getting a better overview of our data and will allow others to look at our dataset without immediately being overwhelmed. 
+Again, the [Main output reference](https://github.com/vdemichev/DiaNN?tab=readme-ov-file#main-output-reference) is helpful here and the *Main report* section of the [Output](https://github.com/vdemichev/DiaNN?tab=readme-ov-file#output) chapter gives a short summary. We are primarily interested in information regarding our samples, our features which are the precursors and there further information like the peptide sequence further annotation as well as the normalized quantity.
+
+::: {.rmdnote}
+
+Remove all columns from `data_filtered` that we do not need. 
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button25" aria-expanded="false" aria-controls="button25"> Hint </button> <div id="button25" class="collapse">  
+\
+The `dplyr::select()` function will allow us to only retain the column we need. Regarding which columns we need, just take a guess and you'll find out in the solution. 
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button26" aria-expanded="false" aria-controls="button26"> Solution </button> <div id="button26" class="collapse">  
+\
+
+
+```r
+data_filtered <- data_filtered %>% 
+  select(c("Run",
+           "Precursor.Id",
+           "Modified.Sequence",
+           "Stripped.Sequence",
+           "Protein.Group",
+           "Protein.Names",
+           "Genes",
+           "Precursor.Normalised"))
+```
+This also allowed us to change the order of the columns. There are two more ways to do this.
+
+```r
+data_filtered <- data_filtered %>% 
+  select(all_of(c("Run",
+                  "Precursor.Id",
+                  "Modified.Sequence",
+                  "Stripped.Sequence",
+                  "Protein.Group",
+                  "Protein.Names",
+                  "Genes",
+                  "Precursor.Normalised")))
+```
+The `dplyr::all_of()` function will check, if all specified column names can be found in the data. The `dplyr::any_of()` function does the same, but does not fail if a column name cannot be found. This makes it a bit more flexible, but the real advantage is that you can use a predifened vector to list the column names.
+
+```r
+column_names <- c("Run",
+                  "Precursor.Id",
+                  "Modified.Sequence",
+                  "Stripped.Sequence",
+                  "Protein.Group",
+                  "Protein.Names",
+                  "Genes",
+                  "Precursor.Normalised")
+data_filtered <- data_filtered %>% 
+  select(any_of(column_names))
+```
+Simply using a vector works as well, but R will complain and we don't want that. And it could lead to confusions in the code, which is the real problem. 
+
+</div>
+
+\
+Great, our data should look much better already.^[*whispering* `View()` it.]
+
+### Sum precursors to modified peptides 
+
+The next step is very data-specific, but will allow us to explore the `dplyr::summarise()` function. Our data currently exists on the precursor level.^[Precursor or precursor ion is the mass spec term for an peak in the MS1, which represents the mass-over-charge (m/z) of a particular ion.] As a peptide can have multiple charge states based on its amino acid sequence and the pH of the buffer (e.g. 2+ and 3+), we can combine the quantity of both to represent a truer peptide quantity. Simply summing both values up is the way to go here. 
+
+::: {.rmdnote}
+
+Read into the `dplyr::summarise()` function and sum up the `Precursor.Normalised` column from the precursors to peptides to create `data_peptides`. You will need to identify which column in our data identifies the peptides. In addition, check if `Precursor.Normalised` contains `NA`s, as the `sum()` function is sensitive to them. 
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button27" aria-expanded="false" aria-controls="button27"> Hint - peptide info </button> <div id="button27" class="collapse">  
+\
+You will need to summarise precursors to the peptides identified by `Modified.Sequence` and individually for each sample/`Run`.
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button28" aria-expanded="false" aria-controls="button28"> Hint - summarise </button> <div id="button28" class="collapse">  
+\
+The `dplyr::summarise()` function works the same as `dplyr::mutate()`, the only difference is that the computation in mutate yields an output of the same length as the input and summarise reduces the number of elements of the output by combining them. If used plain, the output will have one row which is the summary of each column. You can specify sub groups to be combined with the `.by` argument.
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button29" aria-expanded="false" aria-controls="button29"> Solution </button> <div id="button29" class="collapse">  
+\
+We first check if the `Precursor.Normalised` data contains `NA`s.
+
+```r
+data_filtered %>% 
+  pull(Precursor.Normalised) %>% 
+  is.na() %>% 
+  # sum will give you the total number of NAs, table or mean work as well 
+  sum()
+```
+Looks good, now we can combine our precursors. 
+
+```r
+data_peptides <- data_filtered %>% 
+  # It can be useful to indicate the operations we do along the way as names 
+  # Precursor.Normalised -> Precursor.Normalised.sum 
+  summarise(Precursor.Normalised.sum = sum(Precursor.Normalised), 
+            .by = c("Run", "Modified.Sequence"))
+```
+The new data frame contains `Run` and `Modified.Sequence` as row IDs and the new `Precursor.Normalised.sum` column. If we want to retain the other annotations of our peptides, we can use a function to keep them as well. Since the protein and gene information will be the same for each peptide, we can simply use unique to reduce the multiple entries into one. 
+We can do the same in a condensed way.
+
+```r
+data_peptides <- data_filtered %>% 
+  summarise(Precursor.Normalised.sum = sum(Precursor.Normalised), 
+            Stripped.Sequence = unique(Stripped.Sequence), 
+            Protein.Group = unique(Protein.Group), 
+            Protein.Names = unique(Protein.Names), 
+            Genes = unique(Genes), 
+            .by = c("Run", "Modified.Sequence"))
+```
+If there were different informations for each precursor, we could use the `paste(..., collapse = ";")` or `c()` to keep the information
+</div>
+
+\
+Now our data operates on the 'modified peptides' level^[peptide sequence + specific PTMs], which is what we want to do the differential abundance analysis on. 
+
+
+### Pivot data to a samples x peptides matrix 
+
+Our data is on a good way to be finally used for the Limma analysis. We can check in on the way by pivoting it into the wide format. This will allow us to inspect the data visually easier. 
+
+::: {.rmdnote}
+
+We came across the `tidyr::pivot_wider()` function before. Use it to spread your data in two ways: 1. `data_peptides_o`^[o for observations as rows] so that peptides become become column names and 2. `data_peptides_v`^[v for variables as rows] so that the sample names become column names. 
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button30" aria-expanded="false" aria-controls="button30"> Hint </button> <div id="button30" class="collapse">  
+\
+The `tidyr::pivot_wider()` wider function has three primary arguments which dictate the shape of the resulting data frame. 
+
+```r
+pivot_wider(id_cols = c("column that stays as row IDs"), 
+            names_from = c("column whose values will be used as column names"), 
+            values_from = c("column from which values are used for each cell"))
+```
+
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button31" aria-expanded="false" aria-controls="button31"> Code </button> <div id="button31" class="collapse">  
+\
+In the first part of the exercise, we want the samples to stay as rows.
+
+```r
+data_peptides_o <- data_peptides %>% 
+  pivot_wider(id_cols = "Run", 
+              names_from = "Modified.Sequence", 
+              values_from = "Precursor.Normalised.sum")
+```
+Great, this is what we want! Now let's do the opposite. 
+
+```r
+data_peptides_v <- data_peptides %>% 
+  pivot_wider(id_cols = "Modified.Sequence", 
+              names_from = "Run", 
+              values_from = "Precursor.Normalised.sum")
+```
+Works as well, but we lost some data. We can fix this by including the column names as `id_cols`. 
+
+```r
+data_peptides_v <- data_peptides %>% 
+  pivot_wider(id_cols = c("Modified.Sequence", 
+                          "Stripped.Sequence",
+                          "Protein.Group",
+                          "Protein.Names",
+                          "Genes"), 
+              names_from = "Run", 
+              values_from = "Precursor.Normalised.sum")
+```
+This does not work when retaining the samples as rows.
+</div>
+
+### Count missing values and further filter data 
+
+We have some pretty nice data frames by now. Let's check them and start to attack our biggest enemy in data science, missing values. There are many approaches to 
+
+### (Optional) Normalize the data 
 
 
 
@@ -452,7 +766,13 @@ Now, everything is saved and can be conveniently accessed later again. This is a
 
 # Limma analysis
 
-__Coming on Wednesday__
+__Coming on Thursday__
+
+<!-- https://kasperdanielhansen.github.io/genbioconductor/html/limma.html -->
+
+<!-- https://www.bioconductor.org/packages/devel/bioc/vignettes/limma/inst/doc/usersguide.pdf -->
+
+<!-- (https://www.bioconductor.org/packages/devel/bioc/vignettes/limma/inst/doc/usersguide.pdf) -->
 
 # Reporting results 
 

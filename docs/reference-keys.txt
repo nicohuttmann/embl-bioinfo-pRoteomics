@@ -23,6 +23,13 @@ understand-your-data
 data-format
 data-types
 tidy-up-your-data
+filtering-identified-precursors
+shorten-and-clean-up-sample-names
+remove-unnecessary-information
+sum-precursors-to-modified-peptides
+pivot-data-to-a-samples-x-peptides-matrix
+count-missing-values-and-further-filter-data
+optional-normalize-the-data
 save-your-data
 limma-analysis
 reporting-results

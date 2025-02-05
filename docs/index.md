@@ -1,7 +1,7 @@
 --- 
 title: "Data Analysis in R"
 author: "Nico Hüttmann"
-date: "2025-02-04"
+date: "2025-02-05"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
@@ -195,4 +195,23 @@ For the one's who do not need R in their projects yet, you could see it as a ver
 <!--               values_from = "Bodyweight") -->
 <!-- ``` -->
 
+::: {.rmdnote}
+
+
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button1" aria-expanded="false" aria-controls="button1"> Hint </button> <div id="button1" class="collapse">  
+\
+ 
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button2" aria-expanded="false" aria-controls="button2"> Code </button> <div id="button2" class="collapse">  
+\
+
+
+
+We can do the same in a condensed way.
+
+</div>
 
