@@ -832,8 +832,8 @@ If this failed, it's on me! I forgot to remove the column with additional inform
 
 
 ```r
-# We assign a new object 
 data_norm <- data_peptides_v_c %>% 
+  # Only keep the first id column and all numeric columns 
   select(c(1, where(is.numeric))) %>% 
   tibble::column_to_rownames(var = "Modified.Sequence") %>%
   limma::normalizeBetweenArrays(method = "scale") %>%
@@ -846,6 +846,7 @@ You can find an explantion of the normalization method in the [documentation](ht
 
 </div>
 
+\
 We can explore the impact of renormalizing our data later by calculating the coefficient of variance (CV) for both group and doing a PCA analysis of both data frames. 
 
 Our data looks pretty good by now and is ready for a Limma analysis to identify which peptides were affected in their abundance by the drug treatment. Now we can simply see how to we can store our data when done working and simply reopen it when sitting down again. 
@@ -947,7 +948,7 @@ limma_list[["eset"]] <- limma_list[["data"]] %>%
   as.matrix() %>% 
   # Depending on your input data frame, you may need to transpose your data
   # an eset has samples as columns and features/variables as rows
-  t() %>% 
+  # t() %>% 
   Biobase::ExpressionSet()
 ```
 The ExpressionSet is an idea to standardize data formats in R, but is practically only used in some packages as input and most people mainly work with `tibble`s.
@@ -1027,8 +1028,8 @@ Try it out and have a look at your results!^[And install biobroom if you do not 
 
 
 ```r
-results_list[["results"]] <- 
-  biobroom::tidy.MArrayLM(results_list[["fit2_eBayes"]])
+limma_list[["results"]] <- 
+  biobroom::tidy.MArrayLM(limma_list[["fit2_eBayes"]])
 ```
 
 </div>
@@ -1047,7 +1048,7 @@ Repeat the last command but further modify the data frame by renaming the gene c
 
 
 ```r
-results_list[["results"]] <- biobroom::tidy.MArrayLM(results_list[["fit2_eBayes"]]) %>% 
+limma_list[["results"]] <- biobroom::tidy.MArrayLM(limma_list[["fit2_eBayes"]]) %>% 
   dplyr::rename(id = gene) %>% 
   dplyr::arrange(p.value)
 ```
@@ -1055,47 +1056,191 @@ results_list[["results"]] <- biobroom::tidy.MArrayLM(results_list[["fit2_eBayes"
 </div>
 
 \
-Nice, now we can look at the data more closely. A common practise when applying statistical test to many different measurements is p-value correction. The 
+Nice, now we can look at the data more closely. A common practise when applying statistical test to many different measurements is a multiple testing correction, as even with a p-value threshold of 0.05, we assume 5% of our hits to be false positives. The most common method in proteomics is the Benjamini-Hochberg correction, which is implemented in the `p.adjust()` function. 
 
+::: {.rmdnote}
+
+Add a `p.adjust` column to your data by applying the `p.adjust()` function to your p-values.^[Bonus if the new column lands right after p.value.] Typing `p.adjust.methods` will tell you about available methods. You can again append the code from above. 
+
+:::
+
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button44" aria-expanded="false" aria-controls="button44"> Code </button> <div id="button44" class="collapse">  
+\
 
 ```r
-# Extract results 
-require(biobroom)
-results_list[["results"]] <- biobroom::tidy.MArrayLM(results_list[["fit2_eBayes"]]) %>% 
-  # rename contrasts 
-  dplyr::mutate(term = paste(rev(conditions), collapse = " - ")) %>% 
+limma_list[["results"]] <- biobroom::tidy.MArrayLM(limma_list[["fit2_eBayes"]]) %>% 
+  dplyr::rename(id = gene) %>% 
+  # Rearranging our data by the p-values does not affect the adjustment 
+  dplyr::arrange(p.value) %>% 
+  # Adjust p-values
+  dplyr::mutate(p.adjust = p.adjust(p.value, method = "BH"), 
+                .after = "p.value")
+```
+</div>
+
+Nice! Finally, we want to use our adjusted p-values and the effect size/log2 fold-change (FC) termed `estimate` in the table, to threshold our data and define more and less abundant/up- and down-regulated peptides. We can do this with the `dplyr::case_when()` function. Have a look at the code!
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button45" aria-expanded="false" aria-controls="button45"> Code </button> <div id="button45" class="collapse">  
+\
+
+```r
+limma_list[["results"]] <- biobroom::tidy.MArrayLM(limma_list[["fit2_eBayes"]]) %>% 
   dplyr::rename(id = gene) %>% 
   dplyr::arrange(p.value) %>% 
   # Adjust p-values
-  dplyr::mutate(p.adjust = 
-                  p.adjust(p.value, 
-                           method = results_list[["par"]]$p.adjust.method), 
+  dplyr::mutate(p.adjust = p.adjust(p.value, method = "BH"), 
                 .after = "p.value") %>% 
   # Apply thresholds
   dplyr::mutate(regulation = dplyr::case_when(
-    p.adjust < results_list[["par"]]$p.threshold & 
-      estimate >= results_list[["par"]]$fc.threshold ~ "up", 
-    p.adjust < results_list[["par"]]$p.threshold & 
-      estimate <= - results_list[["par"]]$fc.threshold ~ "down", 
+    p.adjust < 0.01 & 
+      estimate >= log10(1.2) ~ "up", 
+    p.adjust < 0.01 & 
+      estimate <= - log10(1.2) ~ "down", 
     .default = "none"
   ))
 ```
+Each logical statement like `p.adjust < 0.01 & estimate >= log10(1.2)`^[log10(120%) refers to an increase of 20% in peptide abundance.] return if true the values defined after `~`. If none apply, the function will return the `.default` for this element.^[Which is only by chance called "none" here as well.]
 
+</div>
 
-
+\
+The table in `limma_list[["results"]]` contains now all information we need to further plot and report our results. 
 
 ## Visualizing the limma results 
 
+The one and only way to represent the data from a differential abundance/expression analysis with two groups is the Volcano plot. Let's try it!
 
+::: {.rmdnote}
+
+Represent the *limma* results `estimate` and the `-log10(p.value)` in a volcano plot and color each point by the type of `regulation`. Use `ggplot2` for this. 
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button46" aria-expanded="false" aria-controls="button46"> Expanation </button> <div id="button46" class="collapse">  
+\
+The `ggplot2::ggplot()` function builds the foundation of your plot. You can try this function without any further input. 
+
+
+```r
+ggplot()
+```
+You should see a blank canvas. We can start to add our data with the `data` argument. 
+
+
+```r
+ggplot(limma_list[["results"]]) 
+```
+Wow, nothing changed. Next, we need to explain `ggplot` which column of our `data` should be projected on which axis or plot element. This is achieved with the `mapping` argument which takes the above described links between data and plot within the `ggplot2::aes()`^[aesthetics] function. We can define columns like `x = estimate` and even modify them in place like `y = -log10(p.value)`. 
+
+
+```r
+ggplot(limma_list[["results"]], aes(x = estimate, y = -log10(p.value)))
+```
+Now that the call gets longer, we can make use of the pipe to add our data. 
+
+```r
+limma_list[["results"]] %>%
+  ggplot(aes(x = estimate, y = -log10(p.value)))
+```
+
+Oh, we have some axes now. But `ggplot` still only knows which data should be represented where, hence the axes, but not how. We want the most basic type, points.
+
+
+```r
+limma_list[["results"]] %>%
+  ggplot(aes(x = estimate,
+             y = -log10(p.value))) +
+  # geom_point is only one of many geom_... layers 
+  geom_point()
+```
+
+Nice, each one of our precious peptides represented as one little ugly point. Let's unravel this. `ggplot2::geom_point()` is called a layer and adds the representation for the defined `mapping` of our data. It is added to the initial plot created by `ggplot2::ggplot()` via a `+`. No `%>%`. Just a `+`. We can further modify this layer by setting a transparency with `alpha` and changing the `shape`, so that the changes are better visible.^[You can find a list of all shapes here: https://ggplot2.tidyverse.org/articles/ggplot2-specs.html#sec:shape-spec] 
+
+
+```r
+limma_list[["results"]] %>%
+  ggplot(aes(x = estimate,
+             y = -log10(p.value))) +
+  # you can check all options in the function documentation 
+  geom_point(shape = 16, alpha = 0.5)
+```
+
+Further, we can change the `theme` to something like `ggplot2::theme_classic()`.
+
+
+```r
+limma_list[["results"]] %>%
+  ggplot(aes(x = estimate,
+             y = -log10(p.value))) +
+  geom_point(shape = 16, alpha = 0.5) +
+  # there are many different theme_... types 
+  theme_classic()
+```
+
+Looking good! Now let's color our points. If we would like to color our points all in one color, we could simple define this in the `ggplot2::geom_point(color = "grey)` layer. But we want the color to depend on the type of regulation as defined by the thresholds before. For this, we need to add a new variable to the `aes()` mapping and define a manual color scale.
+
+
+```r
+limma_list[["results"]] %>%
+  ggplot(aes(x = estimate,
+             y = -log10(p.value),
+             # Define which column to use
+             color = regulation)) +
+  geom_point(shape = 16, alpha = 0.5) +
+  theme_classic() +
+  # Define the values for each data entry
+  scale_color_manual(values = c(none = "grey",
+                                up = "red",
+                                down = "blue"))
+```
+
+Finally, we can remove the space between our plotted points and the outer border like this. This is a taste thing. 
+
+
+```r
+limma_list[["results"]] %>%
+  ggplot(aes(x = estimate,
+             y = -log10(p.value),
+             color = regulation)) +
+  geom_point(shape = 16, alpha = 0.5) +
+  theme_classic() +
+  scale_color_manual(values = c(none = "grey",
+                                up = "red",
+                                down = "blue")) +
+  # You can also define the xlim = c(-3, 3) and ylim = c(0, 10) here 
+  coord_cartesian(expand = F)
+```
+
+Finally, we can save our plot first and print it then separately. 
+
+```r
+limma_list[["p"]] <- limma_list[["results"]] %>%
+  ggplot(aes(x = estimate,
+             y = -log10(p.value),
+             color = regulation)) +
+  geom_point(shape = 16, alpha = 0.5) +
+  theme_classic() +
+  scale_color_manual(values = c(none = "grey",
+                                up = "red",
+                                down = "blue")) +
+  coord_cartesian(expand = F)
+# Sometimes you may need force this by print(limma_list[["p"]]) 
+limma_list[["p"]]
+```
+
+</div>
+
+Great, this basically covered most parameters you can change for plotting in R with `ggplot2`. It may take some time to get comfortable with all functions and get to know all possibilities, but then there are no limits!
 
 ## Summary
 
-
+In this chapter, we applied a package `limma` to analyse our data and represented the results in one plot. `limma` is one of the more complicated packages to use IMO, but a good exercise. 
 
 
 # Reporting results 
 
-__Coming on Thursday.__
+
 <!-- This chapter serves the purpose to help us explore the different things we do with our results.  -->
 
 

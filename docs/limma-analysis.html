@@ -138,7 +138,7 @@ Okay, here we go. Since the analysis involves a couple of steps and I do not lik
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># Depending on your input data frame, you may need to transpose your data</span></span>
 <span>  <span class="co"># an eset has samples as columns and features/variables as rows</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># t() %&gt;% </span></span>
 <span>  <span class="fu">Biobase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/class.ExpressionSet.html">ExpressionSet</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>The ExpressionSet is an idea to standardize data formats in R, but is practically only used in some packages as input and most people mainly work with <code>tibble</code>s.</p>
 <p>Next, we need to describe our experimental setup. We can find this information in our sample name <code>names(limma[["data"]])</code> and it describes either a ‘Control’ or the ‘Staurosporine’ group, we can simply make a vector that describes the sample groups in the order of our samples</p>
@@ -186,8 +186,8 @@ Code
 <div id="button42" class="collapse">
 <p><br></p>
 <div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">results_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu">biobroom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/biobroom/man/limma_tidiers.html">tidy.MArrayLM</a></span><span class="op">(</span><span class="va">results_list</span><span class="op">[[</span><span class="st">"fit2_eBayes"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">biobroom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/biobroom/man/limma_tidiers.html">tidy.MArrayLM</a></span><span class="op">(</span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"fit2_eBayes"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p><br>
 We can <code><a href="https://rdrr.io/r/utils/View.html">View()</a></code> our results and bring the peptides with the lowest p-value to the top by clicking the <code>p.value</code> column. Still, there are still some generic terms in this data frame like <code>gene</code>. We can modify it to help its legibility.</p>
@@ -200,43 +200,151 @@ Code
 <div id="button43" class="collapse">
 <p><br></p>
 <div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">results_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">biobroom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/biobroom/man/limma_tidiers.html">tidy.MArrayLM</a></span><span class="op">(</span><span class="va">results_list</span><span class="op">[[</span><span class="st">"fit2_eBayes"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">biobroom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/biobroom/man/limma_tidiers.html">tidy.MArrayLM</a></span><span class="op">(</span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"fit2_eBayes"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">gene</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p><br>
-Nice, now we can look at the data more closely. A common practise when applying statistical test to many different measurements is p-value correction. The</p>
+Nice, now we can look at the data more closely. A common practise when applying statistical test to many different measurements is a multiple testing correction, as even with a p-value threshold of 0.05, we assume 5% of our hits to be false positives. The most common method in proteomics is the Benjamini-Hochberg correction, which is implemented in the <code><a href="https://rdrr.io/r/stats/p.adjust.html">p.adjust()</a></code> function.</p>
+<div class="rmdnote">
+<p>Add a <code>p.adjust</code> column to your data by applying the <code><a href="https://rdrr.io/r/stats/p.adjust.html">p.adjust()</a></code> function to your p-values.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Bonus if the new column lands right after p.value.&lt;/p&gt;"><sup>37</sup></a> Typing <code>p.adjust.methods</code> will tell you about available methods. You can again append the code from above.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button44" aria-expanded="false" aria-controls="button44">
+Code
+</button>
+<div id="button44" class="collapse">
+<p><br></p>
 <div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Extract results </span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/StoreyLab/biobroom">biobroom</a></span><span class="op">)</span></span>
-<span><span class="va">results_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">biobroom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/biobroom/man/limma_tidiers.html">tidy.MArrayLM</a></span><span class="op">(</span><span class="va">results_list</span><span class="op">[[</span><span class="st">"fit2_eBayes"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="co"># rename contrasts </span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="va">conditions</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">" - "</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">biobroom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/biobroom/man/limma_tidiers.html">tidy.MArrayLM</a></span><span class="op">(</span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"fit2_eBayes"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">gene</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># Rearranging our data by the p-values does not affect the adjustment </span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># Adjust p-values</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>p.adjust <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/p.adjust.html">p.adjust</a></span><span class="op">(</span><span class="va">p.value</span>, method <span class="op">=</span> <span class="st">"BH"</span><span class="op">)</span>, </span>
+<span>                .after <span class="op">=</span> <span class="st">"p.value"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>Nice! Finally, we want to use our adjusted p-values and the effect size/log2 fold-change (FC) termed <code>estimate</code> in the table, to threshold our data and define more and less abundant/up- and down-regulated peptides. We can do this with the <code><a href="https://dplyr.tidyverse.org/reference/case_when.html">dplyr::case_when()</a></code> function. Have a look at the code!</p>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button45" aria-expanded="false" aria-controls="button45">
+Code
+</button>
+<div id="button45" class="collapse">
+<p><br></p>
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">biobroom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/biobroom/man/limma_tidiers.html">tidy.MArrayLM</a></span><span class="op">(</span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"fit2_eBayes"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">gene</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># Adjust p-values</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>p.adjust <span class="op">=</span> </span>
-<span>                  <span class="fu"><a href="https://rdrr.io/r/stats/p.adjust.html">p.adjust</a></span><span class="op">(</span><span class="va">p.value</span>, </span>
-<span>                           method <span class="op">=</span> <span class="va">results_list</span><span class="op">[[</span><span class="st">"par"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">p.adjust.method</span><span class="op">)</span>, </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>p.adjust <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/p.adjust.html">p.adjust</a></span><span class="op">(</span><span class="va">p.value</span>, method <span class="op">=</span> <span class="st">"BH"</span><span class="op">)</span>, </span>
 <span>                .after <span class="op">=</span> <span class="st">"p.value"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># Apply thresholds</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>regulation <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span></span>
-<span>    <span class="va">p.adjust</span> <span class="op">&lt;</span> <span class="va">results_list</span><span class="op">[[</span><span class="st">"par"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">p.threshold</span> <span class="op">&amp;</span> </span>
-<span>      <span class="va">estimate</span> <span class="op">&gt;=</span> <span class="va">results_list</span><span class="op">[[</span><span class="st">"par"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">fc.threshold</span> <span class="op">~</span> <span class="st">"up"</span>, </span>
-<span>    <span class="va">p.adjust</span> <span class="op">&lt;</span> <span class="va">results_list</span><span class="op">[[</span><span class="st">"par"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">p.threshold</span> <span class="op">&amp;</span> </span>
-<span>      <span class="va">estimate</span> <span class="op">&lt;=</span> <span class="op">-</span> <span class="va">results_list</span><span class="op">[[</span><span class="st">"par"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">fc.threshold</span> <span class="op">~</span> <span class="st">"down"</span>, </span>
+<span>    <span class="va">p.adjust</span> <span class="op">&lt;</span> <span class="fl">0.01</span> <span class="op">&amp;</span> </span>
+<span>      <span class="va">estimate</span> <span class="op">&gt;=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="fl">1.2</span><span class="op">)</span> <span class="op">~</span> <span class="st">"up"</span>, </span>
+<span>    <span class="va">p.adjust</span> <span class="op">&lt;</span> <span class="fl">0.01</span> <span class="op">&amp;</span> </span>
+<span>      <span class="va">estimate</span> <span class="op">&lt;=</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="fl">1.2</span><span class="op">)</span> <span class="op">~</span> <span class="st">"down"</span>, </span>
 <span>    .default <span class="op">=</span> <span class="st">"none"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Each logical statement like <code>p.adjust &lt; 0.01 &amp; estimate &gt;= log10(1.2)</code><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;log10(120%) refers to an increase of 20% in peptide abundance.&lt;/p&gt;"><sup>38</sup></a> return if true the values defined after <code>~</code>. If none apply, the function will return the <code>.default</code> for this element.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Which is only by chance called “none” here as well.&lt;/p&gt;"><sup>39</sup></a></p>
+</div>
+<p><br>
+The table in <code>limma_list[["results"]]</code> contains now all information we need to further plot and report our results.</p>
 </div>
 <div id="visualizing-the-limma-results" class="section level2" number="8.3">
 <h2>
 <span class="header-section-number">8.3</span> Visualizing the limma results<a class="anchor" aria-label="anchor" href="#visualizing-the-limma-results"><i class="fas fa-link"></i></a>
 </h2>
+<p>The one and only way to represent the data from a differential abundance/expression analysis with two groups is the Volcano plot. Let’s try it!</p>
+<div class="rmdnote">
+<p>Represent the <em>limma</em> results <code>estimate</code> and the <code>-log10(p.value)</code> in a volcano plot and color each point by the type of <code>regulation</code>. Use <code>ggplot2</code> for this.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button46" aria-expanded="false" aria-controls="button46">
+Expanation
+</button>
+<div id="button46" class="collapse">
+<p><br>
+The <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot2::ggplot()</a></code> function builds the foundation of your plot. You can try this function without any further input.</p>
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>You should see a blank canvas. We can start to add our data with the <code>data</code> argument.</p>
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> </span></code></pre></div>
+<p>Wow, nothing changed. Next, we need to explain <code>ggplot</code> which column of our <code>data</code> should be projected on which axis or plot element. This is achieved with the <code>mapping</code> argument which takes the above described links between data and plot within the <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">ggplot2::aes()</a></code><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;aesthetics&lt;/p&gt;"><sup>40</sup></a> function. We can define columns like <code>x = estimate</code> and even modify them in place like <code>y = -log10(p.value)</code>.</p>
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">estimate</span>, y <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Now that the call gets longer, we can make use of the pipe to add our data.</p>
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">estimate</span>, y <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Oh, we have some axes now. But <code>ggplot</code> still only knows which data should be represented where, hence the axes, but not how. We want the most basic type, points.</p>
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">estimate</span>,</span>
+<span>             y <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># geom_point is only one of many geom_... layers </span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Nice, each one of our precious peptides represented as one little ugly point. Let’s unravel this. <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">ggplot2::geom_point()</a></code> is called a layer and adds the representation for the defined <code>mapping</code> of our data. It is added to the initial plot created by <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot2::ggplot()</a></code> via a <code>+</code>. No <code>%&gt;%</code>. Just a <code>+</code>. We can further modify this layer by setting a transparency with <code>alpha</code> and changing the <code>shape</code>, so that the changes are better visible.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;You can find a list of all shapes here: &lt;a href="https://ggplot2.tidyverse.org/articles/ggplot2-specs.html#sec:shape-spec" class="uri"&gt;https://ggplot2.tidyverse.org/articles/ggplot2-specs.html#sec:shape-spec&lt;/a&gt;&lt;/p&gt;'><sup>41</sup></a></p>
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">estimate</span>,</span>
+<span>             y <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># you can check all options in the function documentation </span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">16</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
+<p>Further, we can change the <code>theme</code> to something like <code><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">ggplot2::theme_classic()</a></code>.</p>
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">estimate</span>,</span>
+<span>             y <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">16</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># there are many different theme_... types </span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Looking good! Now let’s color our points. If we would like to color our points all in one color, we could simple define this in the <code>ggplot2::geom_point(color = "grey)</code> layer. But we want the color to depend on the type of regulation as defined by the thresholds before. For this, we need to add a new variable to the <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes()</a></code> mapping and define a manual color scale.</p>
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">estimate</span>,</span>
+<span>             y <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span>,</span>
+<span>             <span class="co"># Define which column to use</span></span>
+<span>             color <span class="op">=</span> <span class="va">regulation</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">16</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># Define the values for each data entry</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>none <span class="op">=</span> <span class="st">"grey"</span>,</span>
+<span>                                up <span class="op">=</span> <span class="st">"red"</span>,</span>
+<span>                                down <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Finally, we can remove the space between our plotted points and the outer border like this. This is a taste thing.</p>
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">estimate</span>,</span>
+<span>             y <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span>,</span>
+<span>             color <span class="op">=</span> <span class="va">regulation</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">16</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>none <span class="op">=</span> <span class="st">"grey"</span>,</span>
+<span>                                up <span class="op">=</span> <span class="st">"red"</span>,</span>
+<span>                                down <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># You can also define the xlim = c(-3, 3) and ylim = c(0, 10) here </span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html">coord_cartesian</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+<p>Finally, we can save our plot first and print it then separately.</p>
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"p"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">limma_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">estimate</span>,</span>
+<span>             y <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span>,</span>
+<span>             color <span class="op">=</span> <span class="va">regulation</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">16</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>none <span class="op">=</span> <span class="st">"grey"</span>,</span>
+<span>                                up <span class="op">=</span> <span class="st">"red"</span>,</span>
+<span>                                down <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html">coord_cartesian</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span><span class="co"># Sometimes you may need force this by print(limma_list[["p"]]) </span></span>
+<span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"p"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+</div>
+<p>Great, this basically covered most parameters you can change for plotting in R with <code>ggplot2</code>. It may take some time to get comfortable with all functions and get to know all possibilities, but then there are no limits!</p>
 </div>
 <div id="summary-1" class="section level2" number="8.4">
 <h2>
 <span class="header-section-number">8.4</span> Summary<a class="anchor" aria-label="anchor" href="#summary-1"><i class="fas fa-link"></i></a>
 </h2>
+<p>In this chapter, we applied a package <code>limma</code> to analyse our data and represented the results in one plot. <code>limma</code> is one of the more complicated packages to use IMO, but a good exercise.</p>
 </div>
 </div>
 

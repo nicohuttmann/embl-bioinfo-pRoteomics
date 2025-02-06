@@ -740,8 +740,8 @@ Code
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>If this failed, it’s on me! I forgot to remove the column with additional information about our peptides. This is a quick way to do so.</p>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># We assign a new object </span></span>
-<span><span class="va">data_norm</span> <span class="op">&lt;-</span> <span class="va">data_peptides_v_c</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="va">data_norm</span> <span class="op">&lt;-</span> <span class="va">data_peptides_v_c</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># Only keep the first id column and all numeric columns </span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">column_to_rownames</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"Modified.Sequence"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/normalizebetweenarrays.html">normalizeBetweenArrays</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"scale"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -750,7 +750,8 @@ Code
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>You can find an explantion of the normalization method in the <a href="http://web.mit.edu/~r/current/arch/i386_linux26/lib/R/library/limma/html/normalizebetweenarrays.html">documentation</a>.</p>
 </div>
-<p>We can explore the impact of renormalizing our data later by calculating the coefficient of variance (CV) for both group and doing a PCA analysis of both data frames.</p>
+<p><br>
+We can explore the impact of renormalizing our data later by calculating the coefficient of variance (CV) for both group and doing a PCA analysis of both data frames.</p>
 <p>Our data looks pretty good by now and is ready for a Limma analysis to identify which peptides were affected in their abundance by the drug treatment. Now we can simply see how to we can store our data when done working and simply reopen it when sitting down again.</p>
 </div>
 </div>
