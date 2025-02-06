@@ -929,6 +929,8 @@ limma_list[["data"]] <- data_norm %>%
   # This works simply with mutate(across(where(is.numeric), log2)) or with the 
   # fast version by pivoting in long format and back after the operation
   tidyr::pivot_longer(-1) %>% 
+  # We need to make sure the sample sames stay in the correct order 
+  arrange(name) %>% 
   dplyr::mutate(value = log2(value)) %>% 
   tidyr::pivot_wider()
 ```
@@ -1079,6 +1081,7 @@ limma_list[["results"]] <- biobroom::tidy.MArrayLM(limma_list[["fit2_eBayes"]]) 
 ```
 </div>
 
+\
 Nice! Finally, we want to use our adjusted p-values and the effect size/log2 fold-change (FC) termed `estimate` in the table, to threshold our data and define more and less abundant/up- and down-regulated peptides. We can do this with the `dplyr::case_when()` function. Have a look at the code!
 
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button45" aria-expanded="false" aria-controls="button45"> Code </button> <div id="button45" class="collapse">  
@@ -1231,31 +1234,70 @@ limma_list[["p"]]
 
 </div>
 
+\
 Great, this basically covered most parameters you can change for plotting in R with `ggplot2`. It may take some time to get comfortable with all functions and get to know all possibilities, but then there are no limits!
 
 ## Summary
 
-In this chapter, we applied a package `limma` to analyse our data and represented the results in one plot. `limma` is one of the more complicated packages to use IMO, but a good exercise. 
-
+In this chapter, we applied a package `limma` to analyse our data and represented the results in one plot. `limma` is one of the more complicated packages to use IMO, but still very useful and a good exercise. 
 
 # Reporting results 
 
+Now we have the results of our analysis and the plot in R. But not on the desk of our PI yet. Let's change this. We would need to export our plot and the results table. 
 
-<!-- This chapter serves the purpose to help us explore the different things we do with our results.  -->
+## Export graphics 
+
+The simple and quick way to export your plots is by clicking 'Export' on top of you plots. You can then choose to export and image like a .png or a .pdf file. .pdf files can be very useful, as they can be imported into Adobe Illustrator and font etc. could be further adjusted. Also possible with `ggplot2` for most parts, but still convenient. 
+
+Other ways include functions like the `ggplot2::ggsave()` function, base R solutions like `pdf()` or knitting an R Markdown file. I very much like the last approach for the day to day work and would only put more effort into exporting precise dimension etc. with the `pdf()` or `tiff()` function. For now, and the presentation, you can export them manually as described at the beginning. 
+
+## Exporting data 
+
+To export the data, we want to make sure to include only important information and annotation of the results and the peptides. Then, we need to decide on the output format. Usually we would want either a .csv or a .xlsx file.^[For you and you PI, respectively.]
+
+Let's check the results table `View(limma_list[["results"]])`and decide what to keep and what we may need to add.
+
+My suggestions are to specify `id` to Modified.Sequence or even better Modified.Peptide, `estimate` to log2.FC, keep `p.value`, `p.adjust` and `regulation`, and drop `term`, `statistic`, `lod`. 
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button47" aria-expanded="false" aria-controls="button47"> Code </button> <div id="button47" class="collapse">  
+\
+
+```r
+limma_list[["export"]] <- limma_list[["results"]] %>% 
+  rename(Modified.Peptide = id, 
+         log2.FC = estimate) %>% 
+  select(-c(term, statistic, lod))
+```
+ 
+</div>
+
+\
+Further, we could add some information we had previously in `data_peptides_v` like the `Protein.Group` and the `Genes`
+column. We could do this by joining the `tibble`s together or in a simpler way.
 
 
+```r
+limma_list[["export"]] <- limma_list[["export"]] %>% 
+  mutate(Protein.Group = pull(data_peptides_v, Protein.Group, Modified.Sequence)[Modified.Peptide], 
+         Genes = pull(data_peptides_v, Genes, Modified.Sequence)[Modified.Peptide], 
+         .after = "Modified.Peptide")
+```
+
+Now we also have some additional information regarding our peptides which we would need to interpret the results. This data frame can now be exported.
 
 
+```r
+# To a .csv
+write.csv(limma_list[["export"]], "Output/limma_results.csv")
+# To an .xlsx
+openxlsx::write.xlsx(limma_list[["export"]], "Output/limma_results.xlsx")
+```
+
+A table and a plot, what more could they ask from us. Oh, there are probably a lot of things which people may want to see things like a principal component analysis (PCA) plot to see how well the samples cluster by group, or an overview of the peptide intensities or CV values, to get insight into the quantitative values. We can explore some of those in the following chapter. 
 
 # More data exploration 
 
 __We'll design this chapter together.__
-
-
-
-
-
-
 
 
 

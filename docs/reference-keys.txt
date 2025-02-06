@@ -37,6 +37,8 @@ filtering-the-limma-output
 visualizing-the-limma-results
 summary-1
 reporting-results
+export-graphics
+exporting-data
 more-data-exploration
 appendix-appendix
 version-control-with-github
