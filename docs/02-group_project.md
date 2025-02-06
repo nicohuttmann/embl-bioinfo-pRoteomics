@@ -869,7 +869,7 @@ You can find the [limma package](https://bioconductor.org/packages/release/bioc/
 ```r
 # Install BiocManager if not yet installed
 if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+  install.packages("BiocManager")
 # Install limma
 BiocManager::install("limma")
 ```
@@ -901,8 +901,97 @@ Great! Just continue trying out something and it will eventually work. In the wo
 
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button41" aria-expanded="false" aria-controls="button41"> Yes </button> <div id="button41" class="collapse">  
 \
-This will be added by 11 am.
+Okay, here we go. Since the analysis involves a couple of steps and I do not like to clutter the environment too much, I propose to keep intermediate steps of the same analysis all in one list. Don't worry, the result will be the same as when you simply do it with multiple R objects. 
 
+```r
+limma_list <- list()
+```
+We will first add our data, which we already very nice prepared. The only thing missing is to take the `log2` of our data, because limma like other statistical tests like a t-test assume normally distributed data. 
+
+```r
+## Add base data frame 
+limma_list[["data"]] <- data_norm %>% 
+  # This works simply with mutate(across(where(is.numeric), log2)) or with the 
+  # fast version by pivoting in long format and back after the operation
+  tidyr::pivot_longer(-1) %>% 
+  dplyr::mutate(value = log2(value)) %>% 
+  tidyr::pivot_wider()
+```
+It is good practise to save your input data close to your statistical tests. 
+
+The `limma` functions, similar to `limma::normalizeBetweenArrays()`, accept a `matrix` or an `eSet` (expression set), a special type of storing your data. 
+
+
+```r
+## Add eset 
+limma_list[["eset"]] <- limma_list[["data"]] %>%
+  # We have seen this before, but here is the generalized example by renaming 
+  # the first column to "rowname", which is the default column to use as 
+  # rownames for column_to_rownames
+  dplyr::rename(rowname = 1) %>% 
+  tibble::column_to_rownames() %>%
+  as.matrix() %>% 
+  # Depending on your input data frame, you may need to transpose your data
+  # an eset has samples as columns and features/variables as rows
+  t() %>% 
+  Biobase::ExpressionSet()
+```
+The ExpressionSet is an idea to standardize data formats in R, but is practically only used in some packages as input and most people mainly work with `tibble`s.
+
+Next, we need to describe our experimental setup. We can find this information in our sample name `names(limma[["data"]])` and it describes either a 'Control' or the 'Staurosporine' group, we can simply make a vector that describes the sample groups in the order of our samples 
+
+```r
+limma_list[["design"]] <- 
+  model.matrix(
+    ~0+factor(c(rep("Control", 4), rep("Staurosporine", 4)), 
+              levels = c("Control", "Staurosporine")))
+```
+The vector can be made in any way. `c(rep("Control", 4), rep("Staurosporine", 4))` is just one of many ways to accomplish this. `rep(c("Control", "Staurosporine"), each = 4)` would work as well or fully writing all names individually. 
+
+Because the names look weird, we can rename the generated model matrix. Have a look at it and see how they encode the group information in it. 
+
+
+```r
+colnames(limma_list[["design"]]) <- c("Control", "Staurosporine")
+```
+
+Now we can start with the first linear model fit `limma::lmFit()`. This needs the eset and the design matrix as input. 
+
+
+```r
+limma_list[["fit"]] <- limma::lmFit(limma_list[["eset"]], limma_list[["design"]])
+```
+
+Following this, we need to indicate which comparisons we want to conduct. In the case of more than two groups or a more complex factorial design, we can indicate all interesting difference here. 
+
+
+```r
+limma_list[["contrast.matrix"]] <- limma::makeContrasts(Staurosporine-Control, 
+                                                          levels=limma_list[["design"]])
+```
+
+Now we compare both of our groups. 
+
+
+```r
+limma_list[["fit2"]] <- limma::contrasts.fit(fit = limma_list[["fit"]], 
+                                               contrasts = limma_list[["contrast.matrix"]])
+```
+
+And finally compute our statistics. 
+
+
+```r
+limma_list[["fit2_eBayes"]] <- limma::eBayes(limma_list[["fit2"]])
+```
+
+The final results can be extracted with `limma::topTable()`. 
+
+```r
+limma::topTable(limma_list[["fit2_eBayes"]]) # %>% View()
+```
+
+Great, we go our first results. Let's explore how we can further work with them. 
 
 </div>
 
