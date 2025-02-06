@@ -81,7 +81,7 @@ Code + Links
 </button>
 <div id="button38" class="collapse">
 <p><br></p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Install BiocManager if not yet installed</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="st"><a href="https://bioconductor.github.io/BiocManager/">"BiocManager"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
@@ -114,10 +114,10 @@ Yes
 <div id="button41" class="collapse">
 <p><br>
 Okay, here we go. Since the analysis involves a couple of steps and I do not like to clutter the environment too much, I propose to keep intermediate steps of the same analysis all in one list. Don’t worry, the result will be the same as when you simply do it with multiple R objects.</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">limma_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>We will first add our data, which we already very nice prepared. The only thing missing is to take the <code>log2</code> of our data, because limma like other statistical tests like a t-test assume normally distributed data.</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Add base data frame </span></span>
 <span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">data_norm</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># This works simply with mutate(across(where(is.numeric), log2)) or with the </span></span>
@@ -127,7 +127,7 @@ Okay, here we go. Since the analysis involves a couple of steps and I do not lik
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>It is good practise to save your input data close to your statistical tests.</p>
 <p>The <code>limma</code> functions, similar to <code><a href="https://rdrr.io/pkg/limma/man/normalizebetweenarrays.html">limma::normalizeBetweenArrays()</a></code>, accept a <code>matrix</code> or an <code>eSet</code> (expression set), a special type of storing your data.</p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Add eset </span></span>
 <span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"eset"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">limma_list</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># We have seen this before, but here is the generalized example by renaming </span></span>
@@ -142,31 +142,31 @@ Okay, here we go. Since the analysis involves a couple of steps and I do not lik
 <span>  <span class="fu">Biobase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/class.ExpressionSet.html">ExpressionSet</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>The ExpressionSet is an idea to standardize data formats in R, but is practically only used in some packages as input and most people mainly work with <code>tibble</code>s.</p>
 <p>Next, we need to describe our experimental setup. We can find this information in our sample name <code>names(limma[["data"]])</code> and it describes either a ‘Control’ or the ‘Staurosporine’ group, we can simply make a vector that describes the sample groups in the order of our samples</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"design"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span></span>
 <span>    <span class="op">~</span><span class="fl">0</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Control"</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Staurosporine"</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>              levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Control"</span>, <span class="st">"Staurosporine"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The vector can be made in any way. <code>c(rep("Control", 4), rep("Staurosporine", 4))</code> is just one of many ways to accomplish this. <code>rep(c("Control", "Staurosporine"), each = 4)</code> would work as well or fully writing all names individually.</p>
 <p>Because the names look weird, we can rename the generated model matrix. Have a look at it and see how they encode the group information in it.</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"design"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Control"</span>, <span class="st">"Staurosporine"</span><span class="op">)</span></span></code></pre></div>
 <p>Now we can start with the first linear model fit <code><a href="https://rdrr.io/pkg/limma/man/lmFit.html">limma::lmFit()</a></code>. This needs the eset and the design matrix as input.</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"fit"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/lmFit.html">lmFit</a></span><span class="op">(</span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"eset"</span><span class="op">]</span><span class="op">]</span>, <span class="va">limma_list</span><span class="op">[[</span><span class="st">"design"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p>Following this, we need to indicate which comparisons we want to conduct. In the case of more than two groups or a more complex factorial design, we can indicate all interesting difference here.</p>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"contrast.matrix"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/makeContrasts.html">makeContrasts</a></span><span class="op">(</span><span class="va">Staurosporine</span><span class="op">-</span><span class="va">Control</span>, </span>
-<span>                                                          levels<span class="op">=</span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"design"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p>Now we compare both of our groups.</p>
 <div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"fit2"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/contrasts.fit.html">contrasts.fit</a></span><span class="op">(</span>fit <span class="op">=</span> <span class="va">limma_list</span><span class="op">[[</span><span class="st">"fit"</span><span class="op">]</span><span class="op">]</span>, </span>
-<span>                                               contrasts <span class="op">=</span> <span class="va">limma_list</span><span class="op">[[</span><span class="st">"contrast.matrix"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p>And finally compute our statistics.</p>
+<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"contrast.matrix"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/makeContrasts.html">makeContrasts</a></span><span class="op">(</span><span class="va">Staurosporine</span><span class="op">-</span><span class="va">Control</span>, </span>
+<span>                                                        levels<span class="op">=</span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"design"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p>Now we compare both of our groups.</p>
 <div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"fit2"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/contrasts.fit.html">contrasts.fit</a></span><span class="op">(</span>fit <span class="op">=</span> <span class="va">limma_list</span><span class="op">[[</span><span class="st">"fit"</span><span class="op">]</span><span class="op">]</span>, </span>
+<span>                                             contrasts <span class="op">=</span> <span class="va">limma_list</span><span class="op">[[</span><span class="st">"contrast.matrix"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p>And finally compute our statistics.</p>
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"fit2_eBayes"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/ebayes.html">eBayes</a></span><span class="op">(</span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"fit2"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p>The final results can be extracted with <code><a href="https://rdrr.io/pkg/limma/man/toptable.html">limma::topTable()</a></code>.</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/toptable.html">topTable</a></span><span class="op">(</span><span class="va">limma_list</span><span class="op">[[</span><span class="st">"fit2_eBayes"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="co"># %&gt;% View()</span></span></code></pre></div>
 <p>Great, we go our first results. Let’s explore how we can further work with them.</p>
 </div>
@@ -176,6 +176,57 @@ Okay, here we go. Since the analysis involves a couple of steps and I do not lik
 <h2>
 <span class="header-section-number">8.2</span> Filtering the limma output<a class="anchor" aria-label="anchor" href="#filtering-the-limma-output"><i class="fas fa-link"></i></a>
 </h2>
+<p>The <code><a href="https://rdrr.io/pkg/limma/man/toptable.html">limma::topTable()</a></code> should have given you a preview of your results. But I recommend using a different functions for this, the <code><a href="https://rdrr.io/pkg/biobroom/man/limma_tidiers.html">biobroom::tidy.MArrayLM()</a></code> function which outputs a nice <code>tibble</code>. <a href="https://bioconductor.org/packages/release/bioc/html/biobroom.html">biobroom</a> is again a Bioconductor function and it helps you with “[…] methods for converting standard objects constructed by bioinformatics packages, especially those in Bioconductor, and converting them to tidy data”.</p>
+<div class="rmdnote">
+<p>Try it out and have a look at your results!<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;And install biobroom if you do not have it yet. &lt;/p&gt;"><sup>36</sup></a></p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button42" aria-expanded="false" aria-controls="button42">
+Code
+</button>
+<div id="button42" class="collapse">
+<p><br></p>
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">results_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">biobroom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/biobroom/man/limma_tidiers.html">tidy.MArrayLM</a></span><span class="op">(</span><span class="va">results_list</span><span class="op">[[</span><span class="st">"fit2_eBayes"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p><br>
+We can <code><a href="https://rdrr.io/r/utils/View.html">View()</a></code> our results and bring the peptides with the lowest p-value to the top by clicking the <code>p.value</code> column. Still, there are still some generic terms in this data frame like <code>gene</code>. We can modify it to help its legibility.</p>
+<div class="rmdnote">
+<p>Repeat the last command but further modify the data frame by renaming the gene column to something like id and arrange the rows by p.value.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button43" aria-expanded="false" aria-controls="button43">
+Code
+</button>
+<div id="button43" class="collapse">
+<p><br></p>
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">results_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">biobroom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/biobroom/man/limma_tidiers.html">tidy.MArrayLM</a></span><span class="op">(</span><span class="va">results_list</span><span class="op">[[</span><span class="st">"fit2_eBayes"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">gene</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p><br>
+Nice, now we can look at the data more closely. A common practise when applying statistical test to many different measurements is p-value correction. The</p>
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Extract results </span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/StoreyLab/biobroom">biobroom</a></span><span class="op">)</span></span>
+<span><span class="va">results_list</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">biobroom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/biobroom/man/limma_tidiers.html">tidy.MArrayLM</a></span><span class="op">(</span><span class="va">results_list</span><span class="op">[[</span><span class="st">"fit2_eBayes"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># rename contrasts </span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="va">conditions</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">" - "</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">gene</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># Adjust p-values</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>p.adjust <span class="op">=</span> </span>
+<span>                  <span class="fu"><a href="https://rdrr.io/r/stats/p.adjust.html">p.adjust</a></span><span class="op">(</span><span class="va">p.value</span>, </span>
+<span>                           method <span class="op">=</span> <span class="va">results_list</span><span class="op">[[</span><span class="st">"par"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">p.adjust.method</span><span class="op">)</span>, </span>
+<span>                .after <span class="op">=</span> <span class="st">"p.value"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># Apply thresholds</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>regulation <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">p.adjust</span> <span class="op">&lt;</span> <span class="va">results_list</span><span class="op">[[</span><span class="st">"par"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">p.threshold</span> <span class="op">&amp;</span> </span>
+<span>      <span class="va">estimate</span> <span class="op">&gt;=</span> <span class="va">results_list</span><span class="op">[[</span><span class="st">"par"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">fc.threshold</span> <span class="op">~</span> <span class="st">"up"</span>, </span>
+<span>    <span class="va">p.adjust</span> <span class="op">&lt;</span> <span class="va">results_list</span><span class="op">[[</span><span class="st">"par"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">p.threshold</span> <span class="op">&amp;</span> </span>
+<span>      <span class="va">estimate</span> <span class="op">&lt;=</span> <span class="op">-</span> <span class="va">results_list</span><span class="op">[[</span><span class="st">"par"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">fc.threshold</span> <span class="op">~</span> <span class="st">"down"</span>, </span>
+<span>    .default <span class="op">=</span> <span class="st">"none"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="visualizing-the-limma-results" class="section level2" number="8.3">
 <h2>

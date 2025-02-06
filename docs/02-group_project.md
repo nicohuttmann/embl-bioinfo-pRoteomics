@@ -828,6 +828,20 @@ data_norm <- data_peptides_v_c %>%
   tibble::as_tibble()
 ```
 
+If this failed, it's on me! I forgot to remove the column with additional information about our peptides. This is a quick way to do so. 
+
+
+```r
+# We assign a new object 
+data_norm <- data_peptides_v_c %>% 
+  select(c(1, where(is.numeric))) %>% 
+  tibble::column_to_rownames(var = "Modified.Sequence") %>%
+  limma::normalizeBetweenArrays(method = "scale") %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = "Modified.Sequence") %>%
+  tibble::as_tibble()
+```
+
 You can find an explantion of the normalization method in the [documentation](http://web.mit.edu/~r/current/arch/i386_linux26/lib/R/library/limma/html/normalizebetweenarrays.html).
 
 </div>
@@ -967,7 +981,7 @@ Following this, we need to indicate which comparisons we want to conduct. In the
 
 ```r
 limma_list[["contrast.matrix"]] <- limma::makeContrasts(Staurosporine-Control, 
-                                                          levels=limma_list[["design"]])
+                                                        levels=limma_list[["design"]])
 ```
 
 Now we compare both of our groups. 
@@ -975,7 +989,7 @@ Now we compare both of our groups.
 
 ```r
 limma_list[["fit2"]] <- limma::contrasts.fit(fit = limma_list[["fit"]], 
-                                               contrasts = limma_list[["contrast.matrix"]])
+                                             contrasts = limma_list[["contrast.matrix"]])
 ```
 
 And finally compute our statistics. 
@@ -1000,6 +1014,72 @@ Great, we go our first results. Let's explore how we can further work with them.
 
 ## Filtering the limma output
 
+The `limma::topTable()` should have given you a preview of your results. But I recommend using a different functions for this, the `biobroom::tidy.MArrayLM()` function which outputs a nice `tibble`. [biobroom](https://bioconductor.org/packages/release/bioc/html/biobroom.html) is again a Bioconductor function and it helps you with "[...] methods for converting standard objects constructed by bioinformatics packages, especially those in Bioconductor, and converting them to tidy data".
+
+::: {.rmdnote}
+
+Try it out and have a look at your results!^[And install biobroom if you do not have it yet. ]
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button42" aria-expanded="false" aria-controls="button42"> Code </button> <div id="button42" class="collapse">  
+\
+
+
+```r
+results_list[["results"]] <- 
+  biobroom::tidy.MArrayLM(results_list[["fit2_eBayes"]])
+```
+
+</div>
+
+\
+We can `View()` our results and bring the peptides with the lowest p-value to the top by clicking the `p.value` column. Still, there are still some generic terms in this data frame like `gene`. We can modify it to help its legibility. 
+
+::: {.rmdnote}
+
+Repeat the last command but further modify the data frame by renaming the gene column to something like id and arrange the rows by p.value.
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button43" aria-expanded="false" aria-controls="button43"> Code </button> <div id="button43" class="collapse">  
+\
+
+
+```r
+results_list[["results"]] <- biobroom::tidy.MArrayLM(results_list[["fit2_eBayes"]]) %>% 
+  dplyr::rename(id = gene) %>% 
+  dplyr::arrange(p.value)
+```
+
+</div>
+
+\
+Nice, now we can look at the data more closely. A common practise when applying statistical test to many different measurements is p-value correction. The 
+
+
+```r
+# Extract results 
+require(biobroom)
+results_list[["results"]] <- biobroom::tidy.MArrayLM(results_list[["fit2_eBayes"]]) %>% 
+  # rename contrasts 
+  dplyr::mutate(term = paste(rev(conditions), collapse = " - ")) %>% 
+  dplyr::rename(id = gene) %>% 
+  dplyr::arrange(p.value) %>% 
+  # Adjust p-values
+  dplyr::mutate(p.adjust = 
+                  p.adjust(p.value, 
+                           method = results_list[["par"]]$p.adjust.method), 
+                .after = "p.value") %>% 
+  # Apply thresholds
+  dplyr::mutate(regulation = dplyr::case_when(
+    p.adjust < results_list[["par"]]$p.threshold & 
+      estimate >= results_list[["par"]]$fc.threshold ~ "up", 
+    p.adjust < results_list[["par"]]$p.threshold & 
+      estimate <= - results_list[["par"]]$fc.threshold ~ "down", 
+    .default = "none"
+  ))
+```
 
 
 
