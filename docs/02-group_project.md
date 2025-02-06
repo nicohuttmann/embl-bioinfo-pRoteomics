@@ -1237,6 +1237,8 @@ limma_list[["p"]]
 \
 Great, this basically covered most parameters you can change for plotting in R with `ggplot2`. It may take some time to get comfortable with all functions and get to know all possibilities, but then there are no limits!
 
+You can find much more information in the [Data visualization](https://r4ds.hadley.nz/data-visualize) chapter or the in depth [Layers](https://r4ds.hadley.nz/layers) chapter. Further readings would be [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/) and the formal description of the system we are using here, [A Layered Grammar of Graphics](https://vita.had.co.nz/papers/layered-grammar.pdf).
+
 ## Summary
 
 In this chapter, we applied a package `limma` to analyse our data and represented the results in one plot. `limma` is one of the more complicated packages to use IMO, but still very useful and a good exercise. 
