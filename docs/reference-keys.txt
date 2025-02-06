@@ -32,6 +32,10 @@ count-missing-values-and-further-filter-data
 optional-normalize-the-data
 save-your-data
 limma-analysis
+running-limma
+filtering-the-limma-output
+visualizing-the-limma-results
+summary-1
 reporting-results
 more-data-exploration
 appendix-appendix

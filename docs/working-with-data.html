@@ -616,70 +616,147 @@ In the first part of the exercise, we want the samples to stay as rows.</p>
 <h3>
 <span class="header-section-number">7.4.6</span> Count missing values and further filter data<a class="anchor" aria-label="anchor" href="#count-missing-values-and-further-filter-data"><i class="fas fa-link"></i></a>
 </h3>
-<p>We have some pretty nice data frames by now. Let’s check them and start to attack our biggest enemy in data science, missing values. There are many approaches to</p>
+<p>We have some pretty nice data frames by now. Let’s check them and start to attack our biggest enemy in data science, missing values. There are many approaches to handle missing values, the simplest one to remove all data with missing values. In our case, all peptides with missing values.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Depending on the data, you may loose too much, but for the beginning this is fine and only with better understanding of the data would we try and include more peptides with missing values.&lt;/p&gt;"><sup>29</sup></a></p>
+<p>In principle, both data frames <code>data_peptides_o</code> and <code>data_peptides_v</code> could be used for this task. We will use <code>data_peptides_v</code> for now. First we need to identify the form of our missing values, they can be <code>NA</code>s or 0s. Let’s count them with the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise()</a></code> function in combination with <code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across()</a></code>.</p>
+<div class="rmdnote">
+<p>Read into how you can use <code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across()</a></code> to target multiple columns at a time and 1. count <code>NA</code>s and 2. 0s.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button32" aria-expanded="false" aria-controls="button32">
+Hint - summarise across
+</button>
+<div id="button32" class="collapse">
+<p><br><code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across()</a></code> allows us to specify the column we want to modify similar to the <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code> function with <code><a href="https://tidyselect.r-lib.org/reference/where.html">dplyr::where()</a></code> and a function like <code><a href="https://rdrr.io/r/base/numeric.html">is.numeric()</a></code>. The second part of the <code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across()</a></code> function needs a function which will be applied to each column separately. In our case, this function should count the number of <code>NA</code>s or 0s.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button33" aria-expanded="false" aria-controls="button33">
+Hint - 0
+</button>
+<div id="button33" class="collapse">
+<p><br><code>NA</code>s and regular values, including 0, sometimes behave different. We need to take this into account when counting the 0s in our data.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button34" aria-expanded="false" aria-controls="button34">
+Code
+</button>
+<div id="button34" class="collapse">
+<p><br></p>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># Optionally we can directly View the output of this computation</span></span>
+<span><span class="co"># %&gt;% View()</span></span></code></pre></div>
+<p>The first thing we see is that yes, we do have <code>NA</code>s in our data. But these numbers are not very telling. We can replace <code><a href="https://rdrr.io/r/base/sum.html">sum()</a></code> with <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code> to get the fraction of <code>NA</code>s in our data.</p>
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>When counting the number of 0s in our data, this is how I would intuitively do it.</p>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>However, this will fail due to the <code>NA</code>s in our data. One quick and dirty workaround would be to temporarily set all <code>NA</code>s to 1.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;I only do this to show you how mutate across works.&lt;/p&gt;"><sup>30</sup></a></p>
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># First we replace all NAs by 1 with the combination of mutate and across</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fl">1</span>, <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># then we can count the 0s without any trouble</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Now we first transformed all <code>NA</code>s to 0s, and then continued with our computation. in addition to mutate across, we also used the function <code><a href="https://rdrr.io/r/base/ifelse.html">ifelse()</a></code> which is very helpful, when you want to do different operations on you values depending on the value itself. Here, we test for each value of <code>x</code> if it is an <code>NA</code> by <code>is.na(x)</code> and return 1 if the statement is true or the value itself if not.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;This is reflected by having &lt;code&gt;x&lt;/code&gt; twice in &lt;code&gt;ifelse()&lt;/code&gt;, in the test statement and the return condition.&lt;/p&gt;"><sup>31</sup></a></p>
+<p>Besides this, we have an answer to our initial question, we only have missing values in form of <code>NA</code>s.</p>
+</div>
+<p>Now to actually dealing with the data. We already said that we want to simply exclude peptides with missing values. Above, we counted the number of <code>NA</code>s per sample. Now, we need to do the same but for each peptide individually.</p>
+<div class="rmdnote">
+<p>Count the number of missing values per peptide/row using mutate and the <code><a href="https://dplyr.tidyverse.org/reference/c_across.html">dplyr::c_across()</a></code> function to add a column <code>f_values</code><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;fraction of values&lt;/p&gt;"><sup>32</sup></a> to <code>data_peptides_v</code>. Assign the new data frame to <code>data_peptides_v_c</code><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;c for complete&lt;/p&gt;"><sup>33</sup></a>.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button35" aria-expanded="false" aria-controls="button35">
+Hint
+</button>
+<div id="button35" class="collapse">
+<p><br>
+Wasn’t this description quite detailed. Anyway, <code><a href="https://dplyr.tidyverse.org/reference/c_across.html">dplyr::c_across()</a></code> work similar to the <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code> function. And you have to make sure, to mutate row-wise.</p>
+</div>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button36" aria-expanded="false" aria-controls="button36">
+Code
+</button>
+<div id="button36" class="collapse">
+<p><br>
+Let’s fist count the number of missing values per peptide</p>
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>f_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/c_across.html">c_across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>         .by <span class="op">=</span> <span class="st">"Modified.Sequence"</span>, .after <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># .after and .before define the position of the new column</span></span>
+<span><span class="co"># %&gt;% View()</span></span></code></pre></div>
+<p>We can also visualize the distribution.</p>
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>f_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/c_across.html">c_across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>         .by <span class="op">=</span> <span class="st">"Modified.Sequence"</span>, .after <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">f_values</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Inverting to counting values looks actually better here. We can achive this by invering the logical statement with <code>!</code>.</p>
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># mean(is.na(... -&gt; mean(!is.na(...</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>f_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/c_across.html">c_across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>         .by <span class="op">=</span> <span class="st">"Modified.Sequence"</span>, .after <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">f_values</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>And now we filter the table.</p>
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>f_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/c_across.html">c_across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>         .by <span class="op">=</span> <span class="st">"Modified.Sequence"</span>, .after <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">f_values</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># Here we could adjust the threshold </span></span>
+<span><span class="co"># 1 means no NAs</span></span></code></pre></div>
+<p>Mutating and filtering can also be combined.</p>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_peptides_v_c</span> <span class="op">&lt;-</span> <span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/c_across.html">c_across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span>, </span>
+<span>         .by <span class="op">=</span> <span class="st">"Modified.Sequence"</span><span class="op">)</span></span></code></pre></div>
+<p>You could finally compare the number of peptides in <code>data_peptides_v</code> and <code>data_peptides_v_c</code> to see how many peptides were filtered out.</p>
+</div>
 </div>
 <div id="optional-normalize-the-data" class="section level3" number="7.4.7">
 <h3>
 <span class="header-section-number">7.4.7</span> (Optional) Normalize the data<a class="anchor" aria-label="anchor" href="#optional-normalize-the-data"><i class="fas fa-link"></i></a>
 </h3>
+<p>We were already working with a column named <code>Precursor.Normalised</code>, which suggests this data is somehow normalized, but sometimes renormalizing makes sense and in general there are enough cases where normalization is essential. In general, we want to eliminate systematic factor between our samples. This means when dividing all peptide values of one sample by the ones of another sample, the median factor should be one. This is based on the assumption that the bulk of our data does not change between conditions.</p>
+<p>We will use the <code>limma</code> function <code><a href="https://rdrr.io/pkg/limma/man/normalizebetweenarrays.html">limma::normalizeBetweenArrays()</a></code> to normalize our data. You could try and figure out how to use it, however, it took me quite some time and involves a couple of uncommon functions to get the data into the right shape. Basically the <code><a href="https://rdrr.io/pkg/limma/man/normalizebetweenarrays.html">limma::normalizeBetweenArrays()</a></code> accepts a matrix with variables/peptides as rows. So let’s simply have a look at the code.</p>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button37" aria-expanded="false" aria-controls="button37">
+Code
+</button>
+<div id="button37" class="collapse">
+<p><br></p>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># We assign a new object </span></span>
+<span><span class="va">data_norm</span> <span class="op">&lt;-</span> <span class="va">data_peptides_v_c</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># Column_to_rownames allows us to make a matrix from our tibble </span></span>
+<span>  <span class="co"># and store the character column 'Modified.Sequence' as rownames</span></span>
+<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">column_to_rownames</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"Modified.Sequence"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="co"># Normalization with the scale-method = median-normalization</span></span>
+<span>  <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/normalizebetweenarrays.html">normalizeBetweenArrays</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"scale"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="co"># The following lines revert the matrix to a tibble</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rownames_to_column</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"Modified.Sequence"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>You can find an explantion of the normalization method in the <a href="http://web.mit.edu/~r/current/arch/i386_linux26/lib/R/library/limma/html/normalizebetweenarrays.html">documentation</a>.</p>
+</div>
+<p>We can explore the impact of renormalizing our data later by calculating the coefficient of variance (CV) for both group and doing a PCA analysis of both data frames.</p>
+<p>Our data looks pretty good by now and is ready for a Limma analysis to identify which peptides were affected in their abundance by the drug treatment. Now we can simply see how to we can store our data when done working and simply reopen it when sitting down again.</p>
 </div>
 </div>
 <div id="save-your-data" class="section level2" number="7.5">
 <h2>
 <span class="header-section-number">7.5</span> Save your data<a class="anchor" aria-label="anchor" href="#save-your-data"><i class="fas fa-link"></i></a>
 </h2>
-<p>Once your raw data is imported and you have some first data transformation done, we can break up our code into a separate script.</p>
-<p>For this we need to save our <code>R Environment</code> to keep all data objects together. Before that, it can be useful to delete intermediate objects and evertyhing you do not need anymore.</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<p>Once your raw data is imported and you have some first data transformation done, we could clean up our environment and break up our code into a separate script.</p>
+<p>For this we need to save our <code>R Environment</code> to keep all data objects together. Before that, it can be useful to delete intermediate objects and everything you do not need anymore.</p>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Clean environment</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span>list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Save RData</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/save.html">save.image</a></span><span class="op">(</span><span class="st">"Data/RData/00_Import_data.RData"</span><span class="op">)</span></span></code></pre></div>
-<p>Now, everything is saved and can be conveniently accessed later again. This is also a nice way to share your data with others.</p>
-<!-- ```{r} -->
-<!-- # Check input -->
-<!--   if (all(c(Q.Value,  -->
-<!--             PG.Q.Value,  -->
-<!--             Lib.Q.Value,  -->
-<!--             Lib.PG.Q.Value,  -->
-<!--             protein.q,  -->
-<!--             gg.q) == 0))  -->
-<!--     stop("All your q-value cutoffs are 1, please change them according to your study.") -->
-<!--   # Filter precursors by proteotypicity -->
-<!--   if (proteotypic.only)  -->
-<!--     data_raw_filtered <- data_raw %>%  -->
-<!--       filter(Proteotypic != 0) -->
-<!--   else  -->
-<!--     data_raw_filtered <- data_raw -->
-<!--   # Filter precursors by Q-values -->
-<!--   data_raw_filtered <- data_raw_filtered %>%  -->
-<!--     filter(Q.Value <= Q.Value,  -->
-<!--            PG.Q.Value <= PG.Q.Value,  -->
-<!--            Lib.Q.Value <= Lib.Q.Value,  -->
-<!--            Lib.PG.Q.Value <= Lib.PG.Q.Value) -->
-<!--   # Extract quantitative data -->
-<!--   # Rename runs  -->
-<!--   data_raw_filtered <- data_raw_filtered %>%  -->
-<!--     mutate(Run = setNames(names(sample_names), unname(sample_names))[Run]) %>%  -->
-<!--     arrange(Run) -->
-<!--   # Summarise precursors to modified peptides  -->
-<!--   data_quant <- data_raw_filtered %>%   -->
-<!--     summarise(!!quant_column := sum(!!rlang::sym(quant_column)),  -->
-<!--               .by = c("Run", peptide.id))  -->
-<!--   # Add group information  -->
-<!--   data_quant <- data_quant %>%  -->
-<!--     mutate(Group = setNames(sample_groups, names(sample_names))[Run],  -->
-<!--            .after = "Run") %>%  -->
-<!--     mutate(n = sum(!!rlang::sym(quant_column) > 0), .by = c(peptide.id, "Group")) %>%  -->
-<!--     mutate(p = n / max(n), .by = "Group") %>%  -->
-<!--     filter(all(p >= min_val_per_group), .by = peptide.id) %>% ##### Check this  -->
-<!--     mutate(n_peptide = length(Run), .by = peptide.id) %>%  -->
-<!--     filter(n_peptide == max(n_peptide)) %>%  -->
-<!--     pivot_wider(id_cols = "Run",  -->
-<!--                 names_from = peptide.id,  -->
-<!--                 values_from = quant_column) -->
-<!-- ``` -->
+<p>Now, everything is saved and can be conveniently accessed later again by loading the data into your environment with <code>load("Data/RData/00_Import_data.RData")</code>. This is also a nice way to share your data with others.</p>
 </div>
 </div>
 
@@ -727,7 +804,7 @@ In the first part of the exercise, we want the samples to stay as rows.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Data Analysis in R</strong>" was written by Nico Hüttmann. It was last built on 2025-02-05.</p>
+    <p>"<strong>Data Analysis in R</strong>" was written by Nico Hüttmann. It was last built on 2025-02-06.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

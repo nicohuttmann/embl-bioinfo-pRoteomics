@@ -683,17 +683,165 @@ This does not work when retaining the samples as rows.
 
 ### Count missing values and further filter data 
 
-We have some pretty nice data frames by now. Let's check them and start to attack our biggest enemy in data science, missing values. There are many approaches to 
+We have some pretty nice data frames by now. Let's check them and start to attack our biggest enemy in data science, missing values. There are many approaches to handle missing values, the simplest one to remove all data with missing values. In our case, all peptides with missing values.^[Depending on the data, you may loose too much, but for the beginning this is fine and only with better understanding of the data would we try and include more peptides with missing values.]
+
+In principle, both data frames `data_peptides_o` and `data_peptides_v` could be used for this task. We will use `data_peptides_v` for now. First we need to identify the form of our missing values, they can be `NA`s or 0s. Let's count them with the `dplyr::summarise()` function in combination with `dplyr::across()`. 
+
+::: {.rmdnote}
+
+Read into how you can use `dplyr::across()` to target multiple columns at a time and 1. count `NA`s and 2. 0s. 
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button32" aria-expanded="false" aria-controls="button32"> Hint - summarise across </button> <div id="button32" class="collapse">  
+\
+`dplyr::across()` allows us to specify the column we want to modify similar to the `dplyr::select()` function with `dplyr::where()` and a function like `is.numeric()`. The second part of the `dplyr::across()` function needs a function which will be applied to each column separately. In our case, this function should count the number of `NA`s or 0s.
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button33" aria-expanded="false" aria-controls="button33"> Hint - 0 </button> <div id="button33" class="collapse">  
+\
+`NA`s and regular values, including 0, sometimes behave different. We need to take this into account when counting the 0s in our data. 
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button34" aria-expanded="false" aria-controls="button34"> Code </button> <div id="button34" class="collapse">  
+\
+
+
+```r
+data_peptides_v %>% 
+  summarise(across(where(is.numeric), \(x) sum(is.na(x))))
+# Optionally we can directly View the output of this computation
+# %>% View()
+```
+The first thing we see is that yes, we do have `NA`s in our data. But these numbers are not very telling. We can replace `sum()` with `mean()` to get the fraction of `NA`s in our data. 
+
+```r
+data_peptides_v %>% 
+  summarise(across(where(is.numeric), \(x) mean(is.na(x))))
+```
+When counting the number of 0s in our data, this is how I would intuitively do it.
+
+```r
+data_peptides_v %>% 
+  summarise(across(where(is.numeric), \(x) mean(x == 0)))
+```
+However, this will fail due to the `NA`s in our data. One quick and dirty workaround would be to temporarily set all `NA`s to 1.^[I only do this to show you how mutate across works.]
+
+```r
+data_peptides_v %>% 
+  # First we replace all NAs by 1 with the combination of mutate and across
+  mutate(across(where(is.numeric), \(x) ifelse(is.na(x), 1, x))) %>% 
+  # then we can count the 0s without any trouble
+  summarise(across(where(is.numeric), \(x) mean(x == 0)))
+```
+Now we first transformed all `NA`s to 0s, and then continued with our computation. in addition to mutate across, we also used the function `ifelse()` which is very helpful, when you want to do different operations on you values depending on the value itself. Here, we test for each value of `x` if it is an `NA` by `is.na(x)` and return 1 if the statement is true or the value itself if not.^[This is reflected by having `x` twice in `ifelse()`, in the test statement and the return condition.]
+
+Besides this, we have an answer to our initial question, we only have missing values in form of `NA`s. 
+</div>
+
+Now to actually dealing with the data. We already said that we want to simply exclude peptides with missing values. Above, we counted the number of `NA`s per sample. Now, we need to do the same but for each peptide individually. 
+
+::: {.rmdnote}
+
+Count the number of missing values per peptide/row using mutate and the `dplyr::c_across()` function to add a column `f_values`^[fraction of values] to `data_peptides_v`. Assign the new data frame to `data_peptides_v_c`^[c for complete]. 
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button35" aria-expanded="false" aria-controls="button35"> Hint </button> <div id="button35" class="collapse">  
+\
+Wasn't this description quite detailed. Anyway, `dplyr::c_across()` work similar to the `dplyr::select()` function. And you have to make sure, to mutate row-wise.
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button36" aria-expanded="false" aria-controls="button36"> Code </button> <div id="button36" class="collapse">  
+\
+Let's fist count the number of missing values per peptide
+
+```r
+data_peptides_v %>% 
+  mutate(f_values = mean(is.na(c_across(where(is.numeric)))), 
+         .by = "Modified.Sequence", .after = 1) # .after and .before define the position of the new column
+# %>% View()
+```
+We can also visualize the distribution.
+
+```r
+data_peptides_v %>% 
+  mutate(f_values = mean(is.na(c_across(where(is.numeric)))), 
+         .by = "Modified.Sequence", .after = 1) %>% 
+  pull(f_values) %>% 
+  table() %>% 
+  barplot()
+```
+Inverting to counting values looks actually better here. We can achive this by invering the logical statement with `!`.
+
+```r
+data_peptides_v %>% 
+  # mean(is.na(... -> mean(!is.na(...
+  mutate(f_values = mean(!is.na(c_across(where(is.numeric)))), 
+         .by = "Modified.Sequence", .after = 1) %>% 
+  pull(f_values) %>% 
+  table() %>% 
+  barplot()
+```
+And now we filter the table.
+
+```r
+data_peptides_v %>% 
+  mutate(f_values = mean(!is.na(c_across(where(is.numeric)))), 
+         .by = "Modified.Sequence", .after = 1) %>% 
+  filter(f_values == 1) # Here we could adjust the threshold 
+# 1 means no NAs
+```
+Mutating and filtering can also be combined. 
+
+```r
+data_peptides_v_c <- data_peptides_v %>% 
+  filter(mean(!is.na(c_across(where(is.numeric)))) == 1, 
+         .by = "Modified.Sequence")
+```
+
+You could finally compare the number of peptides in `data_peptides_v` and `data_peptides_v_c` to see how many peptides were filtered out.  
+</div>
+
 
 ### (Optional) Normalize the data 
 
+We were already working with a column named `Precursor.Normalised`, which suggests this data is somehow normalized, but sometimes renormalizing makes sense and in general there are enough cases where normalization is essential. In general, we want to eliminate systematic factor between our samples. This means when dividing all peptide values of one sample by the ones of another sample, the median factor should be one. This is based on the assumption that the bulk of our data does not change between conditions. 
+
+We will use the `limma` function `limma::normalizeBetweenArrays()` to normalize our data. You could try and figure out how to use it, however, it took me quite some time and involves a couple of uncommon functions to get the data into the right shape. Basically the `limma::normalizeBetweenArrays()` accepts a matrix with variables/peptides as rows. So let's simply have a look at the code. 
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button37" aria-expanded="false" aria-controls="button37"> Code </button> <div id="button37" class="collapse">  
+\
+
+
+```r
+# We assign a new object 
+data_norm <- data_peptides_v_c %>% 
+  # Column_to_rownames allows us to make a matrix from our tibble 
+  # and store the character column 'Modified.Sequence' as rownames
+  tibble::column_to_rownames(var = "Modified.Sequence") %>%
+  # Normalization with the scale-method = median-normalization
+  limma::normalizeBetweenArrays(method = "scale") %>%
+  # The following lines revert the matrix to a tibble
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = "Modified.Sequence") %>%
+  tibble::as_tibble()
+```
+
+You can find an explantion of the normalization method in the [documentation](http://web.mit.edu/~r/current/arch/i386_linux26/lib/R/library/limma/html/normalizebetweenarrays.html).
+
+</div>
+
+We can explore the impact of renormalizing our data later by calculating the coefficient of variance (CV) for both group and doing a PCA analysis of both data frames. 
+
+Our data looks pretty good by now and is ready for a Limma analysis to identify which peptides were affected in their abundance by the drug treatment. Now we can simply see how to we can store our data when done working and simply reopen it when sitting down again. 
 
 
 ## Save your data 
 
-Once your raw data is imported and you have some first data transformation done, we can break up our code into a separate script. 
+Once your raw data is imported and you have some first data transformation done, we could clean up our environment and break up our code into a separate script. 
 
-For this we need to save our `R Environment` to keep all data objects together. Before that, it can be useful to delete intermediate objects and evertyhing you do not need anymore.
+For this we need to save our `R Environment` to keep all data objects together. Before that, it can be useful to delete intermediate objects and everything you do not need anymore.
 
 ```r
 # Clean environment
@@ -703,76 +851,78 @@ rm(list = c())
 save.image("Data/RData/00_Import_data.RData")
 ```
 
-Now, everything is saved and can be conveniently accessed later again. This is also a nice way to share your data with others. 
-
-
-<!-- ```{r} -->
-<!-- # Check input -->
-<!--   if (all(c(Q.Value,  -->
-<!--             PG.Q.Value,  -->
-<!--             Lib.Q.Value,  -->
-<!--             Lib.PG.Q.Value,  -->
-<!--             protein.q,  -->
-<!--             gg.q) == 0))  -->
-<!--     stop("All your q-value cutoffs are 1, please change them according to your study.") -->
-
-
-<!--   # Filter precursors by proteotypicity -->
-<!--   if (proteotypic.only)  -->
-<!--     data_raw_filtered <- data_raw %>%  -->
-<!--       filter(Proteotypic != 0) -->
-<!--   else  -->
-<!--     data_raw_filtered <- data_raw -->
-
-<!--   # Filter precursors by Q-values -->
-<!--   data_raw_filtered <- data_raw_filtered %>%  -->
-<!--     filter(Q.Value <= Q.Value,  -->
-<!--            PG.Q.Value <= PG.Q.Value,  -->
-<!--            Lib.Q.Value <= Lib.Q.Value,  -->
-<!--            Lib.PG.Q.Value <= Lib.PG.Q.Value) -->
-
-<!--   # Extract quantitative data -->
-
-<!--   # Rename runs  -->
-<!--   data_raw_filtered <- data_raw_filtered %>%  -->
-<!--     mutate(Run = setNames(names(sample_names), unname(sample_names))[Run]) %>%  -->
-<!--     arrange(Run) -->
-
-<!--   # Summarise precursors to modified peptides  -->
-<!--   data_quant <- data_raw_filtered %>%   -->
-<!--     summarise(!!quant_column := sum(!!rlang::sym(quant_column)),  -->
-<!--               .by = c("Run", peptide.id))  -->
-
-<!--   # Add group information  -->
-<!--   data_quant <- data_quant %>%  -->
-<!--     mutate(Group = setNames(sample_groups, names(sample_names))[Run],  -->
-<!--            .after = "Run") %>%  -->
-<!--     mutate(n = sum(!!rlang::sym(quant_column) > 0), .by = c(peptide.id, "Group")) %>%  -->
-<!--     mutate(p = n / max(n), .by = "Group") %>%  -->
-<!--     filter(all(p >= min_val_per_group), .by = peptide.id) %>% ##### Check this  -->
-<!--     mutate(n_peptide = length(Run), .by = peptide.id) %>%  -->
-<!--     filter(n_peptide == max(n_peptide)) %>%  -->
-<!--     pivot_wider(id_cols = "Run",  -->
-<!--                 names_from = peptide.id,  -->
-<!--                 values_from = quant_column) -->
-
-
-
-
-<!-- ``` -->
-
-
+Now, everything is saved and can be conveniently accessed later again by loading the data into your environment with `load("Data/RData/00_Import_data.RData")`. This is also a nice way to share your data with others. 
 
 
 # Limma analysis
 
-__Coming on Thursday__
+Here we are, after wrangling two days with our data, making it pretty and tidy without ever seeing a heatmap of it, ready to do a differential abundance analysis with [limma](https://pmc.ncbi.nlm.nih.gov/articles/PMC4402510/). *limma* is a tool originally developed for microarray analysis, which works just as well for proteomics data.^[Yes, proteomics started by borrowing tools from the RNA people..] We will use it to identify, which peptides have a different abundance between the two sample groups. 
 
-<!-- https://kasperdanielhansen.github.io/genbioconductor/html/limma.html -->
+## Running limma
 
-<!-- https://www.bioconductor.org/packages/devel/bioc/vignettes/limma/inst/doc/usersguide.pdf -->
+You can find the [limma package](https://bioconductor.org/packages/release/bioc/html/limma.html) on Bioconductor. Check out the website and find 1. how to install it, 2. the limma User's Guide and 3. the Reference Manual.^[You can leave out 'A brief introduction to limma'] All Bioconductor package pages are made up this way and allow us to find the relevant information quickly. Except in this case. 
 
-<!-- (https://www.bioconductor.org/packages/devel/bioc/vignettes/limma/inst/doc/usersguide.pdf) -->
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button38" aria-expanded="false" aria-controls="button38"> Code + Links </button> <div id="button38" class="collapse">  
+\
+
+
+```r
+# Install BiocManager if not yet installed
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+# Install limma
+BiocManager::install("limma")
+```
+
+[limma User's Guide](https://bioconductor.org/packages/release/bioc/vignettes/limma/inst/doc/usersguide.pdf) and [Reference Manual](https://bioconductor.org/packages/release/bioc/manuals/limma/man/limma.pdf)
+
+</div>
+
+\
+Admittedly, this is not very helpful yet. For other packages, you can find a much more concise documentation and commonly one or more workflow descriptions depending on what you want to do. [This guide](https://kasperdanielhansen.github.io/genbioconductor/html/limma.html) seems a bit more practical and can be applied to our data. 
+
+::: {.rmdnote}
+
+Let's make this a real world example! Try and apply a `limma` analysis to your data. Use the explanations in [this guide](https://kasperdanielhansen.github.io/genbioconductor/html/limma.html) and on page 36/37 of the [limma User's Guide](https://bioconductor.org/packages/release/bioc/vignettes/limma/inst/doc/usersguide.pdf). Help for individual functions can be found in the [Reference Manual](https://bioconductor.org/packages/release/bioc/manuals/limma/man/limma.pdf) and with the known `?limma::lmFit`. 
+
+The final goal is to use the `limma::topTable()` function to extract the results. Have fun and good luck!
+
+:::
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button39" aria-expanded="false" aria-controls="button39"> Solution </button> <div id="button39" class="collapse">  
+\
+Are you sure you want to give up already?
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button40" aria-expanded="false" aria-controls="button40"> No </button> <div id="button40" class="collapse">  
+\
+Great! Just continue trying out something and it will eventually work. In the worst case, you could use ChatG...NO, please don't do this. 
+
+</div>
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button41" aria-expanded="false" aria-controls="button41"> Yes </button> <div id="button41" class="collapse">  
+\
+This will be added by 11 am.
+
+
+</div>
+
+</div>
+
+
+## Filtering the limma output
+
+
+
+
+
+## Visualizing the limma results 
+
+
+
+## Summary
+
+
+
 
 # Reporting results 
 
@@ -785,7 +935,7 @@ __Coming on Thursday.__
 
 # More data exploration 
 
-__Coming on Thursday.__
+__We'll design this chapter together.__
 
 
 

@@ -1,7 +1,7 @@
 --- 
 title: "Data Analysis in R"
 author: "Nico Hüttmann"
-date: "2025-02-05"
+date: "2025-02-06"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
