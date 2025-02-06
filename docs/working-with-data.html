@@ -1,33 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Chapter 7 Working with data | Data Analysis in R</title>
-<meta name="author" content="Nico Hüttmann">
-<meta name="description" content="Finally, it’s happening. We are beginning to work with real data and you can apply all your new knowledge right away.  7.1 Prepare your project Let’s start with opening a fresh R project, making a...">
-<meta name="generator" content="bookdown 0.38 with bs4_book()">
-<meta property="og:title" content="Chapter 7 Working with data | Data Analysis in R">
-<meta property="og:type" content="book">
-<meta property="og:description" content="Finally, it’s happening. We are beginning to work with real data and you can apply all your new knowledge right away.  7.1 Prepare your project Let’s start with opening a fresh R project, making a...">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chapter 7 Working with data | Data Analysis in R">
-<meta name="twitter:description" content="Finally, it’s happening. We are beginning to work with real data and you can apply all your new knowledge right away.  7.1 Prepare your project Let’s start with opening a fresh R project, making a...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.7.0/transition.js"></script><script src="libs/bs3compat-0.7.0/tabs.js"></script><script src="libs/bs3compat-0.7.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Chapter 7 Working with data | Data Analysis in R</title>
+
+    <meta name="author" content="Nico Hüttmann" />
+  
+   <meta name="description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::bs4_book,
+set in the _output.yml file.</p>" />
+   <meta name="generator" content="placeholder" />
+  <meta property="og:title" content="Chapter 7 Working with data | Data Analysis in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::bs4_book,
+set in the _output.yml file.</p>" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 7 Working with data | Data Analysis in R" />
+  
+  <meta name="twitter:description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::bs4_book,
+set in the _output.yml file.</p>" />
+  
+  <!-- JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script>
+    <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
+    <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
+    <script src="libs/bs3compat-0.7.0/transition.js"></script>
+    <script src="libs/bs3compat-0.7.0/tabs.js"></script>
+    <script src="libs/bs3compat-0.7.0/bs3compat.js"></script>
+    <link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet" />
+    <script src="libs/bs4_book-1.0.0/bs4_book.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script>
+
+  <!-- CSS -->
+  <style type="text/css">
     
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   </style>
-<link rel="stylesheet" href="style.css">
+      <link rel="stylesheet" href="style.css" />
+  
 </head>
+
 <body data-spy="scroll" data-target="#toc">
 
 <div class="container-fluid">
 <div class="row">
-  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book">
+    <a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
 
     <div class="d-flex align-items-start justify-content-between">
       <h1>
@@ -39,42 +69,25 @@
     <div id="main-nav" class="collapse-lg">
       <form role="search">
         <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
-</form>
+      </form>
 
-      <nav aria-label="Table of contents"><h2>Table of contents</h2>
-        <ul class="book-toc list-unstyled">
-<li><a class="" href="index.html">Preface</a></li>
-<li class="book-part">R Basics</li>
-<li><a class="" href="r-and-rstudio.html"><span class="header-section-number">1</span> R and RStudio</a></li>
-<li><a class="" href="how-does-r-work.html"><span class="header-section-number">2</span> How does R work?</a></li>
-<li><a class="" href="r-packages.html"><span class="header-section-number">3</span> R packages</a></li>
-<li><a class="" href="the-tidyverse.html"><span class="header-section-number">4</span> The tidyverse</a></li>
-<li><a class="" href="coding-style.html"><span class="header-section-number">5</span> Coding style</a></li>
-<li class="book-part">Group Work Project</li>
-<li><a class="" href="our-project.html"><span class="header-section-number">6</span> Our project</a></li>
-<li><a class="active" href="working-with-data.html"><span class="header-section-number">7</span> Working with data</a></li>
-<li><a class="" href="limma-analysis.html"><span class="header-section-number">8</span> Limma analysis</a></li>
-<li><a class="" href="reporting-results.html"><span class="header-section-number">9</span> Reporting results</a></li>
-<li><a class="" href="more-data-exploration.html"><span class="header-section-number">10</span> More data exploration</a></li>
-<li class="book-part">Appendix</li>
-<li><a class="" href="version-control-with-github.html"><span class="header-section-number">A</span> Version control with GitHub</a></li>
-<li><a class="" href="references.html">References</a></li>
-</ul>
+      <nav aria-label="Table of contents">
+        <h2>Table of contents</h2>
+        <div id="book-toc"></div>
 
         <div class="book-extra">
-          <p><a id="book-repo" href="https://github.com/nicohuttmann/embl-bioinfo-pRoteomics">View book source <i class="fab fa-github"></i></a></p>
+          <p><a id="book-repo" href="#">View book source <i class="fab fa-github"></i></a></li></p>
         </div>
       </nav>
-</div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="working-with-data" class="section level1" number="7">
-<h1>
-<span class="header-section-number">7</span> Working with data<a class="anchor" aria-label="anchor" href="#working-with-data"><i class="fas fa-link"></i></a>
-</h1>
+    </div>
+  </header>
+
+  <main class="col-sm-12 col-md-9 col-lg-7" id="content">
+<div id="working-with-data" class="section level1" number="7">
+<h1><span class="header-section-number">Chapter 7</span> Working with data</h1>
 <p>Finally, it’s happening. We are beginning to work with real data and you can apply all your new knowledge right away.</p>
 <div id="prepare-your-project" class="section level2" number="7.1">
-<h2>
-<span class="header-section-number">7.1</span> Prepare your project<a class="anchor" aria-label="anchor" href="#prepare-your-project"><i class="fas fa-link"></i></a>
-</h2>
+<h2><span class="header-section-number">7.1</span> Prepare your project</h2>
 <p>Let’s start with opening a fresh R project, making a nice folder structure and opening our first <strong>script</strong>. Which kind of script is up to you, both <strong>R</strong> and <strong>R Markdown</strong> work equally well, try and find your preference here.</p>
 <div class="rmdnote">
 <p>Start your project as described above and save your first script under a name like ‘R_group_project’ in the Scripts folder. Choose a name you like.</p>
@@ -83,27 +96,24 @@
 Hint
 </button>
 <div id="button4" class="collapse">
-<p><br>
+<p><br />
 You can choose what kind of script you want to have by clicking File -&gt; New File -&gt; R Script/R Markdown…/etc.</p>
 <p>To save it, press the blue button on top of the script that says Save current document.</p>
 </div>
-<p><br>
+<p><br />
 Having our first script ready to code, let’s make it nicer. I would suggest to briefly describe what the script contains and start loading the first packages.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># </span></span>
-<span><span class="co"># R Group Project</span></span>
-<span><span class="co"># Analysis of LC-MS/MS PELSA data to identify kinases </span></span>
-<span><span class="co"># </span></span>
-<span></span>
-<span><span class="co"># Load libraries</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span></code></pre></div>
-<p>Leave an empty lines on top, it will look more professional. You can then also use the <code>#</code> or multiple <code>##</code>s in R scripts as comments<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;text which is not evaluated as code&lt;/p&gt;"><sup>21</sup></a> or as headings in your R Markdown script.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="working-with-data.html#cb27-1" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb27-2"><a href="working-with-data.html#cb27-2" tabindex="-1"></a><span class="co"># R Group Project</span></span>
+<span id="cb27-3"><a href="working-with-data.html#cb27-3" tabindex="-1"></a><span class="co"># Analysis of LC-MS/MS PELSA data to identify kinases </span></span>
+<span id="cb27-4"><a href="working-with-data.html#cb27-4" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb27-5"><a href="working-with-data.html#cb27-5" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="working-with-data.html#cb27-6" tabindex="-1"></a><span class="co"># Load libraries</span></span>
+<span id="cb27-7"><a href="working-with-data.html#cb27-7" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
+<p>Leave an empty lines on top, it will look more professional. You can then also use the <code>#</code> or multiple <code>##</code>s in R scripts as comments<a href="#fn21" class="footnote-ref" id="fnref21"><sup>21</sup></a> or as headings in your R Markdown script.</p>
 </div>
 <div id="import-your-data" class="section level2" number="7.2">
-<h2>
-<span class="header-section-number">7.2</span> Import your data<a class="anchor" aria-label="anchor" href="#import-your-data"><i class="fas fa-link"></i></a>
-</h2>
-<p>By now, you should have a link to the datasets in Slack. If not, please complain. There should be two files called report.tsv and report.parquet. Both are output files from the <a href="https://github.com/vdemichev/DiaNN">DIA-NN</a> software, a tool that analyzes mass spectrometry data and outputs a table of all identified ions.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Each ion, also called precursor, represents a peptide and its charge state. Each peptide can have multiple cahrge states and was originally derived from a protein by proteolytic cleavage. All this data stems from multiple samples and replicates which are combined in one table.&lt;/p&gt;"><sup>22</sup></a></p>
+<h2><span class="header-section-number">7.2</span> Import your data</h2>
+<p>By now, you should have a link to the datasets in Slack. If not, please complain. There should be two files called report.tsv and report.parquet. Both are output files from the <a href="https://github.com/vdemichev/DiaNN">DIA-NN</a> software, a tool that analyzes mass spectrometry data and outputs a table of all identified ions.<a href="#fn22" class="footnote-ref" id="fnref22"><sup>22</sup></a></p>
 <div class="rmdnote">
 <p>Download both files and place them in your R project. Then, try and figure out which functions you need to read both files and store them as objects <code>data_raw</code>.</p>
 </div>
@@ -111,58 +121,53 @@ Having our first script ready to code, let’s make it nicer. I would suggest to
 Hint
 </button>
 <div id="button5" class="collapse">
-<p><br>
+<p><br />
 Google :)</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button6" aria-expanded="false" aria-controls="button6">
 Another hint
 </button>
 <div id="button6" class="collapse">
-<p><br>
+<p><br />
 Google ‘import R tsv’, or ‘import R parquet’.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button7" aria-expanded="false" aria-controls="button7">
 Code
 </button>
 <div id="button7" class="collapse">
-<p><br><img src="https://raw.githubusercontent.com/tidyverse/vroom/main/img/taylor.gif"></p>
+<p><br />
+<img src="https://raw.githubusercontent.com/tidyverse/vroom/main/img/taylor.gif" /></p>
 <p>This wasn’t me, I swear. It was <a href="https://vroom.r-lib.org/">them</a>. In all seriousness, there are many ways to import your data from <a href="https://r4ds.had.co.nz/data-import.html#compared-to-base-r">base R</a> solutions, to <a href="https://r4ds.hadley.nz/data-import.html">canonical tidyverse functions</a>, that cover different data types to this one, <code>vroom</code>. It made my life much, much easier as it automatically understands the file format.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Simply this</span></span>
-<span><span class="va">data_raw</span> <span class="op">&lt;-</span> <span class="fu">vroom</span><span class="fu">::</span><span class="fu"><a href="https://vroom.r-lib.org/reference/vroom.html">vroom</a></span><span class="op">(</span><span class="st">"Data/report.tsv"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="working-with-data.html#cb28-1" tabindex="-1"></a><span class="co"># Simply this</span></span>
+<span id="cb28-2"><a href="working-with-data.html#cb28-2" tabindex="-1"></a>data_raw <span class="ot">&lt;-</span> vroom<span class="sc">::</span><span class="fu">vroom</span>(<span class="st">&quot;Data/report.tsv&quot;</span>)</span></code></pre></div>
 <p>All other functions to read files begin with <code>read.</code> or <code>read_</code>. Type them in and press Tab.</p>
 <p>Another file format I would like to introduce you to is .parquet, from <a href="https://arrow.apache.org/">Apache Arrow</a> with the accompanying <a href="https://arrow.apache.org/docs/r/">Arrow R Package</a>. This one is not compatible with <code>vroom</code> and needs its own function.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_raw</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html">read_parquet</a></span><span class="op">(</span><span class="st">"Data/report.parquet"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="working-with-data.html#cb29-1" tabindex="-1"></a>data_raw <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(<span class="st">&quot;Data/report.parquet&quot;</span>)</span></code></pre></div>
 <p>The same data is a tenth of the size and therefore reads and writes much faster. It is also more convenient as .csv files due to the clear format of the columns. I’m only afraid it doesn’t work with Excel.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button8" aria-expanded="false" aria-controls="button8">
 Additional info
 </button>
 <div id="button8" class="collapse">
-<p><br>
-Both functions also work with URLs. Try it out:<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;I am not sure how they behave with OwnCloud.&lt;/p&gt;"><sup>23</sup></a></p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_raw</span> <span class="op">&lt;-</span> <span class="fu">vroom</span><span class="fu">::</span><span class="fu"><a href="https://vroom.r-lib.org/reference/vroom.html">vroom</a></span><span class="op">(</span><span class="st">"https://www.owncloud.de/bioinfo/R/dataset.tsv"</span><span class="op">)</span></span></code></pre></div>
+<p><br />
+Both functions also work with URLs. Try it out:<a href="#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a></p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="working-with-data.html#cb30-1" tabindex="-1"></a>data_raw <span class="ot">&lt;-</span> vroom<span class="sc">::</span><span class="fu">vroom</span>(<span class="st">&quot;https://www.owncloud.de/bioinfo/R/dataset.tsv&quot;</span>)</span></code></pre></div>
 </div>
-<p><br>
+<p><br />
 We will continue with the data from the .parquet file, so you can delete the other object.</p>
 </div>
 <div id="understand-your-data" class="section level2" number="7.3">
-<h2>
-<span class="header-section-number">7.3</span> Understand your data<a class="anchor" aria-label="anchor" href="#understand-your-data"><i class="fas fa-link"></i></a>
-</h2>
+<h2><span class="header-section-number">7.3</span> Understand your data</h2>
 <p>Okay, we got our data in R. For now, this is already better than Excel. Try and open the .tsv file in Excel. But we need to view it. How do we do this again?</p>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button9" aria-expanded="false" aria-controls="button9">
 View solution
 </button>
 <div id="button9" class="collapse">
-<p><br>
+<p><br />
 Same as for the lists, either click on the object in your Global Environment in the top rigth or type in:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/View.html">View</a></span><span class="op">(</span><span class="va">data_raw</span>, title <span class="op">=</span> <span class="st">"wow, we can add a title"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="working-with-data.html#cb31-1" tabindex="-1"></a><span class="fu">View</span>(data_raw, <span class="at">title =</span> <span class="st">&quot;wow, we can add a title&quot;</span>)</span></code></pre></div>
 </div>
-<p><br>
+<p><br />
 Great, we have a first impression of our data by scrolling through its columns. Since understanding data you did not generate yourself is hard, we can discuss this more together. If you want to give it a try, here are some <a href="https://github.com/vdemichev/DiaNN?tab=readme-ov-file#basics-of-dia-data-analysis">DIA-NN basics</a> and more importantly the <a href="https://github.com/vdemichev/DiaNN?tab=readme-ov-file#main-output-reference">Main output reference</a>. This explains all column names, have a look at it.</p>
 <p>Once we have an idea what we are looking at, let’s see if R provides us with some more summary functions.</p>
 <div class="rmdnote">
@@ -172,53 +177,45 @@ Great, we have a first impression of our data by scrolling through its columns. 
 Hint
 </button>
 <div id="button10" class="collapse">
-<p><br>
+<p><br />
 Google gave me this nice resource <a href="https://www.r-bloggers.com/2018/11/explore-your-dataset-in-r/" class="uri">https://www.r-bloggers.com/2018/11/explore-your-dataset-in-r/</a>.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button11" aria-expanded="false" aria-controls="button11">
 Code
 </button>
 <div id="button11" class="collapse">
-<p><br>
+<p><br />
 Here are a couple of examples to get an overview of the structure of an R data object.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Column names</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">data_raw</span><span class="op">)</span></span>
-<span><span class="co"># or </span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">data_raw</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Print the top of the data</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">data_raw</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Object structure</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">data_raw</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">data_raw</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># This my take some time with big data but gives you some statistics</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">data_raw</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="working-with-data.html#cb32-1" tabindex="-1"></a><span class="co"># Column names</span></span>
+<span id="cb32-2"><a href="working-with-data.html#cb32-2" tabindex="-1"></a><span class="fu">names</span>(data_raw)</span>
+<span id="cb32-3"><a href="working-with-data.html#cb32-3" tabindex="-1"></a><span class="co"># or </span></span>
+<span id="cb32-4"><a href="working-with-data.html#cb32-4" tabindex="-1"></a><span class="fu">colnames</span>(data_raw)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="working-with-data.html#cb33-1" tabindex="-1"></a><span class="co"># Print the top of the data</span></span>
+<span id="cb33-2"><a href="working-with-data.html#cb33-2" tabindex="-1"></a><span class="fu">head</span>(data_raw)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="working-with-data.html#cb34-1" tabindex="-1"></a><span class="co"># Object structure</span></span>
+<span id="cb34-2"><a href="working-with-data.html#cb34-2" tabindex="-1"></a><span class="fu">str</span>(data_raw)</span>
+<span id="cb34-3"><a href="working-with-data.html#cb34-3" tabindex="-1"></a><span class="fu">dim</span>(data_raw)</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="working-with-data.html#cb35-1" tabindex="-1"></a><span class="co"># This my take some time with big data but gives you some statistics</span></span>
+<span id="cb35-2"><a href="working-with-data.html#cb35-2" tabindex="-1"></a><span class="fu">summary</span>(data_raw)</span></code></pre></div>
 </div>
-<p><br>
-Not all of these are necessary, I simply <code><a href="https://rdrr.io/r/utils/View.html">View()</a></code> the data before I start to look at it with more specific questions.</p>
+<p><br />
+Not all of these are necessary, I simply <code>View()</code> the data before I start to look at it with more specific questions.</p>
 <div id="data-format" class="section level3" number="7.3.1">
-<h3>
-<span class="header-section-number">7.3.1</span> Data format<a class="anchor" aria-label="anchor" href="#data-format"><i class="fas fa-link"></i></a>
-</h3>
+<h3><span class="header-section-number">7.3.1</span> Data format</h3>
 <p>Having a broad idea of our data, we can start and look for the things we are interested in. Most scientific data follows the structure below.</p>
-<div class="inline-figure"><img src="https://r4ds.hadley.nz/images/tidy-1.png" style="width:100.0%"></div>
+<p><img src="https://r4ds.hadley.nz/images/tidy-1.png" style="width:100.0%" /></p>
 <p>There are variables, in our case precursors (measured peptide ions). Each variable was measured in an observations, our samples. And for each pair, there are values for the different data types. This is called the wide data format. You can read more about this in the <a href="https://r4ds.hadley.nz/data-tidy.html#sec-tidy-data">Tidy data</a> section. Check if this applies to our data!</p>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button12" aria-expanded="false" aria-controls="button12">
 base R solution
 </button>
 <div id="button12" class="collapse">
-<p><br>
+<p><br />
 The column <code>Runs</code> contains sample names which are the observations of the example above. In addition, we have a column <code>Precursor.Id</code>, which are our variables. This means we are not working with data in the wide format, but in the long format.</p>
-<p>The <code>tidyr</code> functions <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">tidyr::pivot_wider()</a></code> and <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">tidyr::pivot_longer()</a></code> were mentioned before and will allow as to reshape our data from long to wide and back.</p>
+<p>The <code>tidyr</code> functions <code>tidyr::pivot_wider()</code> and <code>tidyr::pivot_longer()</code> were mentioned before and will allow as to reshape our data from long to wide and back.</p>
 </div>
 </div>
 <div id="data-types" class="section level3" number="7.3.2">
-<h3>
-<span class="header-section-number">7.3.2</span> Data types<a class="anchor" aria-label="anchor" href="#data-types"><i class="fas fa-link"></i></a>
-</h3>
+<h3><span class="header-section-number">7.3.2</span> Data types</h3>
 <p>But before we start to do reshape our data, we need to identify and extract the relevant data columns.</p>
 <div class="rmdnote">
 <p>Output the data types per each column by combining the two functions <code>lapply</code> and <code>typeof</code>.</p>
@@ -227,46 +224,46 @@ The column <code>Runs</code> contains sample names which are the observations of
 Hint
 </button>
 <div id="button13" class="collapse">
-<p><br><code><a href="https://rdrr.io/r/base/lapply.html">?lapply</a></code> and <code><a href="https://rdrr.io/r/base/typeof.html">?typeof</a></code> will help you understand the individual functions. <code>lapply</code> is a useful function when applying the same operation to all elements of a list or vector. In our case, the <code>data_raw</code> is a tibble/data frame that can be seen as a list of columns. Therefore, the specified function will be applied to each column.</p>
+<p><br />
+<code>?lapply</code> and <code>?typeof</code> will help you understand the individual functions. <code>lapply</code> is a useful function when applying the same operation to all elements of a list or vector. In our case, the <code>data_raw</code> is a tibble/data frame that can be seen as a list of columns. Therefore, the specified function will be applied to each column.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button14" aria-expanded="false" aria-controls="button14">
 Code
 </button>
 <div id="button14" class="collapse">
-<p><br></p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># The function FUN will be applied to each column of X</span></span>
-<span><span class="co"># Notice that we did not add `()` brackets after `typeof`</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">data_raw</span>, FUN <span class="op">=</span> <span class="va">typeof</span><span class="op">)</span></span></code></pre></div>
+<p><br />
+</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="working-with-data.html#cb36-1" tabindex="-1"></a><span class="co"># The function FUN will be applied to each column of X</span></span>
+<span id="cb36-2"><a href="working-with-data.html#cb36-2" tabindex="-1"></a><span class="co"># Notice that we did not add `()` brackets after `typeof`</span></span>
+<span id="cb36-3"><a href="working-with-data.html#cb36-3" tabindex="-1"></a><span class="fu">lapply</span>(<span class="at">X =</span> data_raw, <span class="at">FUN =</span> typeof)</span></code></pre></div>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button15" aria-expanded="false" aria-controls="button15">
 Tidyverse code
 </button>
 <div id="button15" class="collapse">
-<p><br>
-The <code><a href="https://purrr.tidyverse.org/reference/map.html">purrr::map</a></code> function family replaces base R’s <code>apply</code> functions and are recommended.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># map works the same as lapply</span></span>
-<span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">data_raw</span>, <span class="va">typeof</span><span class="op">)</span></span>
-<span><span class="co"># Or </span></span>
-<span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">typeof</span><span class="op">)</span></span></code></pre></div>
+<p><br />
+The <code>purrr::map</code> function family replaces base R’s <code>apply</code> functions and are recommended.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="working-with-data.html#cb37-1" tabindex="-1"></a><span class="co"># map works the same as lapply</span></span>
+<span id="cb37-2"><a href="working-with-data.html#cb37-2" tabindex="-1"></a><span class="fu">map</span>(data_raw, typeof)</span>
+<span id="cb37-3"><a href="working-with-data.html#cb37-3" tabindex="-1"></a><span class="co"># Or </span></span>
+<span id="cb37-4"><a href="working-with-data.html#cb37-4" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> </span>
+<span id="cb37-5"><a href="working-with-data.html#cb37-5" tabindex="-1"></a>  <span class="fu">map</span>(typeof)</span></code></pre></div>
 <p><a href="https://purrr.tidyverse.org/reference/map.html">These functions</a> are very useful once you start working with more than one dataset of data frame at once.</p>
 </div>
-<p><br>
+<p><br />
 We can use this opportunity to include some discussions about how to <a href="https://adv-r.hadley.nz/control-flow.html">Control flow</a> of your code.</p>
 <div class="rmdnote">
 <p>Reframe the problem above in a <a href="https://adv-r.hadley.nz/control-flow.html#loops">Loop</a>.</p>
 </div>
 <p>Now we have an idea which columns in our data contain <code>character</code> data, mainly IDs, and <code>numeric</code> data, which are our quantitative values and some q-values.</p>
 <div class="rmdnote">
-<p>We can combine identifying data types and extracting these columns with a combination of <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code> and <code><a href="https://tidyselect.r-lib.org/reference/where.html">dplyr::where()</a></code>. 1. Select all <code>character</code> columns. 2. Select all <code>numeric</code> columns. 3. Combine useful ID columns with all <code>numeric</code> columns. This will be helpful for an overview of the data as well.</p>
+<p>We can combine identifying data types and extracting these columns with a combination of <code>dplyr::select()</code> and <code>dplyr::where()</code>. 1. Select all <code>character</code> columns. 2. Select all <code>numeric</code> columns. 3. Combine useful ID columns with all <code>numeric</code> columns. This will be helpful for an overview of the data as well.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button16" aria-expanded="false" aria-controls="button16">
 Hint
 </button>
 <div id="button16" class="collapse">
-<p><br>
+<p><br />
 You can find explanations for both functions online:
 <a href="https://dplyr.tidyverse.org/reference/select.html">select</a> and <a href="https://tidyselect.r-lib.org/reference/where.html">where</a></p>
 </div>
@@ -274,70 +271,64 @@ You can find explanations for both functions online:
 Code 1
 </button>
 <div id="button17" class="collapse">
-<p><br>
-The <code><a href="https://tidyselect.r-lib.org/reference/where.html">where()</a></code> function accepts any kind of function which can be used to test whether a column should be selected or not.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.character</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><br />
+The <code>where()</code> function accepts any kind of function which can be used to test whether a column should be selected or not.</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="working-with-data.html#cb38-1" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> </span>
+<span id="cb38-2"><a href="working-with-data.html#cb38-2" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">where</span>(is.character))</span></code></pre></div>
 <p>We could also use the output of the previous <code>map</code> function to indicate the columns.</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create vector of character column names </span></span>
-<span><span class="va">names_character</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_lgl</a></span><span class="op">(</span><span class="va">data_raw</span>, <span class="va">is.character</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="op">)</span> </span>
-<span><span class="co"># Use vector as input for select </span></span>
-<span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">names_character</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="working-with-data.html#cb39-1" tabindex="-1"></a><span class="co"># Create vector of character column names </span></span>
+<span id="cb39-2"><a href="working-with-data.html#cb39-2" tabindex="-1"></a>names_character <span class="ot">&lt;-</span> <span class="fu">map_lgl</span>(data_raw, is.character) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-3"><a href="working-with-data.html#cb39-3" tabindex="-1"></a>  <span class="fu">which</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb39-4"><a href="working-with-data.html#cb39-4" tabindex="-1"></a>  <span class="fu">names</span>() </span>
+<span id="cb39-5"><a href="working-with-data.html#cb39-5" tabindex="-1"></a><span class="co"># Use vector as input for select </span></span>
+<span id="cb39-6"><a href="working-with-data.html#cb39-6" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> </span>
+<span id="cb39-7"><a href="working-with-data.html#cb39-7" tabindex="-1"></a>  <span class="fu">select</span>(names_character)</span></code></pre></div>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button18" aria-expanded="false" aria-controls="button18">
 Code 2
 </button>
 <div id="button18" class="collapse">
-<p><br>
-All numeric data can be found with <code><a href="https://rdrr.io/r/base/numeric.html">is.numeric()</a></code>. Again, since we provide a function as an object, and do not want it to do something immediately, we leave out the <code>()</code> brackets.</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><br />
+All numeric data can be found with <code>is.numeric()</code>. Again, since we provide a function as an object, and do not want it to do something immediately, we leave out the <code>()</code> brackets.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="working-with-data.html#cb40-1" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> </span>
+<span id="cb40-2"><a href="working-with-data.html#cb40-2" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">where</span>(is.numeric))</span></code></pre></div>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button19" aria-expanded="false" aria-controls="button19">
 Code 3
 </button>
 <div id="button19" class="collapse">
-<p><br></p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="co"># Combine the different ways of choosing columns in a vector c()</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Precursor.Id"</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># We could also retain some more information</span></span>
-<span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Precursor.Id"</span>, <span class="st">"Run"</span>, <span class="st">"Protein.Group"</span>, <span class="st">"Protein.Names"</span>, <span class="st">"Genes"</span>  , <span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><br />
+</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="working-with-data.html#cb41-1" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> </span>
+<span id="cb41-2"><a href="working-with-data.html#cb41-2" tabindex="-1"></a>  <span class="co"># Combine the different ways of choosing columns in a vector c()</span></span>
+<span id="cb41-3"><a href="working-with-data.html#cb41-3" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="st">&quot;Precursor.Id&quot;</span>, <span class="fu">where</span>(is.numeric)))</span>
+<span id="cb41-4"><a href="working-with-data.html#cb41-4" tabindex="-1"></a><span class="co"># We could also retain some more information</span></span>
+<span id="cb41-5"><a href="working-with-data.html#cb41-5" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> </span>
+<span id="cb41-6"><a href="working-with-data.html#cb41-6" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="st">&quot;Precursor.Id&quot;</span>, <span class="st">&quot;Run&quot;</span>, <span class="st">&quot;Protein.Group&quot;</span>, <span class="st">&quot;Protein.Names&quot;</span>, <span class="st">&quot;Genes&quot;</span>  , <span class="fu">where</span>(is.numeric)))</span></code></pre></div>
 <p>But to also provide the most basic use case of <code>select</code>, we can simply use the column names as they are or as “strings”. Pressing Tab with the cursor in the <code>select</code> function can be helpful as well.</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Precursor.Id</span>, <span class="va">Modified.Sequence</span>, <span class="st">"Run"</span>, <span class="st">"Precursor.Charge"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="working-with-data.html#cb42-1" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> </span>
+<span id="cb42-2"><a href="working-with-data.html#cb42-2" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(Precursor.Id, Modified.Sequence, <span class="st">&quot;Run&quot;</span>, <span class="st">&quot;Precursor.Charge&quot;</span>))</span></code></pre></div>
 </div>
-<p><br>
+<p><br />
 Let’s keep the remaining time open to explore other <code>dplyr</code> functions. They are described in the <a href="https://r4ds.hadley.nz/data-transform">Data transformation</a> section and listed in the <a href="https://dplyr.tidyverse.org/reference/index.html">Function reference</a> but the most useful ones are:</p>
 <ul>
-<li><p><code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code></p></li>
-<li><p><code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter()</a></code></p></li>
-<li><p><code><a href="https://dplyr.tidyverse.org/reference/arrange.html">dplyr::arrange()</a></code></p></li>
-<li><p><code><a href="https://dplyr.tidyverse.org/reference/pull.html">dplyr::pull()</a></code></p></li>
-<li><p><code><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">dplyr::bind_rows()</a></code></p></li>
-<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate()</a></code></p></li>
-<li><p><code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise()</a></code></p></li>
-<li><p><code><a href="https://dplyr.tidyverse.org/reference/rename.html">dplyr::rename()</a></code></p></li>
-<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">dplyr::full_join()</a></code></p></li>
-<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">dplyr::inner_join()</a></code></p></li>
-<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">dplyr::left_join()</a></code></p></li>
-<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">dplyr::right_join()</a></code></p></li>
+<li><p><code>dplyr::select()</code></p></li>
+<li><p><code>dplyr::filter()</code></p></li>
+<li><p><code>dplyr::arrange()</code></p></li>
+<li><p><code>dplyr::pull()</code></p></li>
+<li><p><code>dplyr::bind_rows()</code></p></li>
+<li><p><code>dplyr::mutate()</code></p></li>
+<li><p><code>dplyr::summarise()</code></p></li>
+<li><p><code>dplyr::rename()</code></p></li>
+<li><p><code>dplyr::full_join()</code></p></li>
+<li><p><code>dplyr::inner_join()</code></p></li>
+<li><p><code>dplyr::left_join()</code></p></li>
+<li><p><code>dplyr::right_join()</code></p></li>
 </ul>
 </div>
 </div>
 <div id="tidy-up-your-data" class="section level2" number="7.4">
-<h2>
-<span class="header-section-number">7.4</span> Tidy up your data<a class="anchor" aria-label="anchor" href="#tidy-up-your-data"><i class="fas fa-link"></i></a>
-</h2>
+<h2><span class="header-section-number">7.4</span> Tidy up your data</h2>
 <p>With the list of <code>dplyr</code> functions above, you have a pretty powerful tool set to manipulate data in which ever way you like. But we also need to know, what we need to do, to get our data analysis-ready.</p>
 <p>Following this, we can start to make our data more legible by removing unnecessary information and making names more meaningful. We will follow a scheme like this:</p>
 <ol style="list-style-type: decimal">
@@ -350,9 +341,7 @@ Let’s keep the remaining time open to explore other <code>dplyr</code> functio
 <li>(Optional) Normalize the data</li>
 </ol>
 <div id="filtering-identified-precursors" class="section level3" number="7.4.1">
-<h3>
-<span class="header-section-number">7.4.1</span> Filtering identified precursors<a class="anchor" aria-label="anchor" href="#filtering-identified-precursors"><i class="fas fa-link"></i></a>
-</h3>
+<h3><span class="header-section-number">7.4.1</span> Filtering identified precursors</h3>
 <p>The <a href="https://github.com/vdemichev/DiaNN?tab=readme-ov-file#main-output-reference">Main output reference</a> was mentioned before, and at the end it contains a section about <strong>Filtering the main report</strong>. Choose a filtering scheme that you think makes sense (match-between runs (MBR) was used).</p>
 <div class="rmdnote">
 <p>Choose parameters and threshold to filter the precursors in your data and assign a new object <code>data_filtered</code>.</p>
@@ -361,7 +350,7 @@ Let’s keep the remaining time open to explore other <code>dplyr</code> functio
 Hint
 </button>
 <div id="button20" class="collapse">
-<p><br>
+<p><br />
 As the DIA-NN documentation suggest, we could use a threshold of 0.01 for <code>Lib.Q.Value</code> and <code>PG.Q.Value</code>.</p>
 <p><code>Lib.Peptidoform.Q.Value</code> could also be applied retroactively if we find some outliers or weirdly behaving data points.</p>
 </div>
@@ -369,31 +358,26 @@ As the DIA-NN documentation suggest, we could use a threshold of 0.01 for <code>
 Code
 </button>
 <div id="button21" class="collapse">
-<p><br>
-The <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter()</a></code> function allows us to remove rows based on a logical operation that results in one TRUE/FALSE value per row.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Lib.Q.Value</span> <span class="op">&lt;</span> <span class="fl">0.01</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">PG.Q.Value</span> <span class="op">&lt;</span> <span class="fl">0.01</span><span class="op">)</span></span></code></pre></div>
+<p><br />
+The <code>dplyr::filter()</code> function allows us to remove rows based on a logical operation that results in one TRUE/FALSE value per row.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="working-with-data.html#cb43-1" tabindex="-1"></a>data_filtered <span class="ot">&lt;-</span> data_raw <span class="sc">%&gt;%</span> </span>
+<span id="cb43-2"><a href="working-with-data.html#cb43-2" tabindex="-1"></a>  <span class="fu">filter</span>(Lib.Q.Value <span class="sc">&lt;</span> <span class="fl">0.01</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb43-3"><a href="working-with-data.html#cb43-3" tabindex="-1"></a>  <span class="fu">filter</span>(PG.Q.Value <span class="sc">&lt;</span> <span class="fl">0.01</span>)</span></code></pre></div>
 <p>We can do the same in a condensed way.</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Lib.Q.Value</span> <span class="op">&lt;</span> <span class="fl">0.01</span>, <span class="va">PG.Q.Value</span> <span class="op">&lt;</span> <span class="fl">0.01</span><span class="op">)</span> </span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="working-with-data.html#cb44-1" tabindex="-1"></a>data_filtered <span class="ot">&lt;-</span> data_raw <span class="sc">%&gt;%</span> </span>
+<span id="cb44-2"><a href="working-with-data.html#cb44-2" tabindex="-1"></a>  <span class="fu">filter</span>(Lib.Q.Value <span class="sc">&lt;</span> <span class="fl">0.01</span>, PG.Q.Value <span class="sc">&lt;</span> <span class="fl">0.01</span>) </span></code></pre></div>
 </div>
-<p><br>
+<p><br />
 This is a relatively simple way to filter your data. In many cases, there will be further parameters or data-driven schemes (variance, etc.) to fiter your data.</p>
 </div>
 <div id="shorten-and-clean-up-sample-names" class="section level3" number="7.4.2">
-<h3>
-<span class="header-section-number">7.4.2</span> Shorten and clean up sample names<a class="anchor" aria-label="anchor" href="#shorten-and-clean-up-sample-names"><i class="fas fa-link"></i></a>
-</h3>
+<h3><span class="header-section-number">7.4.2</span> Shorten and clean up sample names</h3>
 <p>The easier your data can be read and understood, the more useful it will be to you and others. You will sometimes spend days, weeks or months with the same dataset. Therefore, you will be very familiar all the sample names, groups, etc. For others to understand it in a meeting or a presentation, it will be very helpful to have all names you use as concise and meaningful as possible. Let’s look at the sample names in column <code>Run</code>. Currently, they contain the full names of the raw data files that we processed by DIA-NN. Depending on the needed information, we can remove redundant details between the sample names.</p>
 <p>Let’s check them first:</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># The Run column can also be accessed with the dplyr::pull() function</span></span>
-<span><span class="va">data_filtered</span><span class="op">$</span><span class="va">Run</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="co"># we only need each name once</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="working-with-data.html#cb45-1" tabindex="-1"></a><span class="co"># The Run column can also be accessed with the dplyr::pull() function</span></span>
+<span id="cb45-2"><a href="working-with-data.html#cb45-2" tabindex="-1"></a>data_filtered<span class="sc">$</span>Run <span class="sc">%&gt;%</span> </span>
+<span id="cb45-3"><a href="working-with-data.html#cb45-3" tabindex="-1"></a>  <span class="co"># we only need each name once</span></span>
+<span id="cb45-4"><a href="working-with-data.html#cb45-4" tabindex="-1"></a>  <span class="fu">unique</span>()</span></code></pre></div>
 <p>We can see that there is a lot of redundancy in the sample names, as each one describes the whole experimental and MS scheme. Shortening them will make the data more legible.</p>
 <div class="rmdnote">
 <p>Modify the <code>Run</code> column of the <code>data_filtered</code> data frame by shortening the sample names to only the useful parts.</p>
@@ -402,56 +386,49 @@ This is a relatively simple way to filter your data. In many cases, there will b
 Hint - modify names
 </button>
 <div id="button22" class="collapse">
-<p><br>
+<p><br />
 To figure out how to modify the names, it makes it easier to extract the names and work on this test vector until we can implement the code into our script.</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sample_names</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">Run</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="working-with-data.html#cb46-1" tabindex="-1"></a>sample_names <span class="ot">&lt;-</span> data_filtered <span class="sc">%&gt;%</span> </span>
+<span id="cb46-2"><a href="working-with-data.html#cb46-2" tabindex="-1"></a>  <span class="fu">pull</span>(Run) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-3"><a href="working-with-data.html#cb46-3" tabindex="-1"></a>  <span class="fu">unique</span>()</span></code></pre></div>
 <p>Useful functions for text manipulation can be found in the <code>stringr</code> <a href="https://stringr.tidyverse.org/">package</a>. To get a good overview of the functions in a package, the <a href="https://stringr.tidyverse.org/reference/index.html">Reference</a> nicely lists everything we need to know. For most, if not all functions, there are [base R equivalents](<a href="https://stringr.tidyverse.org/articles/from-base.html" class="uri">https://stringr.tidyverse.org/articles/from-base.html</a>. For our problem we can start with a simple base R function <code>substring</code>.</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sample_names</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substring</a></span><span class="op">(</span>first <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="working-with-data.html#cb47-1" tabindex="-1"></a>sample_names <span class="sc">%&gt;%</span> </span>
+<span id="cb47-2"><a href="working-with-data.html#cb47-2" tabindex="-1"></a>  <span class="fu">substring</span>(<span class="at">first =</span> <span class="dv">20</span>)</span></code></pre></div>
 <p>You can go from here.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button23" aria-expanded="false" aria-controls="button23">
 Hint - modify the data frame
 </button>
 <div id="button23" class="collapse">
-<p><br>
-When modifying our data, we either focus on one column or all columns of a certain type. Both can be accomplished with <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate()</a></code>. This function assigns the new values to a column with a provided name, if the name is the same as an existing column, it overwrites it.</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Run <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substring</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">Run</span>, first <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><br />
+When modifying our data, we either focus on one column or all columns of a certain type. Both can be accomplished with <code>dplyr::mutate()</code>. This function assigns the new values to a column with a provided name, if the name is the same as an existing column, it overwrites it.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="working-with-data.html#cb48-1" tabindex="-1"></a>data_filtered <span class="ot">&lt;-</span> data_filtered <span class="sc">%&gt;%</span> </span>
+<span id="cb48-2"><a href="working-with-data.html#cb48-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Run =</span> <span class="fu">substring</span>(<span class="at">text =</span> Run, <span class="at">first =</span> <span class="dv">20</span>))</span></code></pre></div>
 <p>You can see that the mutate function overwrites the Run column as defined by the left side of the <code>=</code> sign and uses <code>Run</code> in the expression on the right side of the <code>=</code> sign. To finish this problem, we still need to adjust the beginning of the desired substring.</p>
-<p>If you do not want to count by yourself, could do some copying and use the <code><a href="https://rdrr.io/r/base/nchar.html">nchar()</a></code> function.</p>
+<p>If you do not want to count by yourself, could do some copying and use the <code>nchar()</code> function.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button24" aria-expanded="false" aria-controls="button24">
 Code
 </button>
 <div id="button24" class="collapse">
-<p><br>
+<p><br />
 Combining both hints, we can reassign the <code>data_filtered</code> object and overwrite the <code>Run</code> column.</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Run <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substring</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">Run</span>, first <span class="op">=</span> <span class="fl">41</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="working-with-data.html#cb49-1" tabindex="-1"></a>data_filtered <span class="ot">&lt;-</span> data_filtered <span class="sc">%&gt;%</span> </span>
+<span id="cb49-2"><a href="working-with-data.html#cb49-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Run =</span> <span class="fu">substring</span>(<span class="at">text =</span> Run, <span class="at">first =</span> <span class="dv">41</span>))</span></code></pre></div>
 <p>Make sure you are comfortable with how the mutate function works!</p>
-<p>A different way would be to remove the redundant part of the string with the <code><a href="https://stringr.tidyverse.org/reference/str_remove.html">stringr::str_remove()</a></code> function.</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Run <span class="op">=</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html">str_remove</a></span><span class="op">(</span></span>
-<span>    string <span class="op">=</span> <span class="va">Run</span>, </span>
-<span>    pattern <span class="op">=</span> <span class="st">"EVE_250123_S4504_LKJ_CP_PELSA_K562_Stau_"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>A different way would be to remove the redundant part of the string with the <code>stringr::str_remove()</code> function.</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="working-with-data.html#cb50-1" tabindex="-1"></a>data_filtered <span class="ot">&lt;-</span> data_filtered <span class="sc">%&gt;%</span> </span>
+<span id="cb50-2"><a href="working-with-data.html#cb50-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Run =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(</span>
+<span id="cb50-3"><a href="working-with-data.html#cb50-3" tabindex="-1"></a>    <span class="at">string =</span> Run, </span>
+<span id="cb50-4"><a href="working-with-data.html#cb50-4" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="st">&quot;EVE_250123_S4504_LKJ_CP_PELSA_K562_Stau_&quot;</span>))</span></code></pre></div>
 <p>The intendation of the code above was changed slightly, otherwise the pattern argument would have reached outside the 80 characters limit and would not look as nice. Synthax-wise, this does not make any difference and the code work just the same.</p>
 </div>
-<p><br><code>View</code> your data frame and see how it looks much nicer now.</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/View.html">View</a></span><span class="op">(</span><span class="va">data_filtered</span><span class="op">)</span></span></code></pre></div>
+<p><br />
+<code>View</code> your data frame and see how it looks much nicer now.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="working-with-data.html#cb51-1" tabindex="-1"></a><span class="fu">View</span>(data_filtered)</span></code></pre></div>
 </div>
 <div id="remove-unnecessary-information" class="section level3" number="7.4.3">
-<h3>
-<span class="header-section-number">7.4.3</span> Remove unnecessary information<a class="anchor" aria-label="anchor" href="#remove-unnecessary-information"><i class="fas fa-link"></i></a>
-</h3>
+<h3><span class="header-section-number">7.4.3</span> Remove unnecessary information</h3>
 <p>After removing all the redundant stuff in our sample names, the next step in our <em>Tidy Data Campaign</em> involves removing all information we do not need later. This will help us a lot with getting a better overview of our data and will allow others to look at our dataset without immediately being overwhelmed.
 Again, the <a href="https://github.com/vdemichev/DiaNN?tab=readme-ov-file#main-output-reference">Main output reference</a> is helpful here and the <em>Main report</em> section of the <a href="https://github.com/vdemichev/DiaNN?tab=readme-ov-file#output">Output</a> chapter gives a short summary. We are primarily interested in information regarding our samples, our features which are the precursors and there further information like the peptide sequence further annotation as well as the normalized quantity.</p>
 <div class="rmdnote">
@@ -461,358 +438,327 @@ Again, the <a href="https://github.com/vdemichev/DiaNN?tab=readme-ov-file#main-o
 Hint
 </button>
 <div id="button25" class="collapse">
-<p><br>
-The <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code> function will allow us to only retain the column we need. Regarding which columns we need, just take a guess and you’ll find out in the solution.</p>
+<p><br />
+The <code>dplyr::select()</code> function will allow us to only retain the column we need. Regarding which columns we need, just take a guess and you’ll find out in the solution.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button26" aria-expanded="false" aria-controls="button26">
 Solution
 </button>
 <div id="button26" class="collapse">
-<p><br></p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Run"</span>,</span>
-<span>           <span class="st">"Precursor.Id"</span>,</span>
-<span>           <span class="st">"Modified.Sequence"</span>,</span>
-<span>           <span class="st">"Stripped.Sequence"</span>,</span>
-<span>           <span class="st">"Protein.Group"</span>,</span>
-<span>           <span class="st">"Protein.Names"</span>,</span>
-<span>           <span class="st">"Genes"</span>,</span>
-<span>           <span class="st">"Precursor.Normalised"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><br />
+</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="working-with-data.html#cb52-1" tabindex="-1"></a>data_filtered <span class="ot">&lt;-</span> data_filtered <span class="sc">%&gt;%</span> </span>
+<span id="cb52-2"><a href="working-with-data.html#cb52-2" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="st">&quot;Run&quot;</span>,</span>
+<span id="cb52-3"><a href="working-with-data.html#cb52-3" tabindex="-1"></a>           <span class="st">&quot;Precursor.Id&quot;</span>,</span>
+<span id="cb52-4"><a href="working-with-data.html#cb52-4" tabindex="-1"></a>           <span class="st">&quot;Modified.Sequence&quot;</span>,</span>
+<span id="cb52-5"><a href="working-with-data.html#cb52-5" tabindex="-1"></a>           <span class="st">&quot;Stripped.Sequence&quot;</span>,</span>
+<span id="cb52-6"><a href="working-with-data.html#cb52-6" tabindex="-1"></a>           <span class="st">&quot;Protein.Group&quot;</span>,</span>
+<span id="cb52-7"><a href="working-with-data.html#cb52-7" tabindex="-1"></a>           <span class="st">&quot;Protein.Names&quot;</span>,</span>
+<span id="cb52-8"><a href="working-with-data.html#cb52-8" tabindex="-1"></a>           <span class="st">&quot;Genes&quot;</span>,</span>
+<span id="cb52-9"><a href="working-with-data.html#cb52-9" tabindex="-1"></a>           <span class="st">&quot;Precursor.Normalised&quot;</span>))</span></code></pre></div>
 <p>This also allowed us to change the order of the columns. There are two more ways to do this.</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html">all_of</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Run"</span>,</span>
-<span>                  <span class="st">"Precursor.Id"</span>,</span>
-<span>                  <span class="st">"Modified.Sequence"</span>,</span>
-<span>                  <span class="st">"Stripped.Sequence"</span>,</span>
-<span>                  <span class="st">"Protein.Group"</span>,</span>
-<span>                  <span class="st">"Protein.Names"</span>,</span>
-<span>                  <span class="st">"Genes"</span>,</span>
-<span>                  <span class="st">"Precursor.Normalised"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>The <code><a href="https://tidyselect.r-lib.org/reference/all_of.html">dplyr::all_of()</a></code> function will check, if all specified column names can be found in the data. The <code><a href="https://tidyselect.r-lib.org/reference/all_of.html">dplyr::any_of()</a></code> function does the same, but does not fail if a column name cannot be found. This makes it a bit more flexible, but the real advantage is that you can use a predifened vector to list the column names.</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">column_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Run"</span>,</span>
-<span>                  <span class="st">"Precursor.Id"</span>,</span>
-<span>                  <span class="st">"Modified.Sequence"</span>,</span>
-<span>                  <span class="st">"Stripped.Sequence"</span>,</span>
-<span>                  <span class="st">"Protein.Group"</span>,</span>
-<span>                  <span class="st">"Protein.Names"</span>,</span>
-<span>                  <span class="st">"Genes"</span>,</span>
-<span>                  <span class="st">"Precursor.Normalised"</span><span class="op">)</span></span>
-<span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html">any_of</a></span><span class="op">(</span><span class="va">column_names</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="working-with-data.html#cb53-1" tabindex="-1"></a>data_filtered <span class="ot">&lt;-</span> data_filtered <span class="sc">%&gt;%</span> </span>
+<span id="cb53-2"><a href="working-with-data.html#cb53-2" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">&quot;Run&quot;</span>,</span>
+<span id="cb53-3"><a href="working-with-data.html#cb53-3" tabindex="-1"></a>                  <span class="st">&quot;Precursor.Id&quot;</span>,</span>
+<span id="cb53-4"><a href="working-with-data.html#cb53-4" tabindex="-1"></a>                  <span class="st">&quot;Modified.Sequence&quot;</span>,</span>
+<span id="cb53-5"><a href="working-with-data.html#cb53-5" tabindex="-1"></a>                  <span class="st">&quot;Stripped.Sequence&quot;</span>,</span>
+<span id="cb53-6"><a href="working-with-data.html#cb53-6" tabindex="-1"></a>                  <span class="st">&quot;Protein.Group&quot;</span>,</span>
+<span id="cb53-7"><a href="working-with-data.html#cb53-7" tabindex="-1"></a>                  <span class="st">&quot;Protein.Names&quot;</span>,</span>
+<span id="cb53-8"><a href="working-with-data.html#cb53-8" tabindex="-1"></a>                  <span class="st">&quot;Genes&quot;</span>,</span>
+<span id="cb53-9"><a href="working-with-data.html#cb53-9" tabindex="-1"></a>                  <span class="st">&quot;Precursor.Normalised&quot;</span>)))</span></code></pre></div>
+<p>The <code>dplyr::all_of()</code> function will check, if all specified column names can be found in the data. The <code>dplyr::any_of()</code> function does the same, but does not fail if a column name cannot be found. This makes it a bit more flexible, but the real advantage is that you can use a predifened vector to list the column names.</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="working-with-data.html#cb54-1" tabindex="-1"></a>column_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Run&quot;</span>,</span>
+<span id="cb54-2"><a href="working-with-data.html#cb54-2" tabindex="-1"></a>                  <span class="st">&quot;Precursor.Id&quot;</span>,</span>
+<span id="cb54-3"><a href="working-with-data.html#cb54-3" tabindex="-1"></a>                  <span class="st">&quot;Modified.Sequence&quot;</span>,</span>
+<span id="cb54-4"><a href="working-with-data.html#cb54-4" tabindex="-1"></a>                  <span class="st">&quot;Stripped.Sequence&quot;</span>,</span>
+<span id="cb54-5"><a href="working-with-data.html#cb54-5" tabindex="-1"></a>                  <span class="st">&quot;Protein.Group&quot;</span>,</span>
+<span id="cb54-6"><a href="working-with-data.html#cb54-6" tabindex="-1"></a>                  <span class="st">&quot;Protein.Names&quot;</span>,</span>
+<span id="cb54-7"><a href="working-with-data.html#cb54-7" tabindex="-1"></a>                  <span class="st">&quot;Genes&quot;</span>,</span>
+<span id="cb54-8"><a href="working-with-data.html#cb54-8" tabindex="-1"></a>                  <span class="st">&quot;Precursor.Normalised&quot;</span>)</span>
+<span id="cb54-9"><a href="working-with-data.html#cb54-9" tabindex="-1"></a>data_filtered <span class="ot">&lt;-</span> data_filtered <span class="sc">%&gt;%</span> </span>
+<span id="cb54-10"><a href="working-with-data.html#cb54-10" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">any_of</span>(column_names))</span></code></pre></div>
 <p>Simply using a vector works as well, but R will complain and we don’t want that. And it could lead to confusions in the code, which is the real problem.</p>
 </div>
-<p><br>
-Great, our data should look much better already.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;em&gt;whispering&lt;/em&gt; &lt;code&gt;View()&lt;/code&gt; it.&lt;/p&gt;"><sup>24</sup></a></p>
+<p><br />
+Great, our data should look much better already.<a href="#fn24" class="footnote-ref" id="fnref24"><sup>24</sup></a></p>
 </div>
 <div id="sum-precursors-to-modified-peptides" class="section level3" number="7.4.4">
-<h3>
-<span class="header-section-number">7.4.4</span> Sum precursors to modified peptides<a class="anchor" aria-label="anchor" href="#sum-precursors-to-modified-peptides"><i class="fas fa-link"></i></a>
-</h3>
-<p>The next step is very data-specific, but will allow us to explore the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise()</a></code> function. Our data currently exists on the precursor level.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Precursor or precursor ion is the mass spec term for an peak in the MS1, which represents the mass-over-charge (m/z) of a particular ion.&lt;/p&gt;"><sup>25</sup></a> As a peptide can have multiple charge states based on its amino acid sequence and the pH of the buffer (e.g. 2+ and 3+), we can combine the quantity of both to represent a truer peptide quantity. Simply summing both values up is the way to go here.</p>
+<h3><span class="header-section-number">7.4.4</span> Sum precursors to modified peptides</h3>
+<p>The next step is very data-specific, but will allow us to explore the <code>dplyr::summarise()</code> function. Our data currently exists on the precursor level.<a href="#fn25" class="footnote-ref" id="fnref25"><sup>25</sup></a> As a peptide can have multiple charge states based on its amino acid sequence and the pH of the buffer (e.g. 2+ and 3+), we can combine the quantity of both to represent a truer peptide quantity. Simply summing both values up is the way to go here.</p>
 <div class="rmdnote">
-<p>Read into the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise()</a></code> function and sum up the <code>Precursor.Normalised</code> column from the precursors to peptides to create <code>data_peptides</code>. You will need to identify which column in our data identifies the peptides. In addition, check if <code>Precursor.Normalised</code> contains <code>NA</code>s, as the <code><a href="https://rdrr.io/r/base/sum.html">sum()</a></code> function is sensitive to them.</p>
+<p>Read into the <code>dplyr::summarise()</code> function and sum up the <code>Precursor.Normalised</code> column from the precursors to peptides to create <code>data_peptides</code>. You will need to identify which column in our data identifies the peptides. In addition, check if <code>Precursor.Normalised</code> contains <code>NA</code>s, as the <code>sum()</code> function is sensitive to them.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button27" aria-expanded="false" aria-controls="button27">
 Hint - peptide info
 </button>
 <div id="button27" class="collapse">
-<p><br>
+<p><br />
 You will need to summarise precursors to the peptides identified by <code>Modified.Sequence</code> and individually for each sample/<code>Run</code>.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button28" aria-expanded="false" aria-controls="button28">
 Hint - summarise
 </button>
 <div id="button28" class="collapse">
-<p><br>
-The <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise()</a></code> function works the same as <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate()</a></code>, the only difference is that the computation in mutate yields an output of the same length as the input and summarise reduces the number of elements of the output by combining them. If used plain, the output will have one row which is the summary of each column. You can specify sub groups to be combined with the <code>.by</code> argument.</p>
+<p><br />
+The <code>dplyr::summarise()</code> function works the same as <code>dplyr::mutate()</code>, the only difference is that the computation in mutate yields an output of the same length as the input and summarise reduces the number of elements of the output by combining them. If used plain, the output will have one row which is the summary of each column. You can specify sub groups to be combined with the <code>.by</code> argument.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button29" aria-expanded="false" aria-controls="button29">
 Solution
 </button>
 <div id="button29" class="collapse">
-<p><br>
+<p><br />
 We first check if the <code>Precursor.Normalised</code> data contains <code>NA</code>s.</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">Precursor.Normalised</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="co"># sum will give you the total number of NAs, table or mean work as well </span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="working-with-data.html#cb55-1" tabindex="-1"></a>data_filtered <span class="sc">%&gt;%</span> </span>
+<span id="cb55-2"><a href="working-with-data.html#cb55-2" tabindex="-1"></a>  <span class="fu">pull</span>(Precursor.Normalised) <span class="sc">%&gt;%</span> </span>
+<span id="cb55-3"><a href="working-with-data.html#cb55-3" tabindex="-1"></a>  <span class="fu">is.na</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb55-4"><a href="working-with-data.html#cb55-4" tabindex="-1"></a>  <span class="co"># sum will give you the total number of NAs, table or mean work as well </span></span>
+<span id="cb55-5"><a href="working-with-data.html#cb55-5" tabindex="-1"></a>  <span class="fu">sum</span>()</span></code></pre></div>
 <p>Looks good, now we can combine our precursors.</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="co"># It can be useful to indicate the operations we do along the way as names </span></span>
-<span>  <span class="co"># Precursor.Normalised -&gt; Precursor.Normalised.sum </span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>Precursor.Normalised.sum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">Precursor.Normalised</span><span class="op">)</span>, </span>
-<span>            .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Run"</span>, <span class="st">"Modified.Sequence"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="working-with-data.html#cb56-1" tabindex="-1"></a>data_peptides <span class="ot">&lt;-</span> data_filtered <span class="sc">%&gt;%</span> </span>
+<span id="cb56-2"><a href="working-with-data.html#cb56-2" tabindex="-1"></a>  <span class="co"># It can be useful to indicate the operations we do along the way as names </span></span>
+<span id="cb56-3"><a href="working-with-data.html#cb56-3" tabindex="-1"></a>  <span class="co"># Precursor.Normalised -&gt; Precursor.Normalised.sum </span></span>
+<span id="cb56-4"><a href="working-with-data.html#cb56-4" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Precursor.Normalised.sum =</span> <span class="fu">sum</span>(Precursor.Normalised), </span>
+<span id="cb56-5"><a href="working-with-data.html#cb56-5" tabindex="-1"></a>            <span class="at">.by =</span> <span class="fu">c</span>(<span class="st">&quot;Run&quot;</span>, <span class="st">&quot;Modified.Sequence&quot;</span>))</span></code></pre></div>
 <p>The new data frame contains <code>Run</code> and <code>Modified.Sequence</code> as row IDs and the new <code>Precursor.Normalised.sum</code> column. If we want to retain the other annotations of our peptides, we can use a function to keep them as well. Since the protein and gene information will be the same for each peptide, we can simply use unique to reduce the multiple entries into one.
 We can do the same in a condensed way.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>Precursor.Normalised.sum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">Precursor.Normalised</span><span class="op">)</span>, </span>
-<span>            Stripped.Sequence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">Stripped.Sequence</span><span class="op">)</span>, </span>
-<span>            Protein.Group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">Protein.Group</span><span class="op">)</span>, </span>
-<span>            Protein.Names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">Protein.Names</span><span class="op">)</span>, </span>
-<span>            Genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">Genes</span><span class="op">)</span>, </span>
-<span>            .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Run"</span>, <span class="st">"Modified.Sequence"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>If there were different informations for each precursor, we could use the <code>paste(..., collapse = ";")</code> or <code><a href="https://rdrr.io/r/base/c.html">c()</a></code> to keep the information</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="working-with-data.html#cb57-1" tabindex="-1"></a>data_peptides <span class="ot">&lt;-</span> data_filtered <span class="sc">%&gt;%</span> </span>
+<span id="cb57-2"><a href="working-with-data.html#cb57-2" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Precursor.Normalised.sum =</span> <span class="fu">sum</span>(Precursor.Normalised), </span>
+<span id="cb57-3"><a href="working-with-data.html#cb57-3" tabindex="-1"></a>            <span class="at">Stripped.Sequence =</span> <span class="fu">unique</span>(Stripped.Sequence), </span>
+<span id="cb57-4"><a href="working-with-data.html#cb57-4" tabindex="-1"></a>            <span class="at">Protein.Group =</span> <span class="fu">unique</span>(Protein.Group), </span>
+<span id="cb57-5"><a href="working-with-data.html#cb57-5" tabindex="-1"></a>            <span class="at">Protein.Names =</span> <span class="fu">unique</span>(Protein.Names), </span>
+<span id="cb57-6"><a href="working-with-data.html#cb57-6" tabindex="-1"></a>            <span class="at">Genes =</span> <span class="fu">unique</span>(Genes), </span>
+<span id="cb57-7"><a href="working-with-data.html#cb57-7" tabindex="-1"></a>            <span class="at">.by =</span> <span class="fu">c</span>(<span class="st">&quot;Run&quot;</span>, <span class="st">&quot;Modified.Sequence&quot;</span>))</span></code></pre></div>
+<p>If there were different informations for each precursor, we could use the <code>paste(..., collapse = ";")</code> or <code>c()</code> to keep the information</p>
 </div>
-<p><br>
-Now our data operates on the ‘modified peptides’ level<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;peptide sequence + specific PTMs&lt;/p&gt;"><sup>26</sup></a>, which is what we want to do the differential abundance analysis on.</p>
+<p><br />
+Now our data operates on the ‘modified peptides’ level<a href="#fn26" class="footnote-ref" id="fnref26"><sup>26</sup></a>, which is what we want to do the differential abundance analysis on.</p>
 </div>
 <div id="pivot-data-to-a-samples-x-peptides-matrix" class="section level3" number="7.4.5">
-<h3>
-<span class="header-section-number">7.4.5</span> Pivot data to a samples x peptides matrix<a class="anchor" aria-label="anchor" href="#pivot-data-to-a-samples-x-peptides-matrix"><i class="fas fa-link"></i></a>
-</h3>
+<h3><span class="header-section-number">7.4.5</span> Pivot data to a samples x peptides matrix</h3>
 <p>Our data is on a good way to be finally used for the Limma analysis. We can check in on the way by pivoting it into the wide format. This will allow us to inspect the data visually easier.</p>
 <div class="rmdnote">
-<p>We came across the <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">tidyr::pivot_wider()</a></code> function before. Use it to spread your data in two ways: 1. <code>data_peptides_o</code><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;o for observations as rows&lt;/p&gt;"><sup>27</sup></a> so that peptides become become column names and 2. <code>data_peptides_v</code><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;v for variables as rows&lt;/p&gt;"><sup>28</sup></a> so that the sample names become column names.</p>
+<p>We came across the <code>tidyr::pivot_wider()</code> function before. Use it to spread your data in two ways: 1. <code>data_peptides_o</code><a href="#fn27" class="footnote-ref" id="fnref27"><sup>27</sup></a> so that peptides become become column names and 2. <code>data_peptides_v</code><a href="#fn28" class="footnote-ref" id="fnref28"><sup>28</sup></a> so that the sample names become column names.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button30" aria-expanded="false" aria-controls="button30">
 Hint
 </button>
 <div id="button30" class="collapse">
-<p><br>
-The <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">tidyr::pivot_wider()</a></code> wider function has three primary arguments which dictate the shape of the resulting data frame.</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"column that stays as row IDs"</span><span class="op">)</span>, </span>
-<span>            names_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"column whose values will be used as column names"</span><span class="op">)</span>, </span>
-<span>            values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"column from which values are used for each cell"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><br />
+The <code>tidyr::pivot_wider()</code> wider function has three primary arguments which dictate the shape of the resulting data frame.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="working-with-data.html#cb58-1" tabindex="-1"></a><span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">&quot;column that stays as row IDs&quot;</span>), </span>
+<span id="cb58-2"><a href="working-with-data.html#cb58-2" tabindex="-1"></a>            <span class="at">names_from =</span> <span class="fu">c</span>(<span class="st">&quot;column whose values will be used as column names&quot;</span>), </span>
+<span id="cb58-3"><a href="working-with-data.html#cb58-3" tabindex="-1"></a>            <span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">&quot;column from which values are used for each cell&quot;</span>))</span></code></pre></div>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button31" aria-expanded="false" aria-controls="button31">
 Code
 </button>
 <div id="button31" class="collapse">
-<p><br>
+<p><br />
 In the first part of the exercise, we want the samples to stay as rows.</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides_o</span> <span class="op">&lt;-</span> <span class="va">data_peptides</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="st">"Run"</span>, </span>
-<span>              names_from <span class="op">=</span> <span class="st">"Modified.Sequence"</span>, </span>
-<span>              values_from <span class="op">=</span> <span class="st">"Precursor.Normalised.sum"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="working-with-data.html#cb59-1" tabindex="-1"></a>data_peptides_o <span class="ot">&lt;-</span> data_peptides <span class="sc">%&gt;%</span> </span>
+<span id="cb59-2"><a href="working-with-data.html#cb59-2" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> <span class="st">&quot;Run&quot;</span>, </span>
+<span id="cb59-3"><a href="working-with-data.html#cb59-3" tabindex="-1"></a>              <span class="at">names_from =</span> <span class="st">&quot;Modified.Sequence&quot;</span>, </span>
+<span id="cb59-4"><a href="working-with-data.html#cb59-4" tabindex="-1"></a>              <span class="at">values_from =</span> <span class="st">&quot;Precursor.Normalised.sum&quot;</span>)</span></code></pre></div>
 <p>Great, this is what we want! Now let’s do the opposite.</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op">&lt;-</span> <span class="va">data_peptides</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="st">"Modified.Sequence"</span>, </span>
-<span>              names_from <span class="op">=</span> <span class="st">"Run"</span>, </span>
-<span>              values_from <span class="op">=</span> <span class="st">"Precursor.Normalised.sum"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="working-with-data.html#cb60-1" tabindex="-1"></a>data_peptides_v <span class="ot">&lt;-</span> data_peptides <span class="sc">%&gt;%</span> </span>
+<span id="cb60-2"><a href="working-with-data.html#cb60-2" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> <span class="st">&quot;Modified.Sequence&quot;</span>, </span>
+<span id="cb60-3"><a href="working-with-data.html#cb60-3" tabindex="-1"></a>              <span class="at">names_from =</span> <span class="st">&quot;Run&quot;</span>, </span>
+<span id="cb60-4"><a href="working-with-data.html#cb60-4" tabindex="-1"></a>              <span class="at">values_from =</span> <span class="st">&quot;Precursor.Normalised.sum&quot;</span>)</span></code></pre></div>
 <p>Works as well, but we lost some data. We can fix this by including the column names as <code>id_cols</code>.</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op">&lt;-</span> <span class="va">data_peptides</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Modified.Sequence"</span>, </span>
-<span>                          <span class="st">"Stripped.Sequence"</span>,</span>
-<span>                          <span class="st">"Protein.Group"</span>,</span>
-<span>                          <span class="st">"Protein.Names"</span>,</span>
-<span>                          <span class="st">"Genes"</span><span class="op">)</span>, </span>
-<span>              names_from <span class="op">=</span> <span class="st">"Run"</span>, </span>
-<span>              values_from <span class="op">=</span> <span class="st">"Precursor.Normalised.sum"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="working-with-data.html#cb61-1" tabindex="-1"></a>data_peptides_v <span class="ot">&lt;-</span> data_peptides <span class="sc">%&gt;%</span> </span>
+<span id="cb61-2"><a href="working-with-data.html#cb61-2" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">&quot;Modified.Sequence&quot;</span>, </span>
+<span id="cb61-3"><a href="working-with-data.html#cb61-3" tabindex="-1"></a>                          <span class="st">&quot;Stripped.Sequence&quot;</span>,</span>
+<span id="cb61-4"><a href="working-with-data.html#cb61-4" tabindex="-1"></a>                          <span class="st">&quot;Protein.Group&quot;</span>,</span>
+<span id="cb61-5"><a href="working-with-data.html#cb61-5" tabindex="-1"></a>                          <span class="st">&quot;Protein.Names&quot;</span>,</span>
+<span id="cb61-6"><a href="working-with-data.html#cb61-6" tabindex="-1"></a>                          <span class="st">&quot;Genes&quot;</span>), </span>
+<span id="cb61-7"><a href="working-with-data.html#cb61-7" tabindex="-1"></a>              <span class="at">names_from =</span> <span class="st">&quot;Run&quot;</span>, </span>
+<span id="cb61-8"><a href="working-with-data.html#cb61-8" tabindex="-1"></a>              <span class="at">values_from =</span> <span class="st">&quot;Precursor.Normalised.sum&quot;</span>)</span></code></pre></div>
 <p>This does not work when retaining the samples as rows.</p>
 </div>
 </div>
 <div id="count-missing-values-and-further-filter-data" class="section level3" number="7.4.6">
-<h3>
-<span class="header-section-number">7.4.6</span> Count missing values and further filter data<a class="anchor" aria-label="anchor" href="#count-missing-values-and-further-filter-data"><i class="fas fa-link"></i></a>
-</h3>
-<p>We have some pretty nice data frames by now. Let’s check them and start to attack our biggest enemy in data science, missing values. There are many approaches to handle missing values, the simplest one to remove all data with missing values. In our case, all peptides with missing values.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Depending on the data, you may loose too much, but for the beginning this is fine and only with better understanding of the data would we try and include more peptides with missing values.&lt;/p&gt;"><sup>29</sup></a></p>
-<p>In principle, both data frames <code>data_peptides_o</code> and <code>data_peptides_v</code> could be used for this task. We will use <code>data_peptides_v</code> for now. First we need to identify the form of our missing values, they can be <code>NA</code>s or 0s. Let’s count them with the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise()</a></code> function in combination with <code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across()</a></code>.</p>
+<h3><span class="header-section-number">7.4.6</span> Count missing values and further filter data</h3>
+<p>We have some pretty nice data frames by now. Let’s check them and start to attack our biggest enemy in data science, missing values. There are many approaches to handle missing values, the simplest one to remove all data with missing values. In our case, all peptides with missing values.<a href="#fn29" class="footnote-ref" id="fnref29"><sup>29</sup></a></p>
+<p>In principle, both data frames <code>data_peptides_o</code> and <code>data_peptides_v</code> could be used for this task. We will use <code>data_peptides_v</code> for now. First we need to identify the form of our missing values, they can be <code>NA</code>s or 0s. Let’s count them with the <code>dplyr::summarise()</code> function in combination with <code>dplyr::across()</code>.</p>
 <div class="rmdnote">
-<p>Read into how you can use <code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across()</a></code> to target multiple columns at a time and 1. count <code>NA</code>s and 2. 0s.</p>
+<p>Read into how you can use <code>dplyr::across()</code> to target multiple columns at a time and 1. count <code>NA</code>s and 2. 0s.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button32" aria-expanded="false" aria-controls="button32">
 Hint - summarise across
 </button>
 <div id="button32" class="collapse">
-<p><br><code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across()</a></code> allows us to specify the column we want to modify similar to the <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code> function with <code><a href="https://tidyselect.r-lib.org/reference/where.html">dplyr::where()</a></code> and a function like <code><a href="https://rdrr.io/r/base/numeric.html">is.numeric()</a></code>. The second part of the <code><a href="https://dplyr.tidyverse.org/reference/across.html">dplyr::across()</a></code> function needs a function which will be applied to each column separately. In our case, this function should count the number of <code>NA</code>s or 0s.</p>
+<p><br />
+<code>dplyr::across()</code> allows us to specify the column we want to modify similar to the <code>dplyr::select()</code> function with <code>dplyr::where()</code> and a function like <code>is.numeric()</code>. The second part of the <code>dplyr::across()</code> function needs a function which will be applied to each column separately. In our case, this function should count the number of <code>NA</code>s or 0s.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button33" aria-expanded="false" aria-controls="button33">
 Hint - 0
 </button>
 <div id="button33" class="collapse">
-<p><br><code>NA</code>s and regular values, including 0, sometimes behave different. We need to take this into account when counting the 0s in our data.</p>
+<p><br />
+<code>NA</code>s and regular values, including 0, sometimes behave different. We need to take this into account when counting the 0s in our data.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button34" aria-expanded="false" aria-controls="button34">
 Code
 </button>
 <div id="button34" class="collapse">
-<p><br></p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># Optionally we can directly View the output of this computation</span></span>
-<span><span class="co"># %&gt;% View()</span></span></code></pre></div>
-<p>The first thing we see is that yes, we do have <code>NA</code>s in our data. But these numbers are not very telling. We can replace <code><a href="https://rdrr.io/r/base/sum.html">sum()</a></code> with <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code> to get the fraction of <code>NA</code>s in our data.</p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><br />
+</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="working-with-data.html#cb62-1" tabindex="-1"></a>data_peptides_v <span class="sc">%&gt;%</span> </span>
+<span id="cb62-2"><a href="working-with-data.html#cb62-2" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">sum</span>(<span class="fu">is.na</span>(x))))</span>
+<span id="cb62-3"><a href="working-with-data.html#cb62-3" tabindex="-1"></a><span class="co"># Optionally we can directly View the output of this computation</span></span>
+<span id="cb62-4"><a href="working-with-data.html#cb62-4" tabindex="-1"></a><span class="co"># %&gt;% View()</span></span></code></pre></div>
+<p>The first thing we see is that yes, we do have <code>NA</code>s in our data. But these numbers are not very telling. We can replace <code>sum()</code> with <code>mean()</code> to get the fraction of <code>NA</code>s in our data.</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="working-with-data.html#cb63-1" tabindex="-1"></a>data_peptides_v <span class="sc">%&gt;%</span> </span>
+<span id="cb63-2"><a href="working-with-data.html#cb63-2" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">mean</span>(<span class="fu">is.na</span>(x))))</span></code></pre></div>
 <p>When counting the number of 0s in our data, this is how I would intuitively do it.</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>However, this will fail due to the <code>NA</code>s in our data. One quick and dirty workaround would be to temporarily set all <code>NA</code>s to 1.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;I only do this to show you how mutate across works.&lt;/p&gt;"><sup>30</sup></a></p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="co"># First we replace all NAs by 1 with the combination of mutate and across</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fl">1</span>, <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="co"># then we can count the 0s without any trouble</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Now we first transformed all <code>NA</code>s to 0s, and then continued with our computation. in addition to mutate across, we also used the function <code><a href="https://rdrr.io/r/base/ifelse.html">ifelse()</a></code> which is very helpful, when you want to do different operations on you values depending on the value itself. Here, we test for each value of <code>x</code> if it is an <code>NA</code> by <code>is.na(x)</code> and return 1 if the statement is true or the value itself if not.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;This is reflected by having &lt;code&gt;x&lt;/code&gt; twice in &lt;code&gt;ifelse()&lt;/code&gt;, in the test statement and the return condition.&lt;/p&gt;"><sup>31</sup></a></p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="working-with-data.html#cb64-1" tabindex="-1"></a>data_peptides_v <span class="sc">%&gt;%</span> </span>
+<span id="cb64-2"><a href="working-with-data.html#cb64-2" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">mean</span>(x <span class="sc">==</span> <span class="dv">0</span>)))</span></code></pre></div>
+<p>However, this will fail due to the <code>NA</code>s in our data. One quick and dirty workaround would be to temporarily set all <code>NA</code>s to 1.<a href="#fn30" class="footnote-ref" id="fnref30"><sup>30</sup></a></p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="working-with-data.html#cb65-1" tabindex="-1"></a>data_peptides_v <span class="sc">%&gt;%</span> </span>
+<span id="cb65-2"><a href="working-with-data.html#cb65-2" tabindex="-1"></a>  <span class="co"># First we replace all NAs by 1 with the combination of mutate and across</span></span>
+<span id="cb65-3"><a href="working-with-data.html#cb65-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">ifelse</span>(<span class="fu">is.na</span>(x), <span class="dv">1</span>, x))) <span class="sc">%&gt;%</span> </span>
+<span id="cb65-4"><a href="working-with-data.html#cb65-4" tabindex="-1"></a>  <span class="co"># then we can count the 0s without any trouble</span></span>
+<span id="cb65-5"><a href="working-with-data.html#cb65-5" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">mean</span>(x <span class="sc">==</span> <span class="dv">0</span>)))</span></code></pre></div>
+<p>Now we first transformed all <code>NA</code>s to 0s, and then continued with our computation. in addition to mutate across, we also used the function <code>ifelse()</code> which is very helpful, when you want to do different operations on you values depending on the value itself. Here, we test for each value of <code>x</code> if it is an <code>NA</code> by <code>is.na(x)</code> and return 1 if the statement is true or the value itself if not.<a href="#fn31" class="footnote-ref" id="fnref31"><sup>31</sup></a></p>
 <p>Besides this, we have an answer to our initial question, we only have missing values in form of <code>NA</code>s.</p>
 </div>
 <p>Now to actually dealing with the data. We already said that we want to simply exclude peptides with missing values. Above, we counted the number of <code>NA</code>s per sample. Now, we need to do the same but for each peptide individually.</p>
 <div class="rmdnote">
-<p>Count the number of missing values per peptide/row using mutate and the <code><a href="https://dplyr.tidyverse.org/reference/c_across.html">dplyr::c_across()</a></code> function to add a column <code>f_values</code><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;fraction of values&lt;/p&gt;"><sup>32</sup></a> to <code>data_peptides_v</code>. Assign the new data frame to <code>data_peptides_v_c</code><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;c for complete&lt;/p&gt;"><sup>33</sup></a>.</p>
+<p>Count the number of missing values per peptide/row using mutate and the <code>dplyr::c_across()</code> function to add a column <code>f_values</code><a href="#fn32" class="footnote-ref" id="fnref32"><sup>32</sup></a> to <code>data_peptides_v</code>. Assign the new data frame to <code>data_peptides_v_c</code><a href="#fn33" class="footnote-ref" id="fnref33"><sup>33</sup></a>.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button35" aria-expanded="false" aria-controls="button35">
 Hint
 </button>
 <div id="button35" class="collapse">
-<p><br>
-Wasn’t this description quite detailed. Anyway, <code><a href="https://dplyr.tidyverse.org/reference/c_across.html">dplyr::c_across()</a></code> work similar to the <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select()</a></code> function. And you have to make sure, to mutate row-wise.</p>
+<p><br />
+Wasn’t this description quite detailed. Anyway, <code>dplyr::c_across()</code> work similar to the <code>dplyr::select()</code> function. And you have to make sure, to mutate row-wise.</p>
 </div>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button36" aria-expanded="false" aria-controls="button36">
 Code
 </button>
 <div id="button36" class="collapse">
-<p><br>
+<p><br />
 Let’s fist count the number of missing values per peptide</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>f_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/c_across.html">c_across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>         .by <span class="op">=</span> <span class="st">"Modified.Sequence"</span>, .after <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># .after and .before define the position of the new column</span></span>
-<span><span class="co"># %&gt;% View()</span></span></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="working-with-data.html#cb66-1" tabindex="-1"></a>data_peptides_v <span class="sc">%&gt;%</span> </span>
+<span id="cb66-2"><a href="working-with-data.html#cb66-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">f_values =</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(<span class="fu">c_across</span>(<span class="fu">where</span>(is.numeric)))), </span>
+<span id="cb66-3"><a href="working-with-data.html#cb66-3" tabindex="-1"></a>         <span class="at">.by =</span> <span class="st">&quot;Modified.Sequence&quot;</span>, <span class="at">.after =</span> <span class="dv">1</span>) <span class="co"># .after and .before define the position of the new column</span></span>
+<span id="cb66-4"><a href="working-with-data.html#cb66-4" tabindex="-1"></a><span class="co"># %&gt;% View()</span></span></code></pre></div>
 <p>We can also visualize the distribution.</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>f_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/c_across.html">c_across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>         .by <span class="op">=</span> <span class="st">"Modified.Sequence"</span>, .after <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">f_values</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="working-with-data.html#cb67-1" tabindex="-1"></a>data_peptides_v <span class="sc">%&gt;%</span> </span>
+<span id="cb67-2"><a href="working-with-data.html#cb67-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">f_values =</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(<span class="fu">c_across</span>(<span class="fu">where</span>(is.numeric)))), </span>
+<span id="cb67-3"><a href="working-with-data.html#cb67-3" tabindex="-1"></a>         <span class="at">.by =</span> <span class="st">&quot;Modified.Sequence&quot;</span>, <span class="at">.after =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb67-4"><a href="working-with-data.html#cb67-4" tabindex="-1"></a>  <span class="fu">pull</span>(f_values) <span class="sc">%&gt;%</span> </span>
+<span id="cb67-5"><a href="working-with-data.html#cb67-5" tabindex="-1"></a>  <span class="fu">table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb67-6"><a href="working-with-data.html#cb67-6" tabindex="-1"></a>  <span class="fu">barplot</span>()</span></code></pre></div>
 <p>Inverting to counting values looks actually better here. We can achive this by invering the logical statement with <code>!</code>.</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="co"># mean(is.na(... -&gt; mean(!is.na(...</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>f_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/c_across.html">c_across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>         .by <span class="op">=</span> <span class="st">"Modified.Sequence"</span>, .after <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">f_values</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="working-with-data.html#cb68-1" tabindex="-1"></a>data_peptides_v <span class="sc">%&gt;%</span> </span>
+<span id="cb68-2"><a href="working-with-data.html#cb68-2" tabindex="-1"></a>  <span class="co"># mean(is.na(... -&gt; mean(!is.na(...</span></span>
+<span id="cb68-3"><a href="working-with-data.html#cb68-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">f_values =</span> <span class="fu">mean</span>(<span class="sc">!</span><span class="fu">is.na</span>(<span class="fu">c_across</span>(<span class="fu">where</span>(is.numeric)))), </span>
+<span id="cb68-4"><a href="working-with-data.html#cb68-4" tabindex="-1"></a>         <span class="at">.by =</span> <span class="st">&quot;Modified.Sequence&quot;</span>, <span class="at">.after =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb68-5"><a href="working-with-data.html#cb68-5" tabindex="-1"></a>  <span class="fu">pull</span>(f_values) <span class="sc">%&gt;%</span> </span>
+<span id="cb68-6"><a href="working-with-data.html#cb68-6" tabindex="-1"></a>  <span class="fu">table</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb68-7"><a href="working-with-data.html#cb68-7" tabindex="-1"></a>  <span class="fu">barplot</span>()</span></code></pre></div>
 <p>And now we filter the table.</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>f_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/c_across.html">c_across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>         .by <span class="op">=</span> <span class="st">"Modified.Sequence"</span>, .after <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">f_values</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># Here we could adjust the threshold </span></span>
-<span><span class="co"># 1 means no NAs</span></span></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="working-with-data.html#cb69-1" tabindex="-1"></a>data_peptides_v <span class="sc">%&gt;%</span> </span>
+<span id="cb69-2"><a href="working-with-data.html#cb69-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">f_values =</span> <span class="fu">mean</span>(<span class="sc">!</span><span class="fu">is.na</span>(<span class="fu">c_across</span>(<span class="fu">where</span>(is.numeric)))), </span>
+<span id="cb69-3"><a href="working-with-data.html#cb69-3" tabindex="-1"></a>         <span class="at">.by =</span> <span class="st">&quot;Modified.Sequence&quot;</span>, <span class="at">.after =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb69-4"><a href="working-with-data.html#cb69-4" tabindex="-1"></a>  <span class="fu">filter</span>(f_values <span class="sc">==</span> <span class="dv">1</span>) <span class="co"># Here we could adjust the threshold </span></span>
+<span id="cb69-5"><a href="working-with-data.html#cb69-5" tabindex="-1"></a><span class="co"># 1 means no NAs</span></span></code></pre></div>
 <p>Mutating and filtering can also be combined.</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_peptides_v_c</span> <span class="op">&lt;-</span> <span class="va">data_peptides_v</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/c_across.html">c_across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span>, </span>
-<span>         .by <span class="op">=</span> <span class="st">"Modified.Sequence"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="working-with-data.html#cb70-1" tabindex="-1"></a>data_peptides_v_c <span class="ot">&lt;-</span> data_peptides_v <span class="sc">%&gt;%</span> </span>
+<span id="cb70-2"><a href="working-with-data.html#cb70-2" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">mean</span>(<span class="sc">!</span><span class="fu">is.na</span>(<span class="fu">c_across</span>(<span class="fu">where</span>(is.numeric)))) <span class="sc">==</span> <span class="dv">1</span>, </span>
+<span id="cb70-3"><a href="working-with-data.html#cb70-3" tabindex="-1"></a>         <span class="at">.by =</span> <span class="st">&quot;Modified.Sequence&quot;</span>)</span></code></pre></div>
 <p>You could finally compare the number of peptides in <code>data_peptides_v</code> and <code>data_peptides_v_c</code> to see how many peptides were filtered out.</p>
 </div>
 </div>
 <div id="optional-normalize-the-data" class="section level3" number="7.4.7">
-<h3>
-<span class="header-section-number">7.4.7</span> (Optional) Normalize the data<a class="anchor" aria-label="anchor" href="#optional-normalize-the-data"><i class="fas fa-link"></i></a>
-</h3>
+<h3><span class="header-section-number">7.4.7</span> (Optional) Normalize the data</h3>
 <p>We were already working with a column named <code>Precursor.Normalised</code>, which suggests this data is somehow normalized, but sometimes renormalizing makes sense and in general there are enough cases where normalization is essential. In general, we want to eliminate systematic factor between our samples. This means when dividing all peptide values of one sample by the ones of another sample, the median factor should be one. This is based on the assumption that the bulk of our data does not change between conditions.</p>
-<p>We will use the <code>limma</code> function <code><a href="https://rdrr.io/pkg/limma/man/normalizebetweenarrays.html">limma::normalizeBetweenArrays()</a></code> to normalize our data. You could try and figure out how to use it, however, it took me quite some time and involves a couple of uncommon functions to get the data into the right shape. Basically the <code><a href="https://rdrr.io/pkg/limma/man/normalizebetweenarrays.html">limma::normalizeBetweenArrays()</a></code> accepts a matrix with variables/peptides as rows. So let’s simply have a look at the code.</p>
+<p>We will use the <code>limma</code> function <code>limma::normalizeBetweenArrays()</code> to normalize our data. You could try and figure out how to use it, however, it took me quite some time and involves a couple of uncommon functions to get the data into the right shape. Basically the <code>limma::normalizeBetweenArrays()</code> accepts a matrix with variables/peptides as rows. So let’s simply have a look at the code.</p>
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#button37" aria-expanded="false" aria-controls="button37">
 Code
 </button>
 <div id="button37" class="collapse">
-<p><br></p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># We assign a new object </span></span>
-<span><span class="va">data_norm</span> <span class="op">&lt;-</span> <span class="va">data_peptides_v_c</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="co"># Column_to_rownames allows us to make a matrix from our tibble </span></span>
-<span>  <span class="co"># and store the character column 'Modified.Sequence' as rownames</span></span>
-<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">column_to_rownames</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"Modified.Sequence"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="co"># Normalization with the scale-method = median-normalization</span></span>
-<span>  <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/normalizebetweenarrays.html">normalizeBetweenArrays</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"scale"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="co"># The following lines revert the matrix to a tibble</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rownames_to_column</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"Modified.Sequence"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><br />
+</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="working-with-data.html#cb71-1" tabindex="-1"></a><span class="co"># We assign a new object </span></span>
+<span id="cb71-2"><a href="working-with-data.html#cb71-2" tabindex="-1"></a>data_norm <span class="ot">&lt;-</span> data_peptides_v_c <span class="sc">%&gt;%</span> </span>
+<span id="cb71-3"><a href="working-with-data.html#cb71-3" tabindex="-1"></a>  <span class="co"># Column_to_rownames allows us to make a matrix from our tibble </span></span>
+<span id="cb71-4"><a href="working-with-data.html#cb71-4" tabindex="-1"></a>  <span class="co"># and store the character column &#39;Modified.Sequence&#39; as rownames</span></span>
+<span id="cb71-5"><a href="working-with-data.html#cb71-5" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">&quot;Modified.Sequence&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb71-6"><a href="working-with-data.html#cb71-6" tabindex="-1"></a>  <span class="co"># Normalization with the scale-method = median-normalization</span></span>
+<span id="cb71-7"><a href="working-with-data.html#cb71-7" tabindex="-1"></a>  limma<span class="sc">::</span><span class="fu">normalizeBetweenArrays</span>(<span class="at">method =</span> <span class="st">&quot;scale&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb71-8"><a href="working-with-data.html#cb71-8" tabindex="-1"></a>  <span class="co"># The following lines revert the matrix to a tibble</span></span>
+<span id="cb71-9"><a href="working-with-data.html#cb71-9" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb71-10"><a href="working-with-data.html#cb71-10" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;Modified.Sequence&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb71-11"><a href="working-with-data.html#cb71-11" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">as_tibble</span>()</span></code></pre></div>
 <p>If this failed, it’s on me! I forgot to remove the column with additional information about our peptides. This is a quick way to do so.</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_norm</span> <span class="op">&lt;-</span> <span class="va">data_peptides_v_c</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="co"># Only keep the first id column and all numeric columns </span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">column_to_rownames</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"Modified.Sequence"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/normalizebetweenarrays.html">normalizeBetweenArrays</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"scale"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rownames_to_column</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"Modified.Sequence"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="working-with-data.html#cb72-1" tabindex="-1"></a>data_norm <span class="ot">&lt;-</span> data_peptides_v_c <span class="sc">%&gt;%</span> </span>
+<span id="cb72-2"><a href="working-with-data.html#cb72-2" tabindex="-1"></a>  <span class="co"># Only keep the first id column and all numeric columns </span></span>
+<span id="cb72-3"><a href="working-with-data.html#cb72-3" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">where</span>(is.numeric))) <span class="sc">%&gt;%</span> </span>
+<span id="cb72-4"><a href="working-with-data.html#cb72-4" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">&quot;Modified.Sequence&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-5"><a href="working-with-data.html#cb72-5" tabindex="-1"></a>  limma<span class="sc">::</span><span class="fu">normalizeBetweenArrays</span>(<span class="at">method =</span> <span class="st">&quot;scale&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-6"><a href="working-with-data.html#cb72-6" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb72-7"><a href="working-with-data.html#cb72-7" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;Modified.Sequence&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-8"><a href="working-with-data.html#cb72-8" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">as_tibble</span>()</span></code></pre></div>
 <p>You can find an explantion of the normalization method in the <a href="http://web.mit.edu/~r/current/arch/i386_linux26/lib/R/library/limma/html/normalizebetweenarrays.html">documentation</a>.</p>
 </div>
-<p><br>
+<p><br />
 We can explore the impact of renormalizing our data later by calculating the coefficient of variance (CV) for both group and doing a PCA analysis of both data frames.</p>
 <p>Our data looks pretty good by now and is ready for a Limma analysis to identify which peptides were affected in their abundance by the drug treatment. Now we can simply see how to we can store our data when done working and simply reopen it when sitting down again.</p>
 </div>
 </div>
 <div id="save-your-data" class="section level2" number="7.5">
-<h2>
-<span class="header-section-number">7.5</span> Save your data<a class="anchor" aria-label="anchor" href="#save-your-data"><i class="fas fa-link"></i></a>
-</h2>
+<h2><span class="header-section-number">7.5</span> Save your data</h2>
 <p>Once your raw data is imported and you have some first data transformation done, we could clean up our environment and break up our code into a separate script.</p>
 <p>For this we need to save our <code>R Environment</code> to keep all data objects together. Before that, it can be useful to delete intermediate objects and everything you do not need anymore.</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Clean environment</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span>list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Save RData</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/save.html">save.image</a></span><span class="op">(</span><span class="st">"Data/RData/00_Import_data.RData"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="working-with-data.html#cb73-1" tabindex="-1"></a><span class="co"># Clean environment</span></span>
+<span id="cb73-2"><a href="working-with-data.html#cb73-2" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">c</span>())</span>
+<span id="cb73-3"><a href="working-with-data.html#cb73-3" tabindex="-1"></a></span>
+<span id="cb73-4"><a href="working-with-data.html#cb73-4" tabindex="-1"></a><span class="co"># Save RData</span></span>
+<span id="cb73-5"><a href="working-with-data.html#cb73-5" tabindex="-1"></a><span class="fu">save.image</span>(<span class="st">&quot;Data/RData/00_Import_data.RData&quot;</span>)</span></code></pre></div>
 <p>Now, everything is saved and can be conveniently accessed later again by loading the data into your environment with <code>load("Data/RData/00_Import_data.RData")</code>. This is also a nice way to share your data with others.</p>
 </div>
 </div>
+<div class="footnotes">
+<hr />
+<ol start="21">
+<li id="fn21"><p>text which is not evaluated as code<a href="working-with-data.html#fnref21" class="footnote-back">↩︎</a></p></li>
+<li id="fn22"><p>Each ion, also called precursor, represents a peptide and its charge state. Each peptide can have multiple cahrge states and was originally derived from a protein by proteolytic cleavage. All this data stems from multiple samples and replicates which are combined in one table.<a href="working-with-data.html#fnref22" class="footnote-back">↩︎</a></p></li>
+<li id="fn23"><p>I am not sure how they behave with OwnCloud.<a href="working-with-data.html#fnref23" class="footnote-back">↩︎</a></p></li>
+<li id="fn24"><p><em>whispering</em> <code>View()</code> it.<a href="working-with-data.html#fnref24" class="footnote-back">↩︎</a></p></li>
+<li id="fn25"><p>Precursor or precursor ion is the mass spec term for an peak in the MS1, which represents the mass-over-charge (m/z) of a particular ion.<a href="working-with-data.html#fnref25" class="footnote-back">↩︎</a></p></li>
+<li id="fn26"><p>peptide sequence + specific PTMs<a href="working-with-data.html#fnref26" class="footnote-back">↩︎</a></p></li>
+<li id="fn27"><p>o for observations as rows<a href="working-with-data.html#fnref27" class="footnote-back">↩︎</a></p></li>
+<li id="fn28"><p>v for variables as rows<a href="working-with-data.html#fnref28" class="footnote-back">↩︎</a></p></li>
+<li id="fn29"><p>Depending on the data, you may loose too much, but for the beginning this is fine and only with better understanding of the data would we try and include more peptides with missing values.<a href="working-with-data.html#fnref29" class="footnote-back">↩︎</a></p></li>
+<li id="fn30"><p>I only do this to show you how mutate across works.<a href="working-with-data.html#fnref30" class="footnote-back">↩︎</a></p></li>
+<li id="fn31"><p>This is reflected by having <code>x</code> twice in <code>ifelse()</code>, in the test statement and the return condition.<a href="working-with-data.html#fnref31" class="footnote-back">↩︎</a></p></li>
+<li id="fn32"><p>fraction of values<a href="working-with-data.html#fnref32" class="footnote-back">↩︎</a></p></li>
+<li id="fn33"><p>c for complete<a href="working-with-data.html#fnref33" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+  </main>
 
-  <div class="chapter-nav">
-<div class="prev"><a href="our-project.html"><span class="header-section-number">6</span> Our project</a></div>
-<div class="next"><a href="limma-analysis.html"><span class="header-section-number">8</span> Limma analysis</a></div>
-</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
-    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
-      <ul class="nav navbar-nav">
-<li><a class="nav-link" href="#working-with-data"><span class="header-section-number">7</span> Working with data</a></li>
-<li><a class="nav-link" href="#prepare-your-project"><span class="header-section-number">7.1</span> Prepare your project</a></li>
-<li><a class="nav-link" href="#import-your-data"><span class="header-section-number">7.2</span> Import your data</a></li>
-<li>
-<a class="nav-link" href="#understand-your-data"><span class="header-section-number">7.3</span> Understand your data</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#data-format"><span class="header-section-number">7.3.1</span> Data format</a></li>
-<li><a class="nav-link" href="#data-types"><span class="header-section-number">7.3.2</span> Data types</a></li>
-</ul>
-</li>
-<li>
-<a class="nav-link" href="#tidy-up-your-data"><span class="header-section-number">7.4</span> Tidy up your data</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#filtering-identified-precursors"><span class="header-section-number">7.4.1</span> Filtering identified precursors</a></li>
-<li><a class="nav-link" href="#shorten-and-clean-up-sample-names"><span class="header-section-number">7.4.2</span> Shorten and clean up sample names</a></li>
-<li><a class="nav-link" href="#remove-unnecessary-information"><span class="header-section-number">7.4.3</span> Remove unnecessary information</a></li>
-<li><a class="nav-link" href="#sum-precursors-to-modified-peptides"><span class="header-section-number">7.4.4</span> Sum precursors to modified peptides</a></li>
-<li><a class="nav-link" href="#pivot-data-to-a-samples-x-peptides-matrix"><span class="header-section-number">7.4.5</span> Pivot data to a samples x peptides matrix</a></li>
-<li><a class="nav-link" href="#count-missing-values-and-further-filter-data"><span class="header-section-number">7.4.6</span> Count missing values and further filter data</a></li>
-<li><a class="nav-link" href="#optional-normalize-the-data"><span class="header-section-number">7.4.7</span> (Optional) Normalize the data</a></li>
-</ul>
-</li>
-<li><a class="nav-link" href="#save-your-data"><span class="header-section-number">7.5</span> Save your data</a></li>
-</ul>
+  <div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page">
+      <h2>On this page</h2>
+      <div id="book-on-this-page"></div>
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/nicohuttmann/embl-bioinfo-pRoteomics/blob/master/02-group_project.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/nicohuttmann/embl-bioinfo-pRoteomics/edit/master/02-group_project.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+          <li><a id="book-source" href="#">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="#">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
-</div>
+      </div>
     </nav>
-</div>
+  </div>
 
 </div>
 </div> <!-- .container -->
 
-<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+<footer class="bg-primary text-light mt-5">
+  <div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
     <p>"<strong>Data Analysis in R</strong>" was written by Nico Hüttmann. It was last built on 2025-02-06.</p>
@@ -824,5 +770,8 @@ We can explore the impact of renormalizing our data later by calculating the coe
 
 </div></div>
 </footer>
+
+
 </body>
+
 </html>
